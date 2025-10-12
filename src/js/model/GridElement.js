@@ -2,6 +2,7 @@ import { modelUtil } from '../util/modelUtil';
 import { GridImage } from './GridImage';
 import { GridActionSpeak } from './GridActionSpeak';
 import { GridActionSpeakCustom } from './GridActionSpeakCustom';
+import { GridActionSpeakLetters } from './GridActionSpeakLetters';
 import { GridActionNavigate } from './GridActionNavigate';
 import { GridActionARE } from './GridActionARE';
 import { GridActionOpenHAB } from './GridActionOpenHAB';
@@ -73,6 +74,7 @@ class GridElement extends Model({
             GridActionSpeak,
             GridActionNavigate,
             GridActionSpeakCustom,
+            GridActionSpeakLetters,
             GridActionAudio,
             GridActionWordForm,
             GridActionPredict,

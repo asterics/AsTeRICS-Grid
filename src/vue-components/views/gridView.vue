@@ -85,6 +85,7 @@
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { gridUtil } from '../../js/util/gridUtil';
     import { collectElementService } from '../../js/service/collectElementService';
+    import { GridElement } from '../../js/model/GridElement';
     import { predictionService } from '../../js/service/predictionService';
     import { liveElementService } from '../../js/service/liveElementService';
     import { GridElement } from '../../js/model/GridElement';
@@ -125,7 +126,9 @@
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
-                systemActionService: systemActionService
+                systemActionService: systemActionService,
+                pausedByVisibility: false,
+                suppressAudioFeedback: false
             }
         },
         components: {
@@ -209,18 +212,93 @@
                     actionService.doAction(thiz.renderGridData, item.id);
                 };
                 let activeListener = (items, wrap, restarted) => {
+                        if (document.hidden || thiz.suppressAudioFeedback) {
+                            return;
+                        }
                     if (!Array.isArray(items)) {
                         items = [items];
                     }
-                    if (inputConfig.globalReadActive && items && items.length === 1 && items[0]) {
-                        let text = items[0].ariaLabel || '';
-                        let separatorIndex = text.indexOf(", ");
-                        if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
-                            text = text.substring(0, separatorIndex);
+                    if (inputConfig.globalReadActive && items && items.length > 0) {
+                        // Check if we're in row/column scanning mode with multiple items
+                        if (items.length > 1 && inputConfig.globalReadActiveFastCount > 0) {
+                            // Fast reading mode for multiple elements
+                            let elementsToRead = Math.min(items.length, inputConfig.globalReadActiveFastCount);
+                            let textsToSpeak = [];
+
+                            for (let i = 0; i < elementsToRead; i++) {
+                                if (items[i]) {
+                                    let text = items[i].ariaLabel || '';
+                                    let separatorIndex = text.indexOf(", ");
+                                    if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
+                                        text = text.substring(0, separatorIndex);
+                                    }
+                                    if (text.trim()) {
+                                        textsToSpeak.push(text);
+                                    }
+                                }
+                            }
+
+                            if (textsToSpeak.length > 0) {
+                                let combinedText = textsToSpeak.join(', ');
+                                speechService.speak(combinedText, {
+                                    rate: inputConfig.globalReadActiveFastRate || 2
+                                });
+                            }
+                        } else if (items.length === 1 && items[0]) {
+                            // Single element - check if it's a collect element and letter reading is enabled
+                            let element = items[0];
+                            let elementId = element.id;
+                            let gridElement = thiz.renderGridData && thiz.renderGridData.gridElements ?
+                                thiz.renderGridData.gridElements.find(e => e.id === elementId) : null;
+
+                            if (inputConfig.globalReadCollectLetters &&
+                                gridElement &&
+                                gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
+                                // Special handling for collect elements - read letter by letter
+                                let collectText = collectElementService.getText() || '';
+                                if (collectText.trim()) {
+                                    // Split into words and incomplete word
+                                    let words = collectText.split(' ');
+                                    let completeWords = words.slice(0, -1); // All but last
+                                    let incompleteWord = words[words.length - 1]; // Last word (might be incomplete)
+
+                                    let textToSpeak = '';
+                                    if (completeWords.length > 0) {
+                                        textToSpeak += completeWords.join(' ') + ' ';
+                                    }
+
+                                    // If there's an incomplete word (no trailing space), spell it out
+                                    if (incompleteWord && !collectText.endsWith(' ')) {
+                                        if (textToSpeak) {
+                                            textToSpeak += '... '; // Separator between complete words and letters
+                                        }
+                                        textToSpeak += incompleteWord.split('').join(' ');
+                                    } else if (incompleteWord) {
+                                        // Complete word (has trailing space)
+                                        textToSpeak += incompleteWord;
+                                    }
+
+                                    speechService.speak(textToSpeak, {
+                                        rate: inputConfig.globalReadActiveRate || 1
+                                    });
+                                } else {
+                                    // Empty collect element
+                                    speechService.speak(i18nService.t('ELEMENT_TYPE_COLLECT'), {
+                                        rate: inputConfig.globalReadActiveRate || 1
+                                    });
+                                }
+                            } else {
+                                // Normal single element reading
+                                let text = element.ariaLabel || '';
+                                let separatorIndex = text.indexOf(", ");
+                                if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
+                                    text = text.substring(0, separatorIndex);
+                                }
+                                speechService.speak(text, {
+                                    rate: inputConfig.globalReadActiveRate || 1
+                                });
+                            }
                         }
-                        speechService.speak(text, {
-                            rate: inputConfig.globalReadActiveRate || 1
-                        });
                     }
 
                     if (inputConfig.globalBeepFeedback) {
@@ -457,6 +535,24 @@
             },
             async metadataUpdated() {
                 this.metadata = await dataService.getMetadata();
+            },
+            onVisibilityChanged() {
+                const hidden = document.hidden;
+                if (hidden) {
+                    this.suppressAudioFeedback = true;
+                    try { speechService.stopSpeaking(); } catch (e) {}
+                    try { audioUtil.stopAudio(); } catch (e) {}
+                    if (this.scanner) {
+                        this.scanner.pauseScanning();
+                        this.pausedByVisibility = true;
+                    }
+                } else {
+                    this.suppressAudioFeedback = false;
+                    if (this.pausedByVisibility && this.scanner) {
+                        this.scanner.resumeScanning();
+                    }
+                    this.pausedByVisibility = false;
+                }
             }
         },
         created() {
@@ -467,6 +563,9 @@
             window.addEventListener('resize', this.resizeListener, true);
             $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).on(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            document.addEventListener('visibilitychange', this.onVisibilityChanged);
+            window.addEventListener('blur', this.onVisibilityChanged, true);
+            window.addEventListener('focus', this.onVisibilityChanged, true);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
@@ -476,6 +575,9 @@
             window.removeEventListener('resize', this.resizeListener, true);
             $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).off(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            document.removeEventListener('visibilitychange', this.onVisibilityChanged);
+            window.removeEventListener('blur', this.onVisibilityChanged, true);
+            window.removeEventListener('focus', this.onVisibilityChanged, true);
             stopInputMethods();
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');
