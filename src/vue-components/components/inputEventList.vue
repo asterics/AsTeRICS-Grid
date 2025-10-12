@@ -143,6 +143,106 @@
                         </span>
                     </div>
                 </div>
+                <div v-if="input.modelName === InputEventFace.getModelName()">
+                    <div class="srow">
+                        <div class="nine columns offset-by-three">
+                            <h3 class="mt-0">{{$t('faceGesture')}}</h3>
+                            <div class="srow">
+                                <label class="one-third column" :for="'faceGestureType' + index">{{$t('gestureType')}}</label>
+                                <select class="two-thirds column" :id="'faceGestureType' + index" v-model="input.gestureType" @change="modelChanged">
+                                    <option value="BLINK_LEFT">{{$t('blinkLeft')}}</option>
+                                    <option value="BLINK_RIGHT">{{$t('blinkRight')}}</option>
+                                    <option value="BLINK_BOTH">{{$t('blinkBoth')}}</option>
+                                    <option value="EYES_LEFT">{{$t('eyesLeft')}}</option>
+                                    <option value="EYES_RIGHT">{{$t('eyesRight')}}</option>
+                                    <option value="EYES_UP">{{$t('eyesUp')}}</option>
+                                    <option value="EYES_DOWN">{{$t('eyesDown')}}</option>
+                                    <option value="HEAD_TILT_LEFT">{{$t('headTiltLeft')}}</option>
+                                    <option value="HEAD_TILT_RIGHT">{{$t('headTiltRight')}}</option>
+                                    <option value="HEAD_LEFT">{{$t('headLeft')}}</option>
+                                    <option value="HEAD_RIGHT">{{$t('headRight')}}</option>
+                                    <option value="HEAD_UP">{{$t('headUp')}}</option>
+                                    <option value="HEAD_DOWN">{{$t('headDown')}}</option>
+                                    <option value="BROW_RAISE">{{$t('browRaise')}}</option>
+                                    <option value="CHEEK_PUFF">{{$t('cheekPuff')}}</option>
+                                    <option value="TONGUE_OUT">{{$t('tongueOut')}}</option>
+                                    <option value="SMILE">{{$t('smile')}}</option>
+                                    <option value="FROWN">{{$t('frown')}}</option>
+                                    <option value="JAW_OPEN">{{$t('jawOpen')}}</option>
+                                </select>
+                            </div>
+                            <div class="srow" v-if="['BLINK_LEFT','BLINK_RIGHT','BLINK_BOTH'].includes(input.gestureType)">
+                                <label class="one-third column" :for="'blinkTh' + index">{{$t('blinkThreshold')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'blinkTh' + index" type="range" min="0.1" max="0.9" step="0.05" v-model.number="input.blinkScoreThreshold" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.blinkScoreThreshold.toFixed(2) }}</span>
+                                </div>
+                            </div>
+                            <div class="srow" v-if="input.gestureType && input.gestureType.startsWith('EYES_')">
+                                <label class="one-third column" :for="'gazeTh' + index">{{$t('gazeThreshold')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'gazeTh' + index" type="range" min="0.1" max="0.9" step="0.05" v-model.number="input.gazeScoreThreshold" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.gazeScoreThreshold.toFixed(2) }}</span>
+                                </div>
+                            </div>
+                            <div class="srow" v-if="input.gestureType && input.gestureType.startsWith('HEAD_TILT')">
+                                <label class="one-third column" :for="'tiltTh' + index">{{$t('headTiltDegThreshold')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'tiltTh' + index" type="range" min="5" max="35" step="1" v-model.number="input.headTiltDegThreshold" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.headTiltDegThreshold }}°</span>
+                                </div>
+                            </div>
+                            <div class="srow" v-if="input.gestureType && input.gestureType.startsWith('HEAD_') && !input.gestureType.startsWith('HEAD_TILT')">
+                                <label class="one-third column" :for="'moveTh' + index">{{$t('headMoveThreshold')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'moveTh' + index" type="range" min="0.05" max="0.5" step="0.01" v-model.number="input.headMoveNormThreshold" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.headMoveNormThreshold.toFixed(2) }}</span>
+                                </div>
+                            </div>
+                            <div class="srow" v-if="['BROW_RAISE','CHEEK_PUFF','TONGUE_OUT','SMILE','FROWN','JAW_OPEN'].includes(input.gestureType)">
+                                <label class="one-third column" :for="'gTh' + index">{{$t('gestureThreshold')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'gTh' + index" type="range" min="0.1" max="0.9" step="0.05" v-model.number="input.gazeScoreThreshold" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.gazeScoreThreshold.toFixed(2) }}</span>
+                                </div>
+                            </div>
+                            <div class="srow">
+                                <label class="one-third column" :for="'dwell' + index">{{$t('dwellMs')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'dwell' + index" type="number" min="0" max="2000" step="50" v-model.number="input.dwellMs" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.dwellMs }} ms</span>
+                                </div>
+                            </div>
+                            <div class="srow">
+                                <label class="one-third column" :for="'debounce' + index">{{$t('debounceMs')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'debounce' + index" type="number" min="0" max="2000" step="50" v-model.number="input.debounceMs" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.debounceMs }} ms</span>
+                                </div>
+                            </div>
+                            <div class="srow">
+                                <label class="one-third column" :for="'smooth' + index">{{$t('smoothing')}}</label>
+                                <div class="two-thirds column srow">
+                                    <input class="eight columns" :id="'smooth' + index" type="range" min="0" max="1" step="0.05" v-model.number="input.smoothingAlpha" @input="modelChanged"/>
+                                    <span class="three columns">{{ input.smoothingAlpha.toFixed(2) }}</span>
+                                </div>
+                            </div>
+                            <div class="srow">
+                                <button class="five columns" :disabled="faceLoading" @click="toggleFacePreview">
+                                    <span v-if="faceLoading"><span class="fas fa-spinner fa-spin"/> <span>Starting…</span></span>
+                                    <span v-else-if="!facePreview"><span class="fas fa-video"/> <span>{{$t('startCameraPreview')}}</span></span>
+                                    <span v-else><span class="fas fa-video-slash"/> <span>{{$t('stopCameraPreview')}}</span></span>
+                                </button>
+                            </div>
+                            <div class="srow" v-if="faceError">
+                                <small style="color:#b00">{{ faceError }}</small>
+                            </div>
+                            <div class="srow" v-if="facePreview">
+                                <face-mesh-preview :gesture="input"></face-mesh-preview>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </li>
         </ul>
     </div>
@@ -154,13 +254,16 @@
     import {InputEventKey} from "../../js/model/InputEventKey";
     import {InputEventAudio} from "../../js/model/InputEventAudio";
     import {InputEventARE} from "../../js/model/InputEventARE";
+import {InputEventFace} from "../../js/model/InputEventFace";
     import {inputEventHandler} from "../../js/input/inputEventHandler";
     import Accordion from "./accordion.vue";
     import {areService} from "../../js/service/areService";
     import {audioUtil} from "../../js/util/audioUtil.js";
+import FaceMeshPreview from "./FaceMeshPreview.vue";
+import { facelandmarkerService } from "../../js/service/facelandmarkerService";
 
     export default {
-        components: {Accordion},
+        components: {Accordion, FaceMeshPreview},
         props: {
             value: Array,
             inputLabels: Array,
@@ -185,12 +288,16 @@
                 InputEventKey: InputEventKey,
                 InputEventAudio: InputEventAudio,
                 InputEventARE: InputEventARE,
+                InputEventFace: InputEventFace,
                 InputConfig: InputConfig,
                 keyRecording: {},
                 areRecording: {},
                 areError: {},
                 micRecording: false,
                 micRecordError: false,
+                facePreview: false,
+                faceLoading: false,
+                faceError: '',
                 micValues: {
                     volLive: 0,
                     volMax: 0,
@@ -380,6 +487,23 @@
                     }
                 } catch (e) {
                     this.micRecordError = true;
+                }
+            },
+            async toggleFacePreview() {
+                if (!this.facePreview) {
+                    this.faceLoading = true; this.faceError = '';
+                    try {
+                        await facelandmarkerService.start();
+                        this.facePreview = true;
+                    } catch (e) {
+                        this.facePreview = false;
+                        this.faceError = (e && e.message) ? e.message : 'Camera failed to start';
+                    } finally {
+                        this.faceLoading = false;
+                    }
+                } else {
+                    this.facePreview = false;
+                    facelandmarkerService.stop();
                 }
             },
             getMicVolMaxRange(input) {
