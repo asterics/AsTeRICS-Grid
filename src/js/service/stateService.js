@@ -5,6 +5,8 @@ import {constants} from "../util/constants.js";
 import {util} from "../util/util.js";
 import {dataService} from "./data/dataService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
+import { morphologyService } from './morphologyService.js';
+
 
 let stateService = {};
 let _states = {};
@@ -78,7 +80,17 @@ stateService.applyWordFormsToUI = function () {
     elements = _currentGlobalGrid ? elements.concat(_currentGlobalGrid.gridElements) : elements;
     for (let element of elements) {
         if (element.type === GridElement.ELEMENT_TYPE_NORMAL) {
+            // First, render using existing manual/label-based logic
             setTextInUI(element.id, stateService.getDisplayText(element.id));
+            // If auto morphology is enabled and no manual match exists, try to fill in automatically (async)
+            try {
+                const manualWF = stateService.getWordFormObject(element, { searchTags: _currentWordFormTags, searchSubTags: true });
+                if (!manualWF && morphologyService && morphologyService.isEnabled()) {
+                    morphologyService.maybeUpdateElementText(element, _currentWordFormTags, i18nService.getContentLang());
+                }
+            } catch (e) {
+                // ignore
+            }
         }
     }
 };
