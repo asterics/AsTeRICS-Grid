@@ -33,6 +33,44 @@
                             <input id="addImages" type="checkbox" v-model="addImages">
                             <label for="addImages">{{ $t('automaticallyAddImages') }}</label>
                         </div>
+
+                        <div v-if="addImages" class="srow">
+                            <label class="three columns" for="searchProvider">{{ $t('searchProvider') }}</label>
+                            <select class="nine columns" id="searchProvider" v-model="searchProvider" @change="searchProviderChanged">
+                                <option v-for="provider in searchProviders" :key="provider.name" :value="provider">{{provider.name}}</option>
+                            </select>
+                        </div>
+
+                        <div v-if="addImages && searchProvider && searchProvider.options" class="srow">
+                            <accordion :header="$t('settingsForImageSearch')" :startOpen="false">
+                                <div v-for="option in searchProvider.options" :key="option.name">
+                                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.BOOLEAN">
+                                        <input type="checkbox" :id="searchProvider.name + option.name" v-model="option.value"/>
+                                        <label :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                                    </div>
+                                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.SELECT">
+                                        <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                                        <select class="nine columns" :id="searchProvider.name + option.name" v-model="option.value">
+                                            <option :value="undefined">{{ $t('default') }}</option>
+                                            <option v-for="opt in option.options" :key="opt" :value="opt">{{ $t(opt) }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.MULTI_SELECT">
+                                        <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                                        <div class="nine columns">
+                                            <div v-for="opt in (option.options || [])" :key="opt.value" class="srow">
+                                                <input type="checkbox"
+                                                       :id="searchProvider.name + option.name + '_' + opt.value"
+                                                       :value="opt.value"
+                                                       :checked="isSymbolsetSelected(option, opt.value)"
+                                                       @change="toggleSymbolsetSelection(option, opt.value)"/>
+                                                <label :for="searchProvider.name + option.name + '_' + opt.value">{{ opt.label }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </accordion>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -62,15 +100,23 @@
     import { gridUtil } from '../../js/util/gridUtil';
     import { util } from '../../js/util/util';
     import { arasaacService } from '../../js/service/pictograms/arasaacService';
+    import { globalSymbolsService } from '../../js/service/pictograms/globalSymbolsService';
+    import { openSymbolsService } from '../../js/service/pictograms/openSymbolsService';
+    import { constants } from '../../js/util/constants';
+    import Accordion from '../components/accordion.vue';
 
     export default {
+        components: {Accordion},
         props: ['gridData', 'undoService'],
         data: function () {
             return {
                 inputText: "",
                 parsedElems: [],
                 loading: false,
-                addImages: true
+                addImages: true,
+                searchProviders: [],
+                searchProvider: null,
+                constants: constants
             }
         },
         methods: {
@@ -106,8 +152,8 @@
                             x: position.x,
                             y: position.y,
                         });
-                        if (thiz.addImages) {
-                            let results = await arasaacService.query(label);
+                        if (thiz.addImages && thiz.searchProvider) {
+                            let results = await thiz.searchProvider.service.query(label, thiz.searchProvider.options);
                             if (results.length > 0) {
                                 newElem.image = results[0];
                             }
@@ -119,9 +165,99 @@
                     this.$emit('reload', gridDataObject);
                     this.$emit('close');
                 });
+            },
+            triggerOptionsUpdate() {
+                this.$set(this.searchProvider, 'options', JSON.parse(JSON.stringify(this.searchProvider.options)));
+            },
+            searchProviderChanged() {
+                // Reset options when provider changes
+                if (this.searchProvider && this.searchProvider.options) {
+                    this.searchProvider.options.forEach(option => {
+                        if (option.type === constants.OPTION_TYPES.MULTI_SELECT) {
+                            option.value = []; // Empty array means all selected
+                        }
+                    });
+                }
+
+                // Dynamic load of GlobalSymbols symbol sets into MULTI_SELECT option
+                if (this.searchProvider && this.searchProvider.name === globalSymbolsService.SEARCH_PROVIDER_NAME) {
+                    let symbolsetOpt = (this.searchProvider.options || []).find(o => o.name === 'symbolsets');
+                    if (symbolsetOpt && (!symbolsetOpt.options || symbolsetOpt.options.length === 0)) {
+                        globalSymbolsService.getSymbolsetOptions().then(opts => {
+                            symbolsetOpt.options = opts;
+                            this.triggerOptionsUpdate();
+                        });
+                    }
+                }
+            },
+            // For GlobalSymbols symbolsets and OpenSymbols repositories: empty array means "all selected"
+            isSymbolsetSelected(option, value) {
+                if (option.name !== 'symbolsets' && option.name !== 'repositories') {
+                    return option.value && option.value.includes(value);
+                }
+                // For symbolsets and repositories: empty array means all are selected
+                return !option.value || option.value.length === 0 || option.value.includes(value);
+            },
+            toggleSymbolsetSelection(option, value) {
+                if (option.name !== 'symbolsets' && option.name !== 'repositories') {
+                    // Regular multi-select behavior
+                    if (!option.value) option.value = [];
+                    const index = option.value.indexOf(value);
+                    if (index > -1) {
+                        option.value.splice(index, 1);
+                    } else {
+                        option.value.push(value);
+                    }
+                    return;
+                }
+
+                // Special logic for symbolsets and repositories
+                if (!option.value || option.value.length === 0) {
+                    // Currently "all selected" - clicking one item means deselect all others
+                    option.value = option.options ? option.options.map(opt => opt.value).filter(v => v !== value) : [];
+                } else {
+                    // Some specific items selected
+                    const index = option.value.indexOf(value);
+                    if (index > -1) {
+                        // Deselecting - remove from array
+                        option.value.splice(index, 1);
+                        // If we deselected everything, go back to "all selected" (empty array)
+                        if (option.value.length === 0) {
+                            option.value = [];
+                        }
+                    } else {
+                        // Selecting - add to array
+                        option.value.push(value);
+                        // If we selected everything, go back to "all selected" (empty array)
+                        if (option.options && option.value.length === option.options.length) {
+                            option.value = [];
+                        }
+                    }
+                }
             }
         },
         mounted() {
+            // Initialize search providers
+            this.searchProviders = [
+                arasaacService.getSearchProviderInfo(),
+                globalSymbolsService.getSearchProviderInfo(),
+                openSymbolsService.getSearchProviderInfo()
+            ];
+            // Set ARASAAC as default for backward compatibility
+            this.searchProvider = this.searchProviders[0];
+
+            // Dynamic load of GlobalSymbols symbol sets into MULTI_SELECT option
+            if (this.searchProvider && this.searchProvider.name === globalSymbolsService.SEARCH_PROVIDER_NAME) {
+                let symbolsetOpt = (this.searchProvider.options || []).find(o => o.name === 'symbolsets');
+                if (symbolsetOpt && (!symbolsetOpt.options || symbolsetOpt.options.length === 0)) {
+                    globalSymbolsService.getSymbolsetOptions().then(opts => {
+                        symbolsetOpt.options = opts;
+                        this.triggerOptionsUpdate();
+                    });
+                }
+            }
+
+            // Set help location
             helpService.setHelpLocation('03_appearance_layout', '#adding-elements-and-layout-options');
         },
         beforeDestroy() {
