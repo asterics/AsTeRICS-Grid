@@ -311,16 +311,16 @@
                 thiz.searchResults = thiz.searchResults.concat(newResults);
                 thiz.searchLoading = false;
             },
-            // For GlobalSymbols symbolsets: empty array means "all selected"
+            // For GlobalSymbols symbolsets and OpenSymbols repositories: empty array means "all selected"
             isSymbolsetSelected(option, value) {
-                if (option.name !== 'symbolsets') {
+                if (option.name !== 'symbolsets' && option.name !== 'repositories') {
                     return option.value && option.value.includes(value);
                 }
-                // For symbolsets: empty array means all are selected
+                // For symbolsets and repositories: empty array means all are selected
                 return !option.value || option.value.length === 0 || option.value.includes(value);
             },
             toggleSymbolsetSelection(option, value) {
-                if (option.name !== 'symbolsets') {
+                if (option.name !== 'symbolsets' && option.name !== 'repositories') {
                     // Regular multi-select behavior
                     if (!option.value) option.value = [];
                     const index = option.value.indexOf(value);
@@ -332,7 +332,7 @@
                     return;
                 }
 
-                // Special logic for symbolsets
+                // Special logic for symbolsets and repositories
                 if (!option.value || option.value.length === 0) {
                     // Currently "all selected" - clicking one item means deselect all others
                     option.value = option.options ? option.options.map(opt => opt.value).filter(v => v !== value) : [];
