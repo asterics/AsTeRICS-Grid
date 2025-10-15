@@ -36,6 +36,9 @@
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
         </div>
         <div>
+            <grid-swap-symbols-modal v-if="showSwapSymbolsModal" :grid-data-id="gridData.id" @close="showSwapSymbolsModal = false" @reload="reload"/>
+        </div>
+        <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
         <div>
@@ -69,6 +72,7 @@
     import GridSettingsModal from "../modals/gridSettingsModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
+    import GridSwapSymbolsModal from "../modals/gridSwapSymbolsModal.vue";
     import SetNavigationModal from "../modals/setNavigationModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
@@ -101,6 +105,7 @@
                 showGridSettingsModal: false,
                 showNavigateModal: false,
                 showTranslateModal: false,
+                showSwapSymbolsModal: false,
                 showPropTransferModal: false,
                 showEditModal: false,
                 editElementId: null,
@@ -123,6 +128,7 @@
             AppGridDisplay,
             SetNavigationModal,
             GridTranslateModal,
+            GridSwapSymbolsModal,
             GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
@@ -554,7 +560,7 @@
                 this.ctrlKeyHold = false;
             },
             onKeyDown(event) {
-                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showPropTransferModal || this.showEditModal) {
+                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showSwapSymbolsModal || this.showPropTransferModal || this.showEditModal) {
                     return;
                 }
                 const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
@@ -754,6 +760,7 @@
         var CONTEXT_GRID_SETTINGS = "CONTEXT_GRID_SETTINGS";
         var CONTEXT_GRID_NAVIGATION = "CONTEXT_GRID_NAVIGATION";
         var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
+        var CONTEXT_SWAP_SYMBOLS = "CONTEXT_SWAP_SYMBOLS";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
         var CONTEXT_SEARCH = "CONTEXT_SEARCH";
@@ -854,6 +861,10 @@
             'CONTEXT_GRID_TRANSLATION': {
                 name: i18nService.t('translateGrid'),
                 icon: "fas fa-language"
+            },
+            'CONTEXT_SWAP_SYMBOLS': {
+                name: i18nService.t('swapSymbols'),
+                icon: "fas fa-exchange-alt"
             },
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
@@ -961,6 +972,10 @@
                 }
                 case CONTEXT_GRID_TRANSLATION: {
                     vueApp.showTranslateModal = true;
+                    break;
+                }
+                case CONTEXT_SWAP_SYMBOLS: {
+                    vueApp.showSwapSymbolsModal = true;
                     break;
                 }
                 case CONTEXT_PROPERTY_TRANSFER: {
