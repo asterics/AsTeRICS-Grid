@@ -370,7 +370,8 @@ async function updateCollectElements(isSecondTry) {
             let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
             let useSingleLine = collectElement.singleLine;
             let imageCount = collectedElements.length;
-            let imgContainerHeight = showLabel ? height * imagePercentage : height;
+            let normalImageContainerHeight = height * imagePercentage;
+            let imgContainerHeight = showLabel ? normalImageContainerHeight : height;
             let imageRatios = [];
             for (const elem of collectedElements) {
                 let imageData = getImageData(elem);
@@ -395,7 +396,7 @@ async function updateCollectElements(isSecondTry) {
             }
             imgContainerHeight = imgContainerHeight / numLines;
             let imgHeight = imgContainerHeight - imgMargin * 2;
-            let lineHeight = height / numLines - imgContainerHeight;
+            let lineHeight = height / numLines - normalImageContainerHeight;
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
             for (const [index, collectedElement] of collectedElements.entries()) {
