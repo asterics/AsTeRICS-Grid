@@ -247,6 +247,14 @@
             <button id="testVoice2" class="four columns offset-by-four" :disabled="!action.voice" @click="speechService.testSpeak(action.voice, null, action.language)">{{ $t('testVoice') }}</button>
         </div>
     </div>
+    <div v-if="action.modelName === 'GridActionVocabLevelToggle'">
+        <div class="srow">
+            <div class="twelve columns">
+                <span class="fa fa-info-circle"></span>
+                <span>{{ $t('vocabLevelToggleDescription') }}</span>
+            </div>
+        </div>
+    </div>
     <div v-if="action.modelName === 'GridActionOpenWebpage'">
         <div class="srow">
             <div class="twelve columns">

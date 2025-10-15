@@ -33,6 +33,7 @@ import { GridActionYoutube } from '../model/GridActionYoutube';
 import { GridActionWebradio } from '../model/GridActionWebradio';
 import { matrixAppService } from './matrixMessenger/matrixAppService';
 import { podcastService } from './podcastService';
+import { GridActionVocabLevelToggle } from '../model/GridActionVocabLevelToggle';
 
 let actionService = {};
 
@@ -264,6 +265,28 @@ async function doAction(gridElement, action, options = {}) {
             let voiceConfig = localStorageService.getUserSettings().voiceConfig;
             voiceConfig.preferredVoice = action.voice;
             localStorageService.saveUserSettings({voiceConfig: voiceConfig});
+            break;
+        case 'GridActionVocabLevelToggle':
+            let currentMetadata = await dataService.getMetadata();
+            let VOCAB_LEVEL_ORIGINAL_KEY = 'VOCAB_LEVEL_ORIGINAL';
+
+            if (currentMetadata.vocabularyLevel === null) {
+                // Toggle back to original level
+                let originalLevel = localStorageService.get(VOCAB_LEVEL_ORIGINAL_KEY);
+                if (originalLevel === null || originalLevel === undefined || originalLevel === 'null') {
+                    currentMetadata.vocabularyLevel = null;
+                } else {
+                    let parsedLevel = parseInt(originalLevel);
+                    currentMetadata.vocabularyLevel = isNaN(parsedLevel) ? null : parsedLevel;
+                }
+            } else {
+                // Save current level and toggle to null (show all)
+                localStorageService.save(VOCAB_LEVEL_ORIGINAL_KEY, currentMetadata.vocabularyLevel === null ? 'null' : currentMetadata.vocabularyLevel);
+                currentMetadata.vocabularyLevel = null;
+            }
+
+            await dataService.saveMetadata(currentMetadata);
+            // Grid will be refreshed via EVENT_METADATA_UPDATED
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');
