@@ -891,6 +891,8 @@
   "ARASAAChair": "Hair color",
   "ARASAACidentifier": "Context",
   "ARASAACidentifierPosition": "Context symbol position",
+  "GLOBALSYMBOLSexpandSynonyms": "Expand with synonyms and concepts",
+  "GLOBALSYMBOLSsymbolsets": "Symbol sets",
   "past": "past",
   "future": "future",
   "classroom": "classroom",

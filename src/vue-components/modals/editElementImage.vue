@@ -79,13 +79,27 @@
                             </div>
                         </div>
                     </div>
+                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.MULTI_SELECT">
+                        <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                        <div class="nine columns">
+
+                            <div v-for="opt in (option.options || [])" :key="opt.value" class="srow">
+                                <input type="checkbox"
+                                       :id="searchProvider.name + option.name + '_' + opt.value"
+                                       :value="opt.value"
+                                       :checked="isSymbolsetSelected(option, opt.value)"
+                                       @change="toggleSymbolsetSelection(option, opt.value); searchInput(0)"/>
+                                <label :for="searchProvider.name + option.name + '_' + opt.value">{{ opt.label }}</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </accordion>
         </div>
         <div class="srow">
             <div class="offset-by-two ten columns">
                 <div v-for="imgElement in searchResults" class="inline">
-                    <img v-if="imgElement.url" :src="imgElement.url" @click="gridElement.image = imgElement;" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline img-result" role="button"/>
+                    <img v-if="imgElement.url" :src="imgElement.url" @click="selectImage(imgElement);" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline img-result" role="button"/>
                 </div>
                 <div class="inline" v-show="searchResults && searchResults.length > 0 && hasNextChunk">
                     <button @click="searchMore" style="height: 60px; margin: 0 0 0 0.5em;; padding: 0.7em; float: left">
@@ -150,7 +164,20 @@
                 handler(newValue, oldValue) {
                     let hasOptions = newValue && newValue.options;
                     if (hasOptions) {
-                        if (this.gridElement.image && this.gridElement.image.url && this.gridElement.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME) {
+                        // If switching to GlobalSymbols, ensure symbol sets are loaded for MULTI_SELECT
+                        if (newValue && newValue.name === globalSymbolsService.SEARCH_PROVIDER_NAME) {
+                            let symbolsetOpt = (newValue.options || []).find(o => o.name === 'symbolsets');
+                            if (symbolsetOpt && (!symbolsetOpt.options || symbolsetOpt.options.length === 0)) {
+                                globalSymbolsService.getSymbolsetOptions().then(opts => {
+                                    symbolsetOpt.options = opts;
+                                    this.triggerOptionsUpdate();
+                                });
+                            }
+                        }
+                        // Only update URL if the current image is from ARASAAC AND we're switching to ARASAAC
+                        if (this.gridElement.image && this.gridElement.image.url &&
+                            this.gridElement.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME &&
+                            newValue.name === arasaacService.SEARCH_PROVIDER_NAME) {
                             let newUrl = arasaacService.getUpdatedUrl(this.gridElement.image.url, newValue.options);
                             if(newUrl !== this.gridElement.image.url) {
                                 this.gridElement.image.url = newUrl;
@@ -221,6 +248,9 @@
                 this.$forceUpdate(); // get color change in search option working, if no searchText
                 this.$set(this.searchProvider, 'options', JSON.parse(JSON.stringify(this.searchProvider.options))); // trigger watch for color change, don't know why it's needed
             },
+            triggerOptionsUpdate() {
+                this.$set(this.searchProvider, 'options', JSON.parse(JSON.stringify(this.searchProvider.options)));
+            },
             searchInput(debounceTime, event) {
                 let thiz = this;
                 thiz.searchError = false;
@@ -232,6 +262,8 @@
                 thiz.searchResults = [];
                 thiz.searchLoading = true;
                 util.debounce(function () {
+                    // Clear results again right before search to ensure clean slate
+                    thiz.searchResults = [];
                     thiz.searchProvider.service.query(thiz.searchText, thiz.searchProvider.options, thiz.searchLang).then(resultList => {
                         thiz.processSearchResults(resultList);
                     }).catch(() => {
@@ -251,11 +283,78 @@
                 this.searchResults = null;
                 this.searchText = "";
             },
+            selectImage(imgElement) {
+                // Create a clean copy of the image element
+                let cleanImage = {
+                    url: imgElement.url,
+                    author: imgElement.author,
+                    authorURL: imgElement.authorURL,
+                    searchProviderName: imgElement.searchProviderName
+                };
+
+                // Only include searchProviderOptions if they match the current provider
+                if (imgElement.searchProviderOptions &&
+                    imgElement.searchProviderName === this.searchProvider.name) {
+                    cleanImage.searchProviderOptions = imgElement.searchProviderOptions;
+                }
+
+                this.gridElement.image = cleanImage;
+            },
             processSearchResults(resultList) {
                 let thiz = this;
                 thiz.hasNextChunk = thiz.searchProvider.service.hasNextChunk();
-                thiz.searchResults = thiz.searchResults.concat(resultList);
+
+                // Additional deduplication at UI level based on URL to prevent any duplicates
+                let existingUrls = new Set(thiz.searchResults.map(r => r.url));
+                let newResults = resultList.filter(r => !existingUrls.has(r.url));
+
+                thiz.searchResults = thiz.searchResults.concat(newResults);
                 thiz.searchLoading = false;
+            },
+            // For GlobalSymbols symbolsets: empty array means "all selected"
+            isSymbolsetSelected(option, value) {
+                if (option.name !== 'symbolsets') {
+                    return option.value && option.value.includes(value);
+                }
+                // For symbolsets: empty array means all are selected
+                return !option.value || option.value.length === 0 || option.value.includes(value);
+            },
+            toggleSymbolsetSelection(option, value) {
+                if (option.name !== 'symbolsets') {
+                    // Regular multi-select behavior
+                    if (!option.value) option.value = [];
+                    const index = option.value.indexOf(value);
+                    if (index > -1) {
+                        option.value.splice(index, 1);
+                    } else {
+                        option.value.push(value);
+                    }
+                    return;
+                }
+
+                // Special logic for symbolsets
+                if (!option.value || option.value.length === 0) {
+                    // Currently "all selected" - clicking one item means deselect all others
+                    option.value = option.options ? option.options.map(opt => opt.value).filter(v => v !== value) : [];
+                } else {
+                    // Some specific items selected
+                    const index = option.value.indexOf(value);
+                    if (index > -1) {
+                        // Deselecting - remove from array
+                        option.value.splice(index, 1);
+                        // If we deselected everything, go back to "all selected" (empty array)
+                        if (option.value.length === 0) {
+                            option.value = [];
+                        }
+                    } else {
+                        // Selecting - add to array
+                        option.value.push(value);
+                        // If we selected everything, go back to "all selected" (empty array)
+                        if (option.options && option.value.length === option.options.length) {
+                            option.value = [];
+                        }
+                    }
+                }
             }
         },
         mounted() {
@@ -270,6 +369,16 @@
                     if (index > -1 && currentSearchOptions[index].value) {
                         this.searchProvider.options[i].value = currentSearchOptions[index].value;
                     }
+                }
+            }
+            // Dynamic load of GlobalSymbols symbol sets into MULTI_SELECT option
+            if (this.searchProvider && this.searchProvider.name === globalSymbolsService.SEARCH_PROVIDER_NAME) {
+                let symbolsetOpt = (this.searchProvider.options || []).find(o => o.name === 'symbolsets');
+                if (symbolsetOpt && (!symbolsetOpt.options || symbolsetOpt.options.length === 0)) {
+                    globalSymbolsService.getSymbolsetOptions().then(opts => {
+                        symbolsetOpt.options = opts;
+                        this.triggerOptionsUpdate();
+                    });
                 }
             }
             this.searchLang = localStorageService.getJSON(EDIT_ELEM_SEARCH_LANG_PREFIX + this.searchProvider.name);
