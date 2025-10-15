@@ -20,7 +20,7 @@
   "COLLECT_ACTION_CLEAR": "",
   "COLLECT_ACTION_REMOVE_WORD": "Excluir a última palavra/imagem",
   "COLLECT_ACTION_REMOVE_CHAR": "Excluir o último caractere",
-  "COLLECT_ACTION_COPY_IMAGE_CLIPBOARD": "Copy image to clipboard",
+  "COLLECT_ACTION_COPY_IMAGE_CLIPBOARD": "",
   "COLLECT_ACTION_SHARE": "Share as image",
   "COLLECT_ACTION_COPY_CLIPBOARD": "Copiar texto para a área de transferência",
   "COLLECT_ACTION_APPEND_CLIPBOARD": "Acrescentar texto à área de transferência",
