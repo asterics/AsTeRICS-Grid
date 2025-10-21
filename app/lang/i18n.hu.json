@@ -363,7 +363,7 @@
   "confirmPassword": "Jelszó újra",
   "passwordsDoNotMatch": "A jelszavak nem egyeznek",
   "passwordsMatch": "A jelszavak megegyeznek",
-  "yourPasswordWillBeUsedInOrderToEncrypt": "A jelszóval az adatokat titkosítjuk. Emiatt a későbbiekben a <b>jelszót sem megváltoztatni sem megnézni nem lehet</b>!",
+  "yourPasswordWillBeUsedInOrderToEncrypt": "Ezzel a jelszóval az adatokat titkosítjuk. Emiatt a későbbiekben a <b>jelszót sem megváltoztatni sem megnézni nem lehet</b>!",
   "rememberThisUserAndMakeItAvailableForOffline": "Felhasználó megjegyzése offline használathoz",
   "register": "Regisztráció",
   "registering": "Regisztráció folyamatban",
