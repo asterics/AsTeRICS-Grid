@@ -267,26 +267,20 @@ async function doAction(gridElement, action, options = {}) {
             localStorageService.saveUserSettings({voiceConfig: voiceConfig});
             break;
         case 'GridActionVocabLevelToggle':
+            let CURRENT_TOGGLE_LEVEL_KEY = 'CURRENT_TOGGLE_LEVEL';
             let currentMetadata = await dataService.getMetadata();
-            let VOCAB_LEVEL_ORIGINAL_KEY = 'VOCAB_LEVEL_ORIGINAL';
+            let isToggled = localStorageService.get(CURRENT_TOGGLE_LEVEL_KEY);
 
-            if (currentMetadata.vocabularyLevel === null) {
-                // Toggle back to original level
-                let originalLevel = localStorageService.get(VOCAB_LEVEL_ORIGINAL_KEY);
-                if (originalLevel === null || originalLevel === undefined || originalLevel === 'null') {
-                    currentMetadata.vocabularyLevel = null;
-                } else {
-                    let parsedLevel = parseInt(originalLevel);
-                    currentMetadata.vocabularyLevel = isNaN(parsedLevel) ? null : parsedLevel;
-                }
+            // If we have a toggle active, remove it to go back to settings level
+            if (isToggled) {
+                localStorageService.remove(CURRENT_TOGGLE_LEVEL_KEY);
             } else {
-                // Save current level and toggle to null (show all)
-                localStorageService.save(VOCAB_LEVEL_ORIGINAL_KEY, currentMetadata.vocabularyLevel === null ? 'null' : currentMetadata.vocabularyLevel);
-                currentMetadata.vocabularyLevel = null;
+                // Toggle to full: save null (show all vocabulary)
+                localStorageService.saveJSON(CURRENT_TOGGLE_LEVEL_KEY, null);
             }
 
-            await dataService.saveMetadata(currentMetadata);
-            // Grid will be refreshed via EVENT_METADATA_UPDATED
+            // Trigger grid reload without changing metadata (local change only)
+            $(document).trigger(constants.EVENT_METADATA_UPDATED, currentMetadata);
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');

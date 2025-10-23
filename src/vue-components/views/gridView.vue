@@ -418,14 +418,20 @@
                 this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
-                if (this.metadata.vocabularyLevel) {
+
+                // Check for local toggle level first, otherwise use synchronized metadata level
+                let CURRENT_TOGGLE_LEVEL_KEY = 'CURRENT_TOGGLE_LEVEL';
+                let isToggled = localStorageService.get(CURRENT_TOGGLE_LEVEL_KEY);
+                let effectiveLevel = isToggled ? localStorageService.getJSON(CURRENT_TOGGLE_LEVEL_KEY) : this.metadata.vocabularyLevel;
+
+                if (effectiveLevel) {
                     let globalGridElements = globalGrid ? globalGrid.gridElements : [];
                     let globalGridElemIds = globalGridElements.map(e => e.id);
                     let normalGridElements = this.renderGridData.gridElements.filter(e => !globalGridElemIds.includes(e.id));
                     let noneHasVocabLevelGlobal = globalGridElements.every(e => !e.vocabularyLevel);
                     let noneHasVocabLevelNormal = normalGridElements.every(e => !e.vocabularyLevel);
                     this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => {
-                        let elemFitsVocabLevel = e.vocabularyLevel && e.vocabularyLevel <= this.metadata.vocabularyLevel;
+                        let elemFitsVocabLevel = e.vocabularyLevel && e.vocabularyLevel <= effectiveLevel;
                         if (globalGridElemIds.includes(e.id)) {
                             // is elem in global grid
                             return noneHasVocabLevelGlobal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
