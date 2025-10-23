@@ -252,7 +252,7 @@
             <div class="twelve columns">
                 <label for="vocabLevelMode" class="four columns normal-text">{{ $t('Mode') }}</label>
                 <select id="vocabLevelMode" class="eight columns" v-model="action.mode">
-                    <option v-for="mode in GridActionVocabLevelToggle.getModes()" :value="GridActionVocabLevelToggle.modes[mode]">{{ GridActionVocabLevelToggle.modes[mode] | translate }}</option>
+                    <option v-for="mode in GridActionVocabLevelToggle.getModes()" :value="GridActionVocabLevelToggle.modes[mode]">{{ mode | translate }}</option>
                 </select>
             </div>
         </div>

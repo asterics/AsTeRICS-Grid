@@ -420,9 +420,8 @@
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
 
                 // Check for local toggle level first, otherwise use synchronized metadata level
-                let CURRENT_TOGGLE_LEVEL_KEY = 'CURRENT_TOGGLE_LEVEL';
-                let isToggled = localStorageService.get(CURRENT_TOGGLE_LEVEL_KEY);
-                let effectiveLevel = isToggled ? localStorageService.getJSON(CURRENT_TOGGLE_LEVEL_KEY) : this.metadata.vocabularyLevel;
+                let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
+                let effectiveLevel = isToggled ? localStorageService.getJSON(localStorageService.KEY_CURRENT_TOGGLE_LEVEL) : this.metadata.vocabularyLevel;
 
                 if (effectiveLevel) {
                     let globalGridElements = globalGrid ? globalGrid.gridElements : [];
@@ -468,6 +467,13 @@
                     let freshGridData = await dataService.getGrid(this.renderGridData.id);
                     await this.loadGrid(freshGridData, { forceReload: true });
                 }
+            },
+            async rerenderGrid() {
+                if (this.renderGridData) {
+                    // Reload the grid with fresh data without updating metadata
+                    let freshGridData = await dataService.getGrid(this.renderGridData.id);
+                    await this.loadGrid(freshGridData, { forceReload: true });
+                }
             }
         },
         created() {
@@ -478,6 +484,7 @@
             window.addEventListener('resize', this.resizeListener, true);
             $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).on(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            $(document).on(constants.EVENT_GRID_RERENDER, this.rerenderGrid);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
@@ -487,6 +494,7 @@
             window.removeEventListener('resize', this.resizeListener, true);
             $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).off(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            $(document).off(constants.EVENT_GRID_RERENDER, this.rerenderGrid);
             stopInputMethods();
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');

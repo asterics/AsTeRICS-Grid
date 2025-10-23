@@ -267,20 +267,18 @@ async function doAction(gridElement, action, options = {}) {
             localStorageService.saveUserSettings({voiceConfig: voiceConfig});
             break;
         case 'GridActionVocabLevelToggle':
-            let CURRENT_TOGGLE_LEVEL_KEY = 'CURRENT_TOGGLE_LEVEL';
-            let currentMetadata = await dataService.getMetadata();
-            let isToggled = localStorageService.get(CURRENT_TOGGLE_LEVEL_KEY);
+            let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
 
             // If we have a toggle active, remove it to go back to settings level
             if (isToggled) {
-                localStorageService.remove(CURRENT_TOGGLE_LEVEL_KEY);
+                localStorageService.remove(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
             } else {
                 // Toggle to full: save null (show all vocabulary)
-                localStorageService.saveJSON(CURRENT_TOGGLE_LEVEL_KEY, null);
+                localStorageService.saveJSON(localStorageService.KEY_CURRENT_TOGGLE_LEVEL, null);
             }
 
-            // Trigger grid reload without changing metadata (local change only)
-            $(document).trigger(constants.EVENT_METADATA_UPDATED, currentMetadata);
+            // Trigger grid rerender (local change only, doesn't modify metadata)
+            $(document).trigger(constants.EVENT_GRID_RERENDER);
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');
