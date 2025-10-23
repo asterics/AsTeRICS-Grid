@@ -21,6 +21,15 @@
                 </select>
             </div>
         </div>
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_DATETIME">
+            <label class="col-sm-4" for="dt_locale">{{ $t('selectLanguage') }}</label>
+            <div class="col-sm-7">
+                <select class="col-12" id="dt_locale" v-model="gridElement.dateTimeLocale">
+                    <option :value="undefined">{{ $t('automatic') }}</option>
+                    <option v-for="lang in allLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                </select>
+            </div>
+        </div>
         <div class="row" v-if="gridElement.mode === GridElementLive.MODE_APP_STATE">
             <label class="col-sm-4" for="appState">{{ $t('MODE_APP_STATE') }}</label>
             <div class="col-sm-7">
@@ -142,7 +151,8 @@
                 GridActionPredefined: GridActionPredefined,
                 updateCounter: 0,
                 i18nService: i18nService,
-                currentDtValues: {}
+                currentDtValues: {},
+                allLanguages: i18nService.getAllLanguages()
             }
         },
         computed: {

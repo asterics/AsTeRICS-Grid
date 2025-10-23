@@ -152,6 +152,8 @@ function getValueDateTime(element) {
             return getTimeText(element, { hour: 'numeric', minute: 'numeric', second: 'numeric' });
         case GridElementLive.DT_FORMAT_DATETIME:
             return getDateText(element, { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
+        case GridElementLive.DT_FORMAT_DATETIME_LONG:
+            return getDateText(element, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
         case GridElementLive.DT_FORMAT_WEEKDAY:
             return getDateText(element, { weekday: 'long' });
         case GridElementLive.DT_FORMAT_MONTH:
@@ -258,11 +260,13 @@ function extractFromHTML(element, text) {
 }
 
 function getDateText(element, options) {
-    return new Date().toLocaleDateString(i18nService.getContentLang(), options);
+    let locale = element.dateTimeLocale || i18nService.getContentLang();
+    return new Date().toLocaleDateString(locale, options);
 }
 
 function getTimeText(element, options) {
-    return new Date().toLocaleTimeString(i18nService.getContentLang(), options);
+    let locale = element.dateTimeLocale || i18nService.getContentLang();
+    return new Date().toLocaleTimeString(locale, options);
 }
 
 function formatDuration(seconds) {
