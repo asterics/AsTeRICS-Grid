@@ -6,6 +6,7 @@ class GridElementLive extends GridElement.extend({
     liveAction: [Object],
     dateTimeFormat: [String],
     dateTimeLocale: [String],
+    dateTimeFormatCustom: [String],
     state: [String],
     appState: [String],
     extractMode: [String],
@@ -36,7 +37,8 @@ GridElementLive.DT_FORMAT_DATETIME = 'DT_FORMAT_DATETIME';
 GridElementLive.DT_FORMAT_DATETIME_LONG = 'DT_FORMAT_DATETIME_LONG';
 GridElementLive.DT_FORMAT_WEEKDAY = 'DT_FORMAT_WEEKDAY';
 GridElementLive.DT_FORMAT_MONTH = 'DT_FORMAT_MONTH';
-GridElementLive.DT_FORMATS = [GridElementLive.DT_FORMAT_DATE, GridElementLive.DT_FORMAT_DATE_LONG, GridElementLive.DT_FORMAT_TIME, GridElementLive.DT_FORMAT_TIME_LONG, GridElementLive.DT_FORMAT_DATETIME, GridElementLive.DT_FORMAT_DATETIME_LONG, GridElementLive.DT_FORMAT_WEEKDAY, GridElementLive.DT_FORMAT_MONTH];
+GridElementLive.DT_FORMAT_CUSTOM = 'DT_FORMAT_CUSTOM';
+GridElementLive.DT_FORMATS = [GridElementLive.DT_FORMAT_DATE, GridElementLive.DT_FORMAT_DATE_LONG, GridElementLive.DT_FORMAT_TIME, GridElementLive.DT_FORMAT_TIME_LONG, GridElementLive.DT_FORMAT_DATETIME, GridElementLive.DT_FORMAT_DATETIME_LONG, GridElementLive.DT_FORMAT_WEEKDAY, GridElementLive.DT_FORMAT_MONTH, GridElementLive.DT_FORMAT_CUSTOM];
 
 GridElementLive.APP_STATE_VOLUME_GLOBAL = 'APP_STATE_VOLUME_GLOBAL';
 GridElementLive.APP_STATE_VOLUME_YT = 'APP_STATE_VOLUME_YT';
