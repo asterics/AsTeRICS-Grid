@@ -59,7 +59,7 @@ i18nService.getVueI18n = async function () {
     await getPredefinedActionTranslations(fallbackLang);
     await getPredefinedActionTranslations();
     getUserSettings();
-    return i18nService.setAppLanguage(i18nService.getAppLang(), true).then(() => {
+    return i18nService.setAppLanguage(i18nService.getAppLang(), true, true).then(() => {
         return Promise.resolve(vueI18n);
     });
 };
@@ -109,8 +109,8 @@ i18nService.isCurrentContentLangEN = function() {
  * @param lang two-letter language code to use
  * @param dontSave if true, passed lang is not saved to local storage
  */
-i18nService.setAppLanguage = async function (lang, dontSave) {
-    if (currentAppLang === lang) {
+i18nService.setAppLanguage = async function (lang, dontSave, force) {
+    if (currentAppLang === lang && !force) {
         return;
     }
     if (!dontSave) {
