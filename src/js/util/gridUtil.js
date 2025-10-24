@@ -7,6 +7,7 @@ import { GridActionCollectElement } from '../model/GridActionCollectElement';
 import { GridData } from '../model/GridData';
 import { GridElementCollect } from '../model/GridElementCollect.js';
 import { constants } from './constants.js';
+import { util } from './util';
 import { GridActionARE } from '../model/GridActionARE';
 import { encryptionService } from '../service/data/encryptionService';
 import { gridLayoutUtil } from '../../vue-components/grid-layout/utils/gridLayoutUtil';
@@ -283,6 +284,29 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
 };
 
 /**
+ * returns a list of independent graphs based on a given graph list.
+ * e.g. a set of 4 grids, with these connections:
+ * food => fruits
+ * keyboard1 => keyboard2
+ * will return a list [food, keyboard1], where "food" and "keyboard1" are the
+ * actual graph elements containing these grids from the given graphList.
+ * So the returned elements are the parents containing all other grids as children.
+ * @param graphList
+ * @return {*[]}
+ */
+gridUtil.getIndependentGraphs = function(graphList) {
+    let indpendentGraphs = [];
+    while (graphList.length > 0) {
+        let firstElem = graphList[0];
+        let allChildren = gridUtil.getAllChildrenRecursive(graphList, firstElem.grid.id);
+        let allChildrenIds = allChildren.map(grid => grid.id);
+        indpendentGraphs.push(firstElem);
+        graphList = graphList.filter(item => !allChildrenIds.includes(item.grid.id) && !indpendentGraphs.includes(item));
+    }
+    return indpendentGraphs;
+};
+
+/**
  * returns an array of all possible paths through the grid graph given a start element
  * @param startGraphElem the graph element to start
  * @param paths internal, used for recursion
@@ -534,8 +558,8 @@ gridUtil.hasAREModel = function(gridData) {
     return !!gridUtil.getAREModel(gridData);
 };
 
-gridUtil.hasOutdatedThumbnail = function(gridData) {
-    return !gridData.thumbnail || !gridData.thumbnail.data || gridData.thumbnail.hash !== gridUtil.getHash(gridData);
+gridUtil.hasOutdatedThumbnail = function(gridData, isHomeGrid) {
+    return !gridData.thumbnail || !gridData.thumbnail.data || (isHomeGrid && gridData.thumbnail.data.length < 20000) || gridData.thumbnail.hash !== gridUtil.getHash(gridData);
 };
 
 gridUtil.getHash = function(gridData) {
@@ -566,8 +590,13 @@ gridUtil.getElementHash = function(element, options = {}) {
         string += `${element.x}:${element.y}`;
     }
     if (element.image && (element.image.data || element.image.url)) {
-        let temp = element.image.data || element.image.url;
-        string += temp.substring(temp.length > 30 ? temp.length - 30 : 0);
+        let e = element;
+        if (e.image.data) {
+            string += e.image.data.substring(e.image.data.length > 30 ? e.image.data.length - 30 : 0);
+        }
+        if (e.image.url) {
+            string += e.image.url;
+        }
     }
     return options.dontHash ? string : encryptionService.getStringHash(string);
 }

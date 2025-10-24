@@ -109,7 +109,7 @@
         <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
         <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
-        <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
+        <import-modal v-if="importModal.show" @close="importModal.show = false" :selected-preview="importModal.selectedPreview" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
     </div>
 </template>
@@ -153,6 +153,7 @@
 
     let vueApp = null;
     let vueConfig = {
+        props: ['redirectInfo'],
         components: {
             NoGridsPage, ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
         data() {
@@ -181,6 +182,7 @@
                     exportOptions: {}
                 },
                 importModal: {
+                    selectedPreview: null,
                     show: false
                 },
                 i18nService: i18nService,
@@ -488,7 +490,13 @@
                 async function updateScreenshot(gridId) {
                     let grid = await dataService.getGrid(gridId);
                     await imageUtil.allImagesLoaded();
-                    let screenshot = await imageUtil.getScreenshot("#grid-container");
+                    let options = gridId !== (await dataService.getMetadata()).homeGridId ? {} : {
+                        // better thumbnail quality for home grid -> also used for exporting to GlobalSymbols as thumbnail
+                        targetWidth: 800,
+                        targetHeight: 600,
+                        quality: 0.75
+                    };
+                    let screenshot = await imageUtil.getScreenshot("#grid-container", options);
                     log.info(`save screenshot for: ${i18nService.getTranslation(grid.label)}, size: ${screenshot.length / 1024}kB`);
                     totalSize += screenshot.length;
                     let thumbnail = {
@@ -554,6 +562,16 @@
                 this.reinitContextMenu();
             });
             window.deleteImages = this.deleteImages;
+            if (this.redirectInfo) {
+                if (this.redirectInfo.redirectTarget === constants.REDIRECT_OAUTH_GS_UPLOAD) {
+                    this.backupModal.exportOptions = this.redirectInfo.exportOptions;
+                    this.backupModal.show = true;
+                }
+                if (this.redirectInfo.redirectTarget === constants.REDIRECT_IMPORT_DATA_ONLINE) {
+                    this.importModal.selectedPreview = this.redirectInfo.selectedPreview;
+                    this.importModal.show = true;
+                }
+            }
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onPullUpdate);
@@ -658,7 +676,7 @@
                 disabled: noGrids
             },
             CONTEXT_EXPORT_CUSTOM: {
-                name: i18nService.t('saveCustomDataToFile'),
+                name: i18nService.t('exportShareGrids'),
                 icon: "fas fa-file-export",
                 disabled: noGrids
             },
@@ -673,7 +691,7 @@
                 icon: "fas fa-upload"
             },
             CONTEXT_IMPORT: {
-                name: i18nService.t('importCustomDataFromFile'),
+                name: i18nService.t('importGrids'),
                 icon: "fas fa-file-import"
             },
             SEP3: "---------",

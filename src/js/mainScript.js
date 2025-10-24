@@ -16,6 +16,8 @@ import { i18nService } from './service/i18nService';
 import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
 import { dataService } from './service/data/dataService';
+import { oauthService } from './service/oauth/oauthService';
+import { externalBoardsService } from './service/boards/externalBoardsService';
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
@@ -38,23 +40,30 @@ async function init() {
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
 
-    let gridsetFilename = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME)
-    if (gridsetFilename) {
-        urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
-        let autoUserSettings = localStorageService.getAutoImportedUserSettings();
-        let matchingUserConfig = autoUserSettings.find(settings => settings.originGridsetFilename === gridsetFilename);
-        if (matchingUserConfig) {
-            autologinUser = matchingUserConfig.username;
-        } else {
-            let emptyAutoUser = autoUserSettings.find(settings => settings.isEmpty) || {};
-            let newUsername = emptyAutoUser.username || localStorageService.getNextAutoUserName();
-            if (!emptyAutoUser.username) {
-                await loginService.registerOffline(newUsername, newUsername);
+    let urlImportProps = urlParamService.getImportGridsetProps();
+    if (urlImportProps) {
+        urlParamService.removeImportGridsetProps();
+        if (!urlImportProps.singleBoards) {
+            let autoUserSettings = localStorageService.getAutoImportedUserSettings();
+            // also checking only for id for legacy reasons
+            let matchingUserConfig = autoUserSettings.find(settings => settings.originGridsetFilename === urlImportProps.id || settings.originGridsetFilename === (urlImportProps.provider + urlImportProps.id));
+            if (matchingUserConfig) {
+                autologinUser = matchingUserConfig.username;
             } else {
-                await loginService.loginStoredUser(newUsername, true)
+                let emptyAutoUser = autoUserSettings.find(settings => settings.isEmpty) || {};
+                let newUsername = emptyAutoUser.username || localStorageService.getNextAutoUserName();
+                if (!emptyAutoUser.username) {
+                    await loginService.registerOffline(newUsername, newUsername);
+                } else {
+                    await loginService.loginStoredUser(newUsername, true)
+                }
+                await dataService.importExternalBackup(urlImportProps.provider, urlImportProps.id);
+                autologinUser = newUsername;
             }
-            await dataService.importBackupDefaultFile(gridsetFilename);
-            autologinUser = newUsername;
+        } else if (urlImportProps.singleBoards) {
+            let selectedPreview = await externalBoardsService.getPreview(urlImportProps.provider, urlImportProps.id);
+            localStorageService.setRedirectTarget(constants.REDIRECT_IMPORT_DATA_ONLINE, {selectedPreview: selectedPreview});
+            log.warn("set target", selectedPreview)
         }
     }
 
@@ -72,14 +81,23 @@ async function init() {
     } else {
         promises.push(loginService.loginStoredUser(autologinUser, true));
     }
+    let oauthPromise = oauthService.processCallbackData();
+    promises.push(oauthPromise);
     Promise.all(promises)
-        .finally(() => {
-            let toMain = autologinUser || urlParamService.isDemoMode();
-            let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
+        .finally(async () => {
             localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
-            let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
             if (!Router.isInitialized()) {
-                Router.init('#injectView', initHash);
+                Router.init('#injectView');
+            }
+            let redirectTarget = localStorageService.getRedirectTarget();
+            if (redirectTarget) {
+                localStorageService.removeRedirectTarget();
+                Router.toRedirectTarget(redirectTarget);
+            } else {
+                let toMain = autologinUser || urlParamService.isDemoMode();
+                let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
+                let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
+                Router.to(initHash);
             }
         });
 }

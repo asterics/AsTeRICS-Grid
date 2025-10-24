@@ -449,4 +449,31 @@ constants.WORDFORM_TAGS = [
     'DEFINITE'
 ];
 
+// local storage keys for OAuth
+constants.OAUTH_RETURNED_PARAMS_MAP = 'OAUTH_RETURNED_PARAMS_MAP';
+constants.OAUTH_REDIRECT_KEY = 'OAUTH_REDIRECT_KEY';
+constants.OAUTH_CURRENT_LOGIN_ID_KEY = 'OAUTH_CURRENT_LOGIN_ID_KEY';
+
+// constants for OAuth authentication at globalsymbols
+constants.GLOBALSYMBOLS_NAME = 'Global Symbols';
+constants.GLOBALSYMBOLS_BASE_URL = 'https://gs-stage.co.uk/';
+constants.BOARDBUILDER_BASE_URL = 'https://app.gs-stage.co.uk/';
+constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
+    id: 'globalsymbols',
+    authority: constants.GLOBALSYMBOLS_BASE_URL,
+    client_id: 'yzq33ZO1d2n9vU0-UiL_TU1EWH2crS1M4zSXU6pf9KU', // gridbeta2
+    //client_id: 'aviO5h2n0MT4ufeRrjsNSCzD2KNz-yV-gV7wlQh9hvY', // localhost
+    redirect_uri: `${location.origin}${location.pathname}html/oauth-redirect.html`,
+    response_type: 'code',
+    scope: 'openid profile email boardset:read boardset:write offline_access',
+    automaticSilentRenew: true,
+    loadUserInfo: true
+}
+constants.OAUTH_CONFIGS = [constants.OAUTH_CONFIG_GLOBALSYMBOLS];
+
+constants.EXPORT_ONLINE_GRID_TAGS = ["ADL", "MEDICAL", "LEISURE", "EMOTIONS", "SOCIAL", "FOOD", "CARE", "EDUCATION", "WORK", "HOSPITAL", "SMALLTALK", "4x3", "3X4", "5X6", "6X11", "5X9", "4X7"];
+
+constants.REDIRECT_OAUTH_GS_UPLOAD = 'REDIRECT_OAUTH_GS_UPLOAD'; // redirect to upload modal
+constants.REDIRECT_IMPORT_DATA_ONLINE = 'REDIRECT_IMPORT_DATA_ONLINE'; // redirect to import modal from online resource
+
 export { constants };

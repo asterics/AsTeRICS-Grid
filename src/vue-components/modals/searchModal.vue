@@ -126,7 +126,7 @@
                 thiz.$forceUpdate();
                 await new Promise(resolve => setTimeout(resolve, 10)); // to repaint and render "searching ..."
                 await thiz.initPromise;
-                if (!thiz.searchTerm) {
+                if (!thiz.searchTerm || thiz.graphList.length === 0) {
                     thiz.results = [];
                     return;
                 }

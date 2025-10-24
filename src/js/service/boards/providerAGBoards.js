@@ -1,13 +1,17 @@
+import { constants } from '../../util/constants';
 import { GridPreview } from '../../model/GridPreview';
 import { i18nService } from '../i18nService';
 import { util } from '../../util/util';
-import { constants } from '../../util/constants';
+import { fileUtil } from '../../util/fileUtil';
+import { obfConverter } from '../../util/obfConverter';
 
-let boardService = {};
+let providerAGBoards = {};
 
 let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
-let GITHUB_BASE_URL = "https://github.com/asterics/AsTeRICS-Grid-Boards/tree/main/";
+let GITHUB_BASE_URL = "https://github.com/asterics/AsTeRICS-Grid-Boards/";
+let GITHUB_TREE_URL = `${GITHUB_BASE_URL}tree/main/`;
 let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_metadata.json" : BASE_URL + "live_metadata_beta.json";
+let PROVIDER_NAME_OWN = "AsTeRICS Grid Boards";
 let ownResults = [];
 let searchTermsMap = new Map();
 let translationMap = {};
@@ -15,6 +19,14 @@ let initResolve = null;
 let initPromise = new Promise(resolve => {
     initResolve = resolve;
 });
+
+providerAGBoards.getName = function() {
+    return PROVIDER_NAME_OWN;
+}
+
+providerAGBoards.getURL = function() {
+    return GITHUB_BASE_URL;
+}
 
 /**
  * queries board previews according to given parameters
@@ -24,7 +36,7 @@ let initPromise = new Promise(resolve => {
  * @param options.lang language code of the board previews that should be returned
  * @return {Promise<*[]>}
  */
-boardService.query = async function (searchTerm = '', options = {}) {
+providerAGBoards.query = async function (searchTerm = '', options = {}) {
     await initPromise;
     let results = ownResults;
     if (options.lang) {
@@ -45,36 +57,33 @@ boardService.query = async function (searchTerm = '', options = {}) {
         results = results.filter(preview => searchTermsMap.get(preview).some(term => term.includes(word)));
     }
     return sortResults(results, options);
-};
-
-/**
- * returns the preview for a given filename for the results coming from AsTeRICS-Grid-Boards
- * @param filename
- * @return {*|string}
- */
-boardService.getPreview = function(filename) {
-    return  ownResults.find(preview => preview.filename === filename);
 }
 
-async function init() {
-    try {
-        await fetchData();
-        initResolve();
-    } catch (e) {
-        log.warn(e);
+providerAGBoards.getImportData = async function(preview) {
+    let isOBZ = fileUtil.isObzFile(preview.originalData.url);
+    let result = await fileUtil.downloadFile(preview.url, { isBytes: isOBZ });
+    if (result && isOBZ) {
+        let obzFileMap = await fileUtil.readZip(result, {
+            jsonFileExtensions: ['json', 'obf'],
+            defaultEncoding: 'base64'
+        });
+        result = await obfConverter.OBZToImportData(obzFileMap);
     }
+    return result;
 }
-init();
 
 async function fetchData() {
     let response = await fetch(METADATA_URL);
     let data = await response.json();
-    ownResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL, githubEditable: true, githubBaseUrl: GITHUB_BASE_URL }));
+    ownResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL, githubEditable: true, githubBaseUrl: GITHUB_TREE_URL, hasGlobalGrid: true }));
     searchTermsMap = new Map();
     for (let preview of ownResults) {
         if (preview.translate) {
             preview.name = i18nService.t(preview.name);
             preview.description = i18nService.t(preview.description);
+        } else {
+            preview.name  = util.isString(preview.name ) ? preview.name  : i18nService.getTranslation(preview.name);
+            preview.description = util.isString(preview.description) ? preview.description : i18nService.getTranslation(preview.description);
         }
         let searchTerms = [];
         if (util.isString(preview.name)) {
@@ -113,4 +122,14 @@ function translate(key) {
     }
 }
 
-export { boardService };
+async function init() {
+    try {
+        await fetchData();
+        initResolve();
+    } catch (e) {
+        log.warn(e);
+    }
+}
+init();
+
+export { providerAGBoards };

@@ -19,7 +19,7 @@ import { serviceWorkerService } from '../serviceWorkerService.js';
 import { constants } from '../../util/constants.js';
 import { MainVue } from '../../vue/mainVue.js';
 import { util } from '../../util/util.js';
-import { boardService } from '../boards/boardService';
+import { externalBoardsService } from '../boards/externalBoardsService';
 
 let dataService = {};
 
@@ -92,6 +92,17 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
         });
     });
 };
+
+dataService.getGridsGraphList = async function() {
+    let grids = await dataService.getGrids(false, true);
+    let homeGridId = (await dataService.getMetadata()).homeGridId;
+    let graphList = gridUtil.getGraphList(grids);
+    graphList.sort((a, b) => {
+        if (a.grid.id === homeGridId) return -1;
+        if (b.grid.id === homeGridId) return 1;
+    });
+    return graphList;
+}
 
 /**
  * get the unix time (in ms) when the last update of a grid was made
@@ -405,6 +416,7 @@ dataService.downloadBackupToFile = async function () {
  * @param options.exportUserSettings if true, all user settings are exported
  * @param options.filename the filename to use for downloading
  * @param options.obzFormat if true, data is returned in obz format (as blob)
+ * @param options.obzFileMap if true, data is returned in obz format (as map of files)
  * @param options.progressFn fn for reporting progress, called with params percentage and text
  * @returns {Promise<{}|null>} promise resolving to a javascript object containing native AG backup data or to a blob
  *                             containing the backup in .obz format if options.obzFormat is true.
@@ -428,7 +440,7 @@ dataService.getBackupData = async function (gridIds, options = {}) {
         let contentLang = i18nService.getContentLang();
         let contentLangBase = i18nService.getContentLangBase();
         for (let grid of backupData.grids) {
-            grid.label[contentLang] = grid.label[contentLang] || grid.label[contentLangBase];
+            grid.label[contentLang] = grid.label[contentLang] || grid.label[contentLangBase] || grid.label[Object.keys(grid.label)[0]] || i18nService.t("newGrid");
             Object.keys(grid.label).forEach((key) => key === contentLang || delete grid.label[key]);
             for (let elem of grid.gridElements) {
                 elem.label[contentLang] = elem.label[contentLang] || elem.label[contentLangBase];
@@ -463,8 +475,21 @@ dataService.getBackupData = async function (gridIds, options = {}) {
             })
         });
     }
+    if (options.obzFileMap) {
+        backupData = await obfConverter.backupDataToOBZFileMap(backupData);
+    }
     options.progressFn(100);
     return backupData;
+}
+
+/**
+ * get backup data for all grids, no need for passing IDs of grids
+ * @param options see #dataService.getBackupData()
+ */
+dataService.getBackupDataAllGrids = async function(options) {
+    let grids = await dataService.getGrids();
+    let ids = grids.map((grid) => grid.id);
+    return dataService.getBackupData(ids, options);
 }
 
 /**
@@ -583,25 +608,32 @@ dataService.importBackupUploadedFile = async function (file, progressFn) {
     });
 };
 
+/**
+ * imports board data related to a given preview
+ * @param preview
+ * @param options
+ * @return {Promise<Boolean>} true, if successful, otherwise false
+ */
 dataService.importBackupFromPreview = async function(preview, options = {}) {
-    if (!preview) {
-        return;
-    }
     options.progressFn = options.progressFn || (() => {});
-    options.filename = options.filename || preview.filename;
+    if (!preview) {
+        showErrorTooltip('failedToFindExternalConfig');
+        return false;
+    }
+    if (preview.languages.length > 0 && !preview.languages.includes(i18nService.getContentLang())) {
+        await i18nService.setContentLanguage(preview.languages[0]);
+    }
+    options.filename = options.filename || (preview.providerName + preview.id);
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
     options.generateGlobalGrid = preview.generateGlobalGrid || false;
-    let isOBZ = fileUtil.isObzFile(preview.url);
-    let result = await fileUtil.downloadFile(preview.url, { isBytes: isOBZ });
-    options.progressFn(50, i18nService.t('importingData'));
-    if (isOBZ) {
-        let obzFileMap = await fileUtil.readZip(result, {
-            jsonFileExtensions: ['json', 'obf'],
-            defaultEncoding: 'base64'
-        });
-        result = await obfConverter.OBZToImportData(obzFileMap);
+    options.resetHomeBoard = options.generateGlobalGrid;
+    let result = await externalBoardsService.getImportData(preview);
+    if (!result) {
+        showErrorTooltip('failedToGetBoardData');
+        return false;
     }
+    options.progressFn(50, i18nService.t('importingData'));
     if (preview.translate && result.grids) {
         for (let grid of result.grids) {
             grid.label[i18nService.getContentLang()] = i18nService.t(i18nService.getTranslation(grid.label));
@@ -610,12 +642,23 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
             }
         }
     }
-    return dataService.importBackupData(result, options);
+    await dataService.importBackupData(result, options);
+    return true;
+
+    function showErrorTooltip(msg) {
+        options.progressFn(100);
+        let providerName = preview ? preview.providerName : '';
+        MainVue.setTooltip(i18nService.t(msg, providerName), {
+            msgType: 'warn',
+            timeout: 20000,
+            closeOnNavigate: false
+        });
+    }
 }
 
-dataService.importBackupDefaultFile = async function(filename, options = {}) {
-    let preview = boardService.getPreview(filename);
-    return dataService.importBackupFromPreview(preview, options);
+dataService.importExternalBackup = async function(provider, id) {
+    let preview = await externalBoardsService.getPreview(provider, id);
+    return dataService.importBackupFromPreview(preview);
 }
 
 /**
@@ -624,6 +667,8 @@ dataService.importBackupDefaultFile = async function(filename, options = {}) {
  * @param options also see options of dataService.importData
  * @param options.skipDelete skip deleting existing data (fresh import for new user)
  * @param options.filename original filename of the imported data - is saved to recognize which user has which default gridset
+ * @param options.generateGlobalGrid if true a default global grid is generated
+ * @param options.resetHomeBoard if true don't trust in existing home board ID in given metadata, but reset home board ID to the most likely home board
  * @return {Promise<void>}
  */
 dataService.importBackupData = async function (importData, options) {
@@ -639,6 +684,7 @@ dataService.importBackupData = async function (importData, options) {
     options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));
     await dataService.importData(importData, {
         generateGlobalGrid: options.generateGlobalGrid,
+        resetHomeBoard: options.resetHomeBoard,
         importDictionaries: true,
         importUserSettings: true,
         progressFn: (p) => {
@@ -665,6 +711,7 @@ dataService.importBackupData = async function (importData, options) {
  * @param options.importUserSettings if true, user settings are imported
  * @param options.progressFn an optional function where the current progress in percentage is returned
  * @param options.resetBeforeImport info about if data was reset before import, reset not happening in this method!
+ * @param options.resetHomeBoard if true don't trust in existing home board ID in given metadata, but reset home board ID to the most likely home board
  * @return {Promise} resolves after operation finished successful
  */
 dataService.importData = async function (data, options) {
@@ -680,6 +727,7 @@ dataService.importData = async function (data, options) {
     dataUtil.removeDatabaseProperties(importData.metadata, true);
     options.progressFn(10);
     let existingGrids = await dataService.getGrids();
+    let existingMetadata = await dataService.getMetadata();
     let existingNames = existingGrids.map((grid) => i18nService.getTranslation(grid.label));
     let regenerateIdsReturn = gridUtil.regenerateIDs(importData.grids);
     importData.grids = regenerateIdsReturn.grids;
@@ -706,7 +754,6 @@ dataService.importData = async function (data, options) {
         importData.metadata &&
         (importData.metadata.globalGridId || importData.metadata.lastOpenedGridId)
     ) {
-        let existingMetadata = await dataService.getMetadata();
         existingMetadata.globalGridId = importData.metadata.globalGridId;
         existingMetadata.lastOpenedGridId = importData.metadata.lastOpenedGridId;
         importData.metadata = existingMetadata;
@@ -717,6 +764,13 @@ dataService.importData = async function (data, options) {
     if (importData.metadata) {
         importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
         await dataService.saveMetadata(importData.metadata);
+        existingMetadata = Object.assign(existingMetadata, importData.metadata);
+    }
+    if (options.resetHomeBoard) {
+        let globalGridId = importData.metadata ? importData.metadata.globalGridId : null;
+        let graphList = gridUtil.getGraphList(importData.grids, globalGridId);
+        existingMetadata.homeGridId = graphList[0].grid.id;
+        await dataService.saveMetadata(existingMetadata);
     }
     options.progressFn(80);
 
