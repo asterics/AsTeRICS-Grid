@@ -54,7 +54,7 @@
                                 <div class="srow">
                                     <label class="three columns">{{ $t('language') }}</label>
                                     <select class="four columns" v-model="dict.lang">
-                                        <option v-for="lang in languages" :value="lang.code">{{ lang | extractTranslation }}</option>
+                                        <option v-for="lang in languages" :value="lang.code">{{ lang | extractTranslationAppLang }}</option>
                                     </select>
                                     <button @click="showWordsModal = true; modalDict = dict" class="five columns">
                                         <i class="fas fa-file-import"/>
