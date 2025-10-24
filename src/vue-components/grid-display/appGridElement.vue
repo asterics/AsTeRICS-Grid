@@ -94,6 +94,12 @@ export default {
             if (!this.metadata || !this.metadata.colorConfig) {
                 return constants.COLORS.GRAY;
             }
+
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {
+                // element.borderColor only used for color mode "both", see https://github.com/asterics/AsTeRICS-Grid/issues/580#issuecomment-3281187917
+                return element.borderColor;
+            }
+
             let color = this.metadata.colorConfig.elementBorderColor;
             if (this.metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
                 let backgroundColor = this.metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;

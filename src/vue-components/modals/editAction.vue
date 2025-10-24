@@ -247,6 +247,22 @@
             <button id="testVoice2" class="four columns offset-by-four" :disabled="!action.voice" @click="speechService.testSpeak(action.voice, null, action.language)">{{ $t('testVoice') }}</button>
         </div>
     </div>
+    <div v-if="action.modelName === 'GridActionVocabLevelToggle'">
+        <div class="srow">
+            <div class="twelve columns">
+                <label for="vocabLevelMode" class="four columns normal-text">{{ $t('actionType') }}</label>
+                <select id="vocabLevelMode" class="eight columns" v-model="action.mode">
+                    <option v-for="mode in GridActionVocabLevelToggle.getModes()" :value="GridActionVocabLevelToggle.modes[mode]">{{ mode | translate }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="srow">
+            <div class="twelve columns">
+                <span class="fa fa-info-circle"></span>
+                <span>{{ $t('vocabLevelToggleDescription') }}</span>
+            </div>
+        </div>
+    </div>
     <div v-if="action.modelName === 'GridActionOpenWebpage'">
         <div class="srow">
             <div class="twelve columns">
@@ -329,6 +345,7 @@
     import { gridUtil } from '../../js/util/gridUtil';
     import { GridActionSystem } from '../../js/model/GridActionSystem';
     import { GridActionChangeLang } from '../../js/model/GridActionChangeLang';
+    import { GridActionVocabLevelToggle } from '../../js/model/GridActionVocabLevelToggle';
     import EditPredefinedAction from './editActionsSub/editPredefinedAction.vue';
     import EditMatrixAction from './editActionsSub/editMatrixAction.vue';
     import EditPodcastAction from './editActionsSub/editPodcastAction.vue';
@@ -352,6 +369,7 @@
                 GridActionPredict: GridActionPredict,
                 GridActionSystem: GridActionSystem,
                 GridActionChangeLang: GridActionChangeLang,
+                GridActionVocabLevelToggle: GridActionVocabLevelToggle,
                 GridElement: GridElement,
                 speechService: speechService,
                 i18nService: i18nService

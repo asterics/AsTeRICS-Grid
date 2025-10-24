@@ -7,11 +7,21 @@ import { localStorageService } from './data/localStorageService';
 import { actionService } from './actionService';
 import { util } from '../util/util';
 import { podcastService } from './podcastService';
+import { format } from "date-fns";
+import { es, pt, it, enUS, fr, de } from "date-fns/locale";
 
 let liveElementService = {};
 
 let CHECK_INTERVAL = 1000;
 let DATA_PLACEHOLDER = '{0}';
+let DATE_FNS_LOCALES = {
+    es: es,
+    pt: pt,
+    it: it,
+    en: enUS,
+    fr: fr,
+    de: de
+}
 
 let registeredElements = [];
 let timeoutHandler = null;
@@ -152,10 +162,19 @@ function getValueDateTime(element) {
             return getTimeText(element, { hour: 'numeric', minute: 'numeric', second: 'numeric' });
         case GridElementLive.DT_FORMAT_DATETIME:
             return getDateText(element, { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
+        case GridElementLive.DT_FORMAT_DATETIME_LONG:
+            return getDateText(element, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
         case GridElementLive.DT_FORMAT_WEEKDAY:
             return getDateText(element, { weekday: 'long' });
         case GridElementLive.DT_FORMAT_MONTH:
             return getDateText(element, { month: 'long' });
+        case GridElementLive.DT_FORMAT_CUSTOM:
+            let locale = element.dateTimeLocale || i18nService.getContentLang();
+            let dateFnsLocaleKeys = Object.keys(DATE_FNS_LOCALES);
+            let key = dateFnsLocaleKeys.find(key => locale.startsWith(key)) || 'en';
+            return format(new Date(), element.dateTimeFormatCustom || 'EEEE, dd. MMMM yyyy, HH:mm', {
+                locale: DATE_FNS_LOCALES[key]
+            });
     }
     return '';
 }
@@ -258,11 +277,13 @@ function extractFromHTML(element, text) {
 }
 
 function getDateText(element, options) {
-    return new Date().toLocaleDateString(i18nService.getContentLang(), options);
+    let locale = element.dateTimeLocale || i18nService.getContentLang();
+    return new Date().toLocaleDateString(locale, options);
 }
 
 function getTimeText(element, options) {
-    return new Date().toLocaleTimeString(i18nService.getContentLang(), options);
+    let locale = element.dateTimeLocale || i18nService.getContentLang();
+    return new Date().toLocaleTimeString(locale, options);
 }
 
 function formatDuration(seconds) {

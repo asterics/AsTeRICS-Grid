@@ -34,6 +34,7 @@ constants.EVENT_UI_UNLOCKED = 'EVENT_UI_UNLOCKED';
 
 constants.EVENT_GRID_RESIZE = 'EVENT_GRID_RESIZE';
 constants.EVENT_GRID_LOADED = 'EVENT_GRID_LOADED';
+constants.EVENT_GRID_RERENDER = 'EVENT_GRID_RERENDER';
 constants.EVENT_ELEM_TEXT_CHANGED = 'EVENT_ELEM_TEXT_CHANGED';
 constants.EVENT_USER_CHANGING = 'EVENT_USER_CHANGING';
 constants.EVENT_USER_CHANGED = 'EVENT_USER_CHANGED';
@@ -121,7 +122,13 @@ constants.TRANSFER_PROPS = {
     },
     BACKGROUND_COLOR: {
         path: 'backgroundColor',
-        label: 'customElementColor',
+        label: 'customBackgroundColor',
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    BORDER_COLOR: {
+        path: 'borderColor',
+        label: 'customBorderColor',
         type: constants.PROP_TRANSFER_TYPES.COLOR,
         category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
     },

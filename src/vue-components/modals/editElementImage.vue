@@ -112,6 +112,7 @@
     import Accordion from "../components/accordion.vue";
     import {openSymbolsService} from "../../js/service/pictograms/openSymbolsService.js";
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
+    import {globalSymbolsService} from "../../js/service/pictograms/globalSymbolsService.js";
     import {GridImage} from "../../js/model/GridImage.js";
     import {i18nService} from "../../js/service/i18nService.js";
     import {localStorageService} from "../../js/service/data/localStorageService.js";
@@ -130,7 +131,7 @@
         data: function () {
             return {
                 searchText: null,
-                searchProviders: [arasaacService.getSearchProviderInfo(), openSymbolsService.getSearchProviderInfo()],
+                searchProviders: [arasaacService.getSearchProviderInfo(), globalSymbolsService.getSearchProviderInfo(), openSymbolsService.getSearchProviderInfo()],
                 searchProvider: null,
                 searchResults: null,
                 searchLoading: false,
@@ -258,10 +259,10 @@
             }
         },
         mounted() {
-            let hasSearchProvider = this.gridElement.image && this.gridElement.image.searchProviderName;
-            let currentSearchProviderName = hasSearchProvider ? this.gridElement.image.searchProviderName : localStorageService.get(EDIT_ELEM_SELECTED_SEARCH_PROVIDER);
-            let currentSearchOptions = hasSearchProvider ? this.gridElement.image.searchProviderOptions : null;
-            this.searchProvider = this.searchProviders.filter(provider => provider.name === currentSearchProviderName)[0] || this.searchProviders[0];
+            let currentSearchProviderName = this.gridElement.image && this.gridElement.image.searchProviderName;
+            let searchProviderToSelect = localStorageService.get(EDIT_ELEM_SELECTED_SEARCH_PROVIDER);
+            let currentSearchOptions = currentSearchProviderName === searchProviderToSelect ? this.gridElement.image.searchProviderOptions : null;
+            this.searchProvider = this.searchProviders.filter(provider => provider.name === searchProviderToSelect)[0] || this.searchProviders[0];
             if (currentSearchOptions) {
                 let currentNames = currentSearchOptions.map(e => e.name);
                 for (let i = 0; i < this.searchProvider.options.length; i++) {

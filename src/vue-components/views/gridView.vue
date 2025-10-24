@@ -87,6 +87,7 @@
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
     import { liveElementService } from '../../js/service/liveElementService';
+    import { GridElement } from '../../js/model/GridElement';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -409,9 +410,10 @@
             async recalculateRenderGrid(gridData) {
                 // attention: gridData also changes because of "noDeepCopy: true"
                 // just using this.renderGridData for clarity
+                let globalGrid = null;
                 if (gridData.showGlobalGrid) {
-                    let globalGrid = this.globalGridData;
-                    if (gridData.globalGridId) {
+                    globalGrid = this.globalGridData;
+                    if (gridData.globalGridId) { // custom global grid
                         globalGrid = await dataService.getGrid(gridData.globalGridId, false, true);
                     }
                     this.renderGridData = gridUtil.mergeGrids(gridData, globalGrid, {
@@ -421,9 +423,30 @@
                 } else {
                     this.renderGridData = gridData;
                 }
+                this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
+                this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
-                if (this.metadata.vocabularyLevel) {
-                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.vocabularyLevel || e.vocabularyLevel <= this.metadata.vocabularyLevel);
+
+                // Check for local toggle level first, otherwise use synchronized metadata level
+                let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
+                let effectiveLevel = isToggled ? localStorageService.getJSON(localStorageService.KEY_CURRENT_TOGGLE_LEVEL) : this.metadata.vocabularyLevel;
+
+                if (effectiveLevel) {
+                    let globalGridElements = globalGrid ? globalGrid.gridElements : [];
+                    let globalGridElemIds = globalGridElements.map(e => e.id);
+                    let normalGridElements = this.renderGridData.gridElements.filter(e => !globalGridElemIds.includes(e.id));
+                    let noneHasVocabLevelGlobal = globalGridElements.every(e => !e.vocabularyLevel);
+                    let noneHasVocabLevelNormal = normalGridElements.every(e => !e.vocabularyLevel);
+                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => {
+                        let elemFitsVocabLevel = e.vocabularyLevel && e.vocabularyLevel <= effectiveLevel;
+                        if (globalGridElemIds.includes(e.id)) {
+                            // is elem in global grid
+                            return noneHasVocabLevelGlobal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
+                        } else {
+                            // is elem in normal grid
+                            return noneHasVocabLevelNormal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
+                        }
+                    });
                 }
                 stateService.setCurrentGrid(this.renderGridData);
             },
@@ -447,6 +470,13 @@
             },
             async metadataUpdated() {
                 this.metadata = await dataService.getMetadata();
+            },
+            async rerenderGrid() {
+                if (this.renderGridData) {
+                    // Reload the grid with fresh data without updating metadata
+                    let freshGridData = await dataService.getGrid(this.renderGridData.id);
+                    await this.loadGrid(freshGridData, { forceReload: true });
+                }
             }
         },
         created() {
@@ -457,6 +487,7 @@
             window.addEventListener('resize', this.resizeListener, true);
             $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).on(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            $(document).on(constants.EVENT_GRID_RERENDER, this.rerenderGrid);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
@@ -466,6 +497,7 @@
             window.removeEventListener('resize', this.resizeListener, true);
             $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).off(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            $(document).off(constants.EVENT_GRID_RERENDER, this.rerenderGrid);
             stopInputMethods();
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');

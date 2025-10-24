@@ -12,8 +12,10 @@ let GRID_DIMENSIONS_KEY = 'AG_GRID_DIMENSIONS_KEY';
 let CURRENT_VERSION_KEY = 'AG_CURRENT_VERSION_KEY';
 let APP_SETTINGS = 'AG_APP_SETTINGS';
 let USER_SETTINGS = 'AG_USER_SETTINGS';
+let CURRENT_TOGGLE_LEVEL_KEY = 'CURRENT_TOGGLE_LEVEL';
 
 let localStorageService = {};
+localStorageService.KEY_CURRENT_TOGGLE_LEVEL = CURRENT_TOGGLE_LEVEL_KEY;
 let storage = window.localStorage;
 window.service = localStorageService;
 

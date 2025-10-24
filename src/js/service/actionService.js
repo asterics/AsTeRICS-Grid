@@ -33,6 +33,7 @@ import { GridActionYoutube } from '../model/GridActionYoutube';
 import { GridActionWebradio } from '../model/GridActionWebradio';
 import { matrixAppService } from './matrixMessenger/matrixAppService';
 import { podcastService } from './podcastService';
+import { GridActionVocabLevelToggle } from '../model/GridActionVocabLevelToggle';
 
 let actionService = {};
 
@@ -244,7 +245,7 @@ async function doAction(gridElement, action, options = {}) {
             break;
         case 'GridActionCollectElement':
             log.debug('action collect element');
-            collectElementService.doCollectElementActions(action.action);
+            collectElementService.doCollectElementActions(action.action, gridElement);
             break;
         case 'GridActionWebradio':
             webradioService.doAction(options.gridId, action);
@@ -264,6 +265,20 @@ async function doAction(gridElement, action, options = {}) {
             let voiceConfig = localStorageService.getUserSettings().voiceConfig;
             voiceConfig.preferredVoice = action.voice;
             localStorageService.saveUserSettings({voiceConfig: voiceConfig});
+            break;
+        case 'GridActionVocabLevelToggle':
+            let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
+
+            // If we have a toggle active, remove it to go back to settings level
+            if (isToggled) {
+                localStorageService.remove(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
+            } else {
+                // Toggle to full: save null (show all vocabulary)
+                localStorageService.saveJSON(localStorageService.KEY_CURRENT_TOGGLE_LEVEL, null);
+            }
+
+            // Trigger grid rerender (local change only, doesn't modify metadata)
+            $(document).trigger(constants.EVENT_GRID_RERENDER);
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');

@@ -52,13 +52,25 @@ self.addEventListener('message', (event) => {
 
     caches.open(cacheName).then(async (cache) => {
         let responseCode = await getResponseCode(cache, msg.url);
+        let response = null;
         if (responseCode !== 200) {
             //console.debug(`adding ${msg.url} to cache "${cacheName}".`);
-            let response = await fetch(msg.url);
-            responseCode = response.status;
-            if (responseCode === 200) {
-                await cache.put(msg.url, response);
+            response = await tryFetchImage(msg.url);
+            if (!response) {
+                console.log('error fetching image, trying with no-cors');
+                response = await tryFetchImage(msg.url, 'no-cors');
             }
+            if (!response) {
+                // probably real network error - both normal fetch and cors-fetch didn't succeed at all
+                responseCode = -1;
+            } else {
+                // if opaque response existing - assuming it succeeded (200) - cannot really check
+                // otherwise use real response status
+                responseCode = response.type === 'opaque' ? 200 : response.status;
+            }
+        }
+        if (response && responseCode === 200) {
+            await cache.put(msg.url, response);
         }
         sendToClients({type: constants.SW_EVENT_URL_CACHED, url: msg.url, success: responseCode === 200, responseCode: responseCode});
     });
@@ -68,6 +80,13 @@ workbox.routing.registerRoute(({url, request, event}) => {
     //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
     return shouldCacheNormal(url, request);
 }, new workbox.strategies.CacheFirst());
+
+workbox.routing.registerRoute(({url, request, event}) => {
+    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
+    return shouldCacheStaleWhileRevalidate(url, request);
+}, new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'stale-while-revalidate-cache'
+}));
 
 workbox.routing.registerRoute(({url, request, event}) => {
     //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
@@ -80,15 +99,29 @@ workbox.routing.registerRoute(({url, request, event}) => {
     }
 }));
 
+async function tryFetchImage(url, fetchMode = undefined) {
+    let response = null;
+    try {
+        response = await fetch(url, { mode: fetchMode });
+    } catch (e) {
+        console.log('error fetching image', e.message);
+    }
+    return response;
+}
+
 function shouldCacheImage(url, request) {
     let isOwnHost = url.hostname === 'grid.asterics.eu';
     let isImageRequest = request.destination === 'image';
-    return !isOwnHost && isImageRequest;
+    return !isOwnHost && isImageRequest && !shouldCacheStaleWhileRevalidate(url);
+}
+
+function shouldCacheStaleWhileRevalidate(url, request) {
+    return url.href.startsWith('https://asterics.github.io/AsTeRICS-Grid-Boards');
 }
 
 function shouldCacheNormal(url, request) {
     let isOwnHost = url.hostname === 'grid.asterics.eu';
-    return !shouldCacheImage(url, request) && isOwnHost;
+    return isOwnHost && !shouldCacheImage(url, request) && !shouldCacheStaleWhileRevalidate(url);
 }
 
 async function getResponseCode(cache, url) {

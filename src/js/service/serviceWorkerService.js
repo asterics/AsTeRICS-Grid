@@ -55,7 +55,7 @@ function init() {
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
                 isCaching = false;
                 if (msg.success || msg.responseCode === 404 || msg.responseCode === 403) { // assuming 404 and 403 is permanently, so also remove
-                    if (msg.responseCode === 404) {
+                    if (!msg.success) {
                         log.warn('failed to cache url with status: ', msg.responseCode, msg.url, ', not trying again.');
                     }
                     _retryCount = 0;

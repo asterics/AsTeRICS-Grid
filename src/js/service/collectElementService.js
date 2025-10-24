@@ -72,6 +72,7 @@ collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
                 }, null);
             collectMode = copy.mode || collectMode;
             convertToLowercaseIfKeyboard = copy.convertToLowercase !== false;
+            copy.rotationActive = !!copy.displayUpsideDown;
             registeredCollectElements.push(copy);
         }
     });
@@ -107,7 +108,7 @@ collectElementService.doARASAACGrammarCorrection = async function() {
     }
 }
 
-collectElementService.doCollectElementActions = async function (action) {
+collectElementService.doCollectElementActions = async function (action, gridElement) {
     if (!action) {
         return;
     }
@@ -218,6 +219,18 @@ collectElementService.doCollectElementActions = async function (action) {
                 })
             );
             break;
+        case GridActionCollectElement.COLLECT_ACTION_TOGGLE_TEXT_ROTATION:
+            // Find the collect element in the registered collect elements
+            if (registeredCollectElements && registeredCollectElements.length > 0) {
+                let collectElement = registeredCollectElements[0]; // Get the first (and usually only) collect element
+
+                // Toggle the rotation state for the collect element
+                collectElement.rotationActive = !collectElement.rotationActive;
+
+                // Update the display
+                updateCollectElements();
+            }
+            break;
     }
     predictionService.predict(getPredictText(), dictionaryKey);
 };
@@ -327,6 +340,8 @@ async function updateCollectElements(isSecondTry) {
         let darkMode = metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
         let backgroundColor = darkMode ? constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK : constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR;
         let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
+
+        let rotationClass = collectElement.rotationActive ? ' upside-down' : '';
         if (!imageMode) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
@@ -335,7 +350,7 @@ async function updateCollectElements(isSecondTry) {
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -355,7 +370,8 @@ async function updateCollectElements(isSecondTry) {
             let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
             let useSingleLine = collectElement.singleLine;
             let imageCount = collectedElements.length;
-            let imgContainerHeight = showLabel ? height * imagePercentage : height;
+            let normalImageContainerHeight = height * imagePercentage;
+            let imgContainerHeight = showLabel ? normalImageContainerHeight : height;
             let imageRatios = [];
             for (const elem of collectedElements) {
                 let imageData = getImageData(elem);
@@ -380,7 +396,7 @@ async function updateCollectElements(isSecondTry) {
             }
             imgContainerHeight = imgContainerHeight / numLines;
             let imgHeight = imgContainerHeight - imgMargin * 2;
-            let lineHeight = height / numLines - imgContainerHeight;
+            let lineHeight = height / numLines - normalImageContainerHeight;
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
             for (const [index, collectedElement] of collectedElements.entries()) {
@@ -418,7 +434,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
+            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
                         <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
                     </div>`;
             outerContainerJqueryElem.html(html);
@@ -656,6 +672,8 @@ async function getMetadataConfig() {
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
     setTimeout(updateCollectElements, 500);
 });
+
+
 
 $(document).on(constants.EVENT_USER_CHANGED, clearAll);
 $(document).on(constants.EVENT_CONFIG_RESET, clearAll);
