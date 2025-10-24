@@ -462,11 +462,6 @@
             },
             async metadataUpdated() {
                 this.metadata = await dataService.getMetadata();
-                if (this.renderGridData) {
-                    // Reload the grid with fresh data to avoid duplicate key issues
-                    let freshGridData = await dataService.getGrid(this.renderGridData.id);
-                    await this.loadGrid(freshGridData, { forceReload: true });
-                }
             },
             async rerenderGrid() {
                 if (this.renderGridData) {
