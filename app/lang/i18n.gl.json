@@ -12,6 +12,7 @@
   "GridActionYoutube": "Acción de Youtube",
   "GridActionPodcast": "Podcast action",
   "GridActionChangeLang": "Cambiar o idioma do contido/voz",
+  "GridActionVocabLevelToggle": "Change vocabulary level",
   "GridActionOpenWebpage": "Abrir páxina web noutra pestana",
   "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada (elemento por elemento)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Pronunciar frase acumulada (continua)",
@@ -1251,6 +1252,8 @@
   "othersHeading": "Others",
   "vocabularyLevel": "Vocabulary level",
   "shownVocabularyLevel": "Shown vocabulary level",
+  "vocabLevelToggleDescription": "This action changes the vocabulary level locally on this device only. The configured level in settings remains synchronized across all devices.",
+  "TOGGLE_TO_FULL": "Toggle to full vocabulary",
   "progressiveLanguage": "Progressive language",
   "untilLevel": "up to level {level}",
   "keyboard": "Keyboard",
@@ -1309,5 +1312,6 @@
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Automatically add images",
+  "showAllElements": "show all elements"
 }

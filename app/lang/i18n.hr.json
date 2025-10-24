@@ -12,6 +12,7 @@
   "GridActionYoutube": "YouTube radnja",
   "GridActionPodcast": "Podcast action",
   "GridActionChangeLang": "Promjena jezika/glasa sadržaja",
+  "GridActionVocabLevelToggle": "Change vocabulary level",
   "GridActionOpenWebpage": "Otvoriti web stranicu u novoj kartici",
   "COLLECT_ACTION_SPEAK": "Izgovoriti prikupljene stavke (odvojeno)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Izgovori prikupljene sadržaja elementa (kontinuirano)",
@@ -1251,6 +1252,8 @@
   "othersHeading": "Others",
   "vocabularyLevel": "Vocabulary level",
   "shownVocabularyLevel": "Shown vocabulary level",
+  "vocabLevelToggleDescription": "This action changes the vocabulary level locally on this device only. The configured level in settings remains synchronized across all devices.",
+  "TOGGLE_TO_FULL": "Toggle to full vocabulary",
   "progressiveLanguage": "Progressive language",
   "untilLevel": "up to level {level}",
   "keyboard": "Keyboard",
@@ -1309,5 +1312,6 @@
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Automatically add images",
+  "showAllElements": "show all elements"
 }

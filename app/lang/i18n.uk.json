@@ -12,6 +12,7 @@
   "GridActionYoutube": "Дія YouTube",
   "GridActionPodcast": "Подкаст дії",
   "GridActionChangeLang": "Змінити мову контенту / голос",
+  "GridActionVocabLevelToggle": "Change vocabulary level",
   "GridActionOpenWebpage": "Відкрити вебсторінку в новій вкладці",
   "COLLECT_ACTION_SPEAK": "Оголосити вміст зібраних елементів (окремо)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Оголосити вміст зібраних елементів (безперервно)",
@@ -1251,6 +1252,8 @@
   "othersHeading": "Інші",
   "vocabularyLevel": "Рівень словникового запасу",
   "shownVocabularyLevel": "Показаний рівень словникового запасу",
+  "vocabLevelToggleDescription": "This action changes the vocabulary level locally on this device only. The configured level in settings remains synchronized across all devices.",
+  "TOGGLE_TO_FULL": "Toggle to full vocabulary",
   "progressiveLanguage": "Прогресивна мова",
   "untilLevel": "підняти до рівня {level}",
   "keyboard": "Клавіатура",
@@ -1309,5 +1312,6 @@
   "managePodcasts": "Керування подкастами",
   "selectedPodcasts": "Вибрані подкасти",
   "hideKeyboards": "Приховати клавіатуру",
-  "automaticallyAddImages": "Автоматично додавати зображення"
+  "automaticallyAddImages": "Автоматично додавати зображення",
+  "showAllElements": "show all elements"
 }
