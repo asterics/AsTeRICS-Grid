@@ -291,8 +291,9 @@
                         areService.uploadAndStartModel(areModel.dataBase64, gridUtil.getAREURL(gridData), areModel.fileName);
                     }
 
-                    // these two lines before recalculateRenderGrid since it changes gridData!
-                    let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
+                    // these lines before recalculateRenderGrid since it changes gridData!
+                    let isHomeGrid = this.metadata.homeGridId === gridData.id;
+                    let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData, isHomeGrid) && !this.skipThumbnailCheck;
                     let newHash = updateThumbnail ? gridUtil.getHash(gridData) : null;
 
                     await this.recalculateRenderGrid(gridData);
@@ -300,7 +301,14 @@
 
                     if (updateThumbnail) {
                         imageUtil.allImagesLoaded().then(async () => {
-                            let screenshot = await imageUtil.getScreenshot("#grid-container");
+                            let options = {};
+                            if (this.metadata.homeGridId === this.renderGridData.id) {
+                                // better thumbnail quality for home grid -> also used for exporting to GlobalSymbols as thumbnail
+                                options.targetWidth = 800;
+                                options.targetHeight = 600;
+                                options.quality = 0.75;
+                            }
+                            let screenshot = await imageUtil.getScreenshot("#grid-container", options);
                             let thumbnail = {
                                 data: screenshot,
                                 hash: newHash

@@ -9,7 +9,7 @@
         </div>
         <div class="srow">
             <label for="selectTags" class="three columns">{{ $t('tags') }}</label>
-            <multiselect id="selectTags" class="nine columns" v-model="wordForm.tags" :options="TAGS" :multiple="true" :close-on-select="false" :clear-on-select="false" :taggable="true" @tag="addTag(wordForm, $event)" placeholder="Choose tags">
+            <multiselect id="selectTags" class="nine columns" v-model="wordForm.tags" :options="TAGS" :multiple="true" :close-on-select="false" :clear-on-select="false" :taggable="true" @tag="addTag(wordForm, $event)" :placeholder="$t('chooseTagsOrAddNew')">
             </multiselect>
         </div>
         <div class="srow">

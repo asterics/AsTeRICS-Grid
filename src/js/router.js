@@ -34,6 +34,7 @@ let _currentView = null;
 let _currentVueApp = null;
 let _gridHistory = [];
 let _locked = false;
+let _passParams = undefined; // set before Router.to() in order to pass parameters to a view, automatically cleared after passing
 
 Router.VIEWS = {
     ManageGridsView: ManageGridsView,
@@ -41,7 +42,7 @@ Router.VIEWS = {
     GridEditView: GridEditView
 }
 
-Router.init = function (injectIdParam, initialHash) {
+Router.init = function (injectIdParam) {
     if (!routingEndabled) {
         return;
     }
@@ -164,9 +165,6 @@ Router.init = function (injectIdParam, initialHash) {
             //log.debug('leave');
         }
     });
-    if (initialHash) {
-        Router.to(initialHash);
-    }
     navigoInstance.resolve();
 };
 
@@ -181,11 +179,11 @@ Router.isInitialized = function () {
 /**
  * navigate to the given hash
  * @param hash the hash to navigate to, e.g. '#main'
+ * @param options
  * @param options.reset if true, the last hash isn't stored for "back" navigation purposes
  * @param options.noHistory if true, the last hash isn't stored for "back" navigation purposes
  */
-Router.to = function (hash, options) {
-    options = options || {};
+Router.to = function (hash, options = {}) {
     lastHash = options.reset ? null : location.hash;
     let url = getFullUrl(hash);
     if (options.noHistory) {
@@ -259,6 +257,29 @@ Router.toManageGrids = function () {
     Router.to('#grids');
 };
 
+/**
+ * routes to a redirect target after returning from OAuth authentication
+ * @param target as returned by localStorageService.getRedirectTarget
+ */
+Router.toRedirectTarget = function(target = {}) {
+    switch (target.key) {
+        case constants.REDIRECT_OAUTH_GS_UPLOAD:
+            _passParams = {};
+            _passParams.redirectInfo = target.props;
+            _passParams.redirectInfo.redirectTarget = target.key;
+            Router.toManageGrids();
+            break;
+        case constants.REDIRECT_IMPORT_DATA_ONLINE:
+            _passParams = {};
+            _passParams.redirectInfo = target.props;
+            _passParams.redirectInfo.redirectTarget = target.key;
+            Router.toManageGrids();
+            break;
+        default:
+            Router.toMain();
+    }
+}
+
 Router.back = function () {
     if (lastHash && lastHash !== location.hash) {
         Router.to(lastHash, { reset: true });
@@ -324,7 +345,8 @@ function loadVueView(viewObject, properties, menuItemToHighlight) {
     if (!routingEndabled) {
         return;
     }
-
+    properties = properties || _passParams;
+    _passParams = undefined;
     _currentView = viewObject;
     if (viewObject !== GridView) {
         $('#touchElement').hide();

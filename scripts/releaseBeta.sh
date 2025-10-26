@@ -5,6 +5,13 @@ set -e
 # ------------------------------------------------------------------
 # just builds and pushes to a sftp server of our hosting provider
 
+folderName="asterics-grid-beta"
+if [ $# -ge 1 ]; then
+  folderName="$1"
+fi
+
+echo "releasing to $folderName..."
+
 sshUserHost="u91187759@home708826695.1and1-data.host"
 
 doStash=true
@@ -27,11 +34,14 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 npm run build
 
 echo "copy data to host..."
-ssh $sshUserHost "rm -rf ~/asterics-grid-beta/*"
-scp index.html $sshUserHost:~/asterics-grid-beta/
-scp unsupported.html $sshUserHost:~/asterics-grid-beta/
-scp serviceWorker.js $sshUserHost:~/asterics-grid-beta/
-scp -r app $sshUserHost:~/asterics-grid-beta/app
+ssh $sshUserHost "rm -rf ~/$folderName/*"
+scp index.html $sshUserHost:~/$folderName/
+scp unsupported.html $sshUserHost:~/$folderName/
+scp serviceWorker.js $sshUserHost:~/$folderName/
+scp -r app $sshUserHost:~/$folderName/app
+[ -d "html" ] &&  scp -r html $sshUserHost:~/$folderName/html
+ssh $sshUserHost "mkdir -p ~/$folderName/src/js/util"
+scp src/js/util/constants.js $sshUserHost:~/$folderName/src/js/util/constants.js
 
 git checkout .
 

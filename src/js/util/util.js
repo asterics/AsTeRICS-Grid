@@ -481,6 +481,14 @@ util.shuffleArray = function (array) {
     return array;
 }
 
+util.getFilledArray = function(sizeX, sizeY, value) {
+    let baseArray = new Array(sizeX);
+    for (let x = 0; x < sizeX; x++) {
+        baseArray[x] = new Array(sizeY).fill(value);
+    }
+    return baseArray;
+};
+
 /**
  * returns the current screen size of the element. Uses IntersectionObserver if available (better performance), falls
  * back to getBoundingClientRect().

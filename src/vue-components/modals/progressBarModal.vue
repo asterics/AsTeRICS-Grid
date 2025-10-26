@@ -9,7 +9,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="biggerFont">{{options.text}} ...</div>
+                        <div class="biggerFont" v-if="options.text">{{options.text}} ...</div>
                         <div id="progressWrapper" style="border: 1px solid; border-radius: 3px; width: 100%; height: 50px; margin: 0.5em 0">
                             <div id="progressBar" :style="`width: ${progressPercentage}%; height: 100%; background-color: green`"></div>
                         </div>

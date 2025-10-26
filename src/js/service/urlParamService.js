@@ -1,3 +1,5 @@
+import { providerAGBoards } from './boards/providerAGBoards';
+
 let urlParamService = {};
 
 urlParamService.params = {
@@ -7,7 +9,9 @@ urlParamService.params = {
     PARAM_DIR_INPUT: 'direction',
     PARAM_RESET_DATABASE: 'reset',
     PARAM_USE_GRIDSET_FILENAME: 'gridset_filename',
-    PARAM_USE_GRIDSET_URL: 'gridset_url',
+    PARAM_USE_GRIDSET_PROVIDER: 'gridset_provider',
+    PARAM_USE_GRIDSET_ID: 'gridset_id',
+    PARAM_USE_GRIDSET_SINGLE_BOARDS: 'single_boards',
     PARAM_ELEMENT_HIGHLIGHT_IDS: "highlightIds",
     PARAM_LOCKED: "locked",
     PARAM_FULLSCREEN: "fullscreen"
@@ -100,6 +104,27 @@ urlParamService.removeParam = function(name) {
     let searchParams = new URLSearchParams(window.location.search);
     searchParams.delete(name);
     setURLSearchParamsToURL(searchParams);
+}
+
+urlParamService.getImportGridsetProps = function() {
+    let id = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_ID) || urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
+    let provider = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_PROVIDER) || providerAGBoards.getName();
+    let singleBoards = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_SINGLE_BOARDS) === "true";
+    if (id && provider) {
+        return {
+            id: id,
+            provider: provider,
+            singleBoards: singleBoards
+        };
+    }
+    return null;
+};
+
+urlParamService.removeImportGridsetProps = function() {
+    urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
+    urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_ID);
+    urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_PROVIDER);
+    urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_SINGLE_BOARDS);
 }
 
 function setURLSearchParamsToURL (searchParams) {

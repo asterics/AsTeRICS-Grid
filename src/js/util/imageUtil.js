@@ -49,6 +49,12 @@ imageUtil.dataStringToFileSuffix = function(dataString = '') {
     if (dataString.startsWith('data:image/jpeg')) {
         return 'jpg';
     }
+    if (dataString.startsWith('data:image/gif')) {
+        return 'gif';
+    }
+    if (dataString.startsWith('data:image/webp')) {
+        return 'webp';
+    }
     return '';
 };
 
@@ -190,15 +196,17 @@ imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
 };
 
 /**
- *
- * @param selector
+ * gets a screenshot in base64 format (or canvas, if options.returnCanvas is true)
+ * @param selector the element selector which defines the container of the area of the screenshot
  * @param options
- * @param options.ignoreSVG if true, SVG images are ignored and not within the screenshot
- * @param options.scale scale of the image, defaults to 0.2
- * @param options.quality scale of the image, defaults to 0.6
+ * @param options.ignoreSVG if true, a screenshot without svg images is returned
+ * @param options.quality quality to use for the screenshot, defaults to 0.6
  * @param options.mimeType mimeType of the image, defaults to "image/webp", can also be "image/png"
+ * @param options.targetWidth max width of the resulting image
+ * @param options.targetHeight max height of the resulting image
+ * @param options.scale scale of the image, only applies if targetWidth/targetHeight are not specified, defaults to 0.2
  * @param options.returnCanvas if true, the canvas is returned, otherwise a base64 encoded image url
- * @returns {Promise<*>} the screenshot data, null if there was no element for the given selector
+ * @return {Promise<*>} the screenshot data, null if there was no element for the given selector
  */
 imageUtil.getScreenshot = function (selector, options = {}) {
     let element = document.querySelector(selector);
@@ -206,9 +214,18 @@ imageUtil.getScreenshot = function (selector, options = {}) {
         return null;
     }
     return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then((html2canvas) => {
+        let calculatedScale;
+        if (options.targetWidth || options.targetHeight) {
+            let domSize = element.getBoundingClientRect();
+            options.targetWidth = options.targetWidth || 300;
+            options.targetHeight = options.targetHeight || 300;
+            let scaleX = options.targetWidth / domSize.width;
+            let scaleY = options.targetHeight / domSize.height;
+            calculatedScale = Math.min(scaleX, scaleY, 1);
+        }
         return html2canvas
             .default(element, {
-                scale: options.scale || 0.2,
+                scale: calculatedScale || options.scale || 0.2,
                 logging: false,
                 useCORS: true,
                 ignoreElements: (node) => {
@@ -232,7 +249,9 @@ imageUtil.getScreenshot = function (selector, options = {}) {
                     if (options.ignoreSVG) {
                         return Promise.resolve(imageUtil.getEmptyImage());
                     } else {
-                        return imageUtil.getScreenshot(selector, { ignoreSVG: true });
+                        return imageUtil.getScreenshot(selector, {
+                            ignoreSVG: true
+                        });
                     }
                 }
             });
