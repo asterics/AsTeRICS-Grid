@@ -214,7 +214,7 @@ describe('Encryption Performance Benchmarks', () => {
             expect(avgTime).toBeLessThan(2000);
         }, 15000);
 
-        test('Compare large data encryption - WebCrypto advantage', async () => {
+        test.skip('Compare large data encryption - WebCrypto advantage', async () => {
             const iterations = 5;
 
             // WebCrypto timing

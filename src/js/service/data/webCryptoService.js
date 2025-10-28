@@ -113,7 +113,9 @@ webCryptoService.isWebCryptoFormat = function(str) {
     }
     try {
         const parsed = JSON.parse(str);
-        return parsed.v === CRYPTO_VERSION && parsed.iv && parsed.ct;
+        return parsed.v === CRYPTO_VERSION &&
+               typeof parsed.iv === 'string' &&
+               typeof parsed.ct === 'string';
     } catch (e) {
         return false;
     }

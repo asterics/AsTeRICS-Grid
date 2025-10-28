@@ -164,7 +164,11 @@ describe('webCryptoService', () => {
                 TEST_SALT,
                 TEST_PASSWORD
             );
-            const corrupted = encrypted.replace(/a/g, 'b');
+            // Corrupt the data by modifying the ciphertext portion
+            const parsed = JSON.parse(encrypted);
+            parsed.ct = parsed.ct.substring(0, parsed.ct.length - 5) + 'XXXXX';
+            const corrupted = JSON.stringify(parsed);
+
             await expect(
                 webCryptoService.decrypt(
                     corrupted,
@@ -226,6 +230,9 @@ describe('webCryptoService', () => {
                 TEST_SALT,
                 TEST_PASSWORD
             );
+            // Verify it's a JSON string with version 2
+            expect(typeof encrypted).toBe('string');
+            expect(encrypted.startsWith('{')).toBe(true);
             expect(webCryptoService.isWebCryptoFormat(encrypted)).toBe(true);
         });
 
