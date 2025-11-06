@@ -4,6 +4,7 @@ import { Model } from '../externals/objectmodel';
 import { InputEventKey } from './InputEventKey';
 import { InputEventARE } from './InputEventARE';
 import {InputEventAudio} from "./InputEventAudio.js";
+import { InputEventFace } from './InputEventFace.js';
 
 class InputConfig extends Model({
     id: String,
@@ -63,7 +64,7 @@ class InputConfig extends Model({
     }
 
     static getInputEventTypes() {
-        return [InputEventKey, InputEventAudio, InputEventARE];
+        return [InputEventKey, InputEventAudio, InputEventARE, InputEventFace];
     }
 
     static getInputEventInstance(modelName, options) {

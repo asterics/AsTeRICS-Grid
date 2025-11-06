@@ -1059,6 +1059,8 @@
   "frequency": "Frecuencia",
   "thresholdHigh": "Umbral máximo",
   "currentlyNotListeningToMicrophone": "Actualmente no se detecta sonido en el micrófono",
+
+
   "thresholdLow": "Umbral mínimo",
   "startManuallyByUserInputEvent": "Iniciar manualmente por un evento de entrada del usuario",
   "roundsUntilGoingBack": "Número de rondas de escaneo antes de regresar a la anterior",
