@@ -20,7 +20,6 @@ module.exports = env => {
 
     var babelRule = {
         test: /\.m?js$/,
-        exclude: /(node_modules)/,
         include: [
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'node_modules/date-fns')
