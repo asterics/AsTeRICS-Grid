@@ -1,6 +1,8 @@
 import { audioUtil } from '../../util/audioUtil';
 import { constants } from '../../util/constants';
 import { localStorageService } from '../data/localStorageService';
+import { util } from '../../util/util';
+import { i18nService } from '../i18nService';
 
 let speechServiceAzure = {};
 
@@ -90,7 +92,7 @@ speechServiceAzure.getVoices = async function () {
         });
         if (!res.ok) return [];
         let objects = await res.json();
-        log.warn(objects);
+        // analyzeObjects(objects);
         return objects.map(azureVoice => azureVoiceToAppVoice(azureVoice));
     } catch (e) {
         log.error("Failed to get voices", e);
@@ -106,6 +108,35 @@ function azureVoiceToAppVoice(azureVoice) {
         type: constants.VOICE_TYPE_MS_AZURE,
         local: false
     }
+}
+
+function analyzeObjects(objects) {
+    let langs = objects.map(o => o.Locale);
+    let langShort = langs.map(lang => i18nService.getBaseLang(lang));
+    let tags = objects.reduce((total, elem) => {
+        if(elem.VoiceTag && elem.VoiceTag.VoicePersonalities) {
+            total = total.concat(elem.VoiceTag.VoicePersonalities);
+        }
+        return total;
+    }, []);
+    let scenarios = objects.reduce((total, elem) => {
+        if(elem.VoiceTag && elem.VoiceTag.TailoredScenarios) {
+            total = total.concat(elem.VoiceTag.TailoredScenarios);
+        }
+        return total;
+    }, []);
+    tags = util.deduplicateArray(tags);
+    langs = util.deduplicateArray(langs);
+    langShort = util.deduplicateArray(langShort);
+    let langsFull = langShort.map(lang => i18nService.t('lang.' + lang));
+    langsFull.sort();
+    scenarios = util.deduplicateArray(scenarios);
+
+    log.warn(langsFull);
+    log.warn(tags);
+    log.warn(scenarios);
+    log.warn(objects.filter(elem => elem.VoiceTag && elem.VoiceTag.VoicePersonalities && elem.VoiceTag.VoicePersonalities.includes("Bright") ))
+    log.warn(objects.filter(elem => elem.Name.includes("Gisela") ))
 }
 
 export { speechServiceAzure };
