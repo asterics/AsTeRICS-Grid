@@ -18,6 +18,17 @@ module.exports = env => {
         options: { sourceMap: mode !== "production" }
     };
 
+    var babelRule = {
+        test: /\.m?js$/,
+        include: [
+            path.resolve(__dirname, 'src'),
+            path.resolve(__dirname, 'node_modules/date-fns')
+        ],
+        use: {
+            loader: 'babel-loader'
+        }
+    };
+
     let publicPath = env.production ? buildDir : `/${buildDir}`
     return {
         mode: mode,
@@ -54,7 +65,7 @@ module.exports = env => {
             PouchDB: 'PouchDB'
         },
         module: {
-            rules: [scssRule, vueRule]
+            rules: [scssRule, vueRule, babelRule]
         }
     };
 };
