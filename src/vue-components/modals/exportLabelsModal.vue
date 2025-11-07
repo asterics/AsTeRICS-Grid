@@ -12,14 +12,14 @@
                         <p>{{ $t('exportLabelsDescription') }}</p>
 
                         <div class="srow">
-                            <label for="languageSelect">{{ $t('selectLanguage') }}</label>
+                            <label class="four columns" for="languageSelect">{{ $t('selectLanguage') }}</label>
                             <select id="languageSelect" v-model="selectedLanguage" class="eight columns">
                                 <option v-for="lang in availableLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                             </select>
                         </div>
 
                         <div class="srow">
-                            <label for="sortOrder">{{ $t('sortOrder') }}</label>
+                            <label class="four columns" for="sortOrder">{{ $t('sortOrder') }}</label>
                             <select id="sortOrder" v-model="sortOrder" class="eight columns">
                                 <option value="alphabetical">{{ $t('alphabetically') }}</option>
                                 <option value="byGrid">{{ $t('byGrid') }}</option>
@@ -34,6 +34,11 @@
                         <div class="srow">
                             <input type="checkbox" id="removeDuplicates" v-model="removeDuplicates"/>
                             <label for="removeDuplicates">{{ $t('removeDuplicateLabels') }}</label>
+                        </div>
+
+                        <div class="srow">
+                            <input type="checkbox" id="hideKeyboards" v-model="hideKeyboards"/>
+                            <label for="hideKeyboards">{{ $t('hideKeyboards') }}</label>
                         </div>
 
                         <div class="srow mt-4">
@@ -63,6 +68,7 @@
     import {i18nService} from "../../js/service/i18nService";
     import {dataService} from "../../js/service/data/dataService";
     import {util} from "../../js/util/util";
+    import {GridData} from "../../js/model/GridData";
     import './../../css/modal.css';
 
     export default {
@@ -74,6 +80,7 @@
                 sortOrder: 'alphabetical',
                 includeGridNames: true,
                 removeDuplicates: false,
+                hideKeyboards: true,
                 allLabels: []
             }
         },
@@ -88,6 +95,12 @@
         methods: {
             generateLabelText() {
                 let grids = this.gridsData || [];
+
+                // Filter out keyboards if hideKeyboards is enabled
+                if (this.hideKeyboards) {
+                    grids = grids.filter(grid => grid.keyboardMode !== GridData.KEYBOARD_ENABLED);
+                }
+
                 this.allLabels = [];
                 let output = '';
 

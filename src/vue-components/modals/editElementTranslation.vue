@@ -16,13 +16,13 @@
                 <div class="srow">
                     <strong class="three columns">{{ $t('textsIn') }}</strong>
                     <select class="nine columns" v-model="chosenLocale">
-                        <option v-for="lang in allLanguages.filter(lang => lang.code !== currentLocale)" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                        <option v-for="lang in languagesToShow" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <div class="srow">
+        <div class="srow label-section">
             <h3>{{ $t('label') }}</h3>
             <div class="row">
                 <div class="six columns">
@@ -83,12 +83,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="srow mt-5">
-            <p class="info-box">
-                <i class="fas fa-info-circle"></i> {{ $t('translationTabInfo') }}
-            </p>
-        </div>
     </div>
 </template>
 
@@ -115,6 +109,18 @@
             },
             chosenLangTranslated: function () {
                 return this.getLocaleTranslation(this.chosenLocale);
+            },
+            languagesToShow: function () {
+                // If there are used locales, only show those (plus any not yet used)
+                // This matches the behavior in settings
+                if (this.usedLocales.length > 0) {
+                    return this.allLanguages.filter(lang => {
+                        return lang.code !== this.currentLocale &&
+                               (this.usedLocales.includes(lang.code) || lang.code === this.chosenLocale);
+                    });
+                }
+                // If no used locales yet, show all languages
+                return this.allLanguages.filter(lang => lang.code !== this.currentLocale);
             },
             customSpeakActions: function () {
                 if (!this.gridElement || !this.gridElement.actions) {
@@ -190,11 +196,15 @@
         margin-top: 1em;
     }
 
+    .label-section {
+        margin-top: 2em;
+    }
+
     h3 {
         font-weight: normal;
         font-size: 1.1em;
         margin-top: 1em;
-        margin-bottom: 0.5em;
+        margin-bottom: 0.8em;
     }
 
     .input-button {
@@ -206,17 +216,5 @@
         padding: 0 1em;
         box-shadow: none;
         background-color: transparent;
-    }
-
-    .info-box {
-        background-color: #e8f4f8;
-        padding: 1em;
-        border-left: 4px solid #3498db;
-        margin: 1em 0;
-    }
-
-    .info-box i {
-        margin-right: 0.5em;
-        color: #3498db;
     }
 </style>
