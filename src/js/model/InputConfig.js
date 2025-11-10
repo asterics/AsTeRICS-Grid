@@ -53,14 +53,10 @@ class InputConfig extends Model({
     huffMarkInactive: [Boolean],
     // Visual indicators for accessibility
     visualIndicatorsEnabled: [Boolean],
-    scanLineColor: [String],
     hoverProgressColor: [String],
     hoverDotColor: [String],
     showHoverProgress: [Boolean],
-    showHoverDot: [Boolean],
-    showScanLine: [Boolean],
-    // Scanning line behavior
-    scanLineSnapAtCellLevel: [Boolean]
+    showHoverDot: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -166,14 +162,11 @@ InputConfig.defaults({
     huffMarkInactive: true,
     // Visual indicators for accessibility
     visualIndicatorsEnabled: true,
-    scanLineColor: constants.DEFAULT_SCAN_LINE_COLOR,
     hoverProgressColor: constants.DEFAULT_HOVER_PROGRESS_COLOR,
     hoverDotColor: constants.DEFAULT_HOVER_DOT_COLOR,
     showHoverProgress: true,
     showHoverDot: false,
-    showScanLine: true,
-    showScanHighlight: true,
-    scanLineSnapAtCellLevel: false
+    showScanHighlight: true
 });
 
 export { InputConfig };

@@ -237,15 +237,6 @@ nav #helpButton:focus {
     transform-style: preserve-3d;
 }
 
-.scanning-line {
-    transition: all 0.1s ease-out;
-    border-radius: 2px;
-    /* Performance optimizations */
-    will-change: transform;
-    backface-visibility: hidden;
-    contain: layout style paint;
-}
-
 /* Ensure visual indicators are visible on different backgrounds */
 .element-container {
     position: relative;
@@ -261,12 +252,6 @@ nav #helpButton:focus {
     .hover-shrinking-dot {
         filter: drop-shadow(0 0 4px rgba(0,0,0,0.8));
     }
-
-    .scanning-line {
-        box-shadow: 0 0 6px rgba(0,0,0,0.8) !important;
-        width: 6px !important;
-        height: 6px !important;
-    }
 }
 
 /* Reduced motion support */
@@ -276,10 +261,6 @@ nav #helpButton:focus {
     }
 
     .hover-shrinking-dot {
-        transition: none;
-    }
-
-    .scanning-line {
         transition: none;
     }
 }

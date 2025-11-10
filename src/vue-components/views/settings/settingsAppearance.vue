@@ -146,26 +146,8 @@
                 <div class="srow mt-3" v-show="metadata.inputConfig.visualIndicatorsEnabled">
                     <accordion :acc-label="$t('scanningIndicators')" class="eleven columns">
                         <div class="srow">
-                            <input id="showScanLine" type="checkbox" v-model="metadata.inputConfig.showScanLine" @change="saveMetadata(metadata)"/>
-                            <label for="showScanLine">{{ $t('showScanningLine') }}</label>
-                        </div>
-                        <div class="srow" v-show="metadata.inputConfig.showScanLine">
-                            <label class="three columns" for="scanLineColor">
-                                <span>{{ $t('scanningLineColor') }}</span>
-                            </label>
-                            <input id="scanLineColor" v-model="metadata.inputConfig.scanLineColor" class="five columns" type="color" @change="saveMetadata(metadata)">
-                            <button class="three columns" @click="metadata.inputConfig.scanLineColor = constants.DEFAULT_SCAN_LINE_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
-                        </div>
-                        <div class="srow">
                             <input id="showScanHighlight" type="checkbox" v-model="metadata.inputConfig.showScanHighlight" @change="saveMetadata(metadata)"/>
                             <label for="showScanHighlight">{{ $t('showScanningHighlight') }}</label>
-                        </div>
-                        <div class="srow" v-show="metadata.inputConfig.showScanLine">
-                            <input id="scanLineSnapAtCellLevel"
-                                    type="checkbox"
-                                    v-model="metadata.inputConfig.scanLineSnapAtCellLevel"
-                                    @change="saveMetadata(metadata)"/>
-                            <label for="scanLineSnapAtCellLevel">{{ $t('snapScanningLineAtCellLevel') }}</label>
                         </div>
                     </accordion>
                 </div>

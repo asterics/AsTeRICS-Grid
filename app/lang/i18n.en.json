@@ -1170,8 +1170,6 @@
   "visualIndicatorsForAccessibility": "Visual indicators for accessibility",
   "enableVisualIndicators": "Enable visual indicators",
   "scanningIndicators": "Scanning indicators",
-  "showScanningLine": "Show scanning line",
-  "scanningLineColor": "Scanning line color",
   "showScanningHighlight": "Show scanning highlight",
   "hoverIndicators": "Hover indicators",
   "showHoverProgressIndicator": "Show hover progress indicator",

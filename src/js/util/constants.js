@@ -174,7 +174,6 @@ constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
 constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK = '#000000';
 
 // Visual indicator colors for accessibility
-constants.DEFAULT_SCAN_LINE_COLOR = '#ef0000';
 constants.DEFAULT_HOVER_PROGRESS_COLOR = '#0066cc';
 constants.DEFAULT_HOVER_DOT_COLOR = '#ff6600';
 constants.COLOR_SCHEME_FITZGERALD_PREFIX = 'CS_MODIFIED_FITZGERALD_KEY';

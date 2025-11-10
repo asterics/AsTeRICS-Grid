@@ -2,7 +2,6 @@ import { L } from '../util/lquery.js';
 import { inputEventHandler } from './inputEventHandler';
 import { InputEventKey } from '../model/InputEventKey';
 import { InputConfig } from '../model/InputConfig';
-import { VisualIndicators } from '../util/visualIndicators';
 
 let Scanner = {};
 
@@ -49,8 +48,6 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var _layoutChangeTimeoutHandler = null;
     var _scanningPaused = false;
     let _inputConfig = options.inputConfig;
-    let _scanningLine = null;
-    let _scanningLineOrientation = null;
     var _touchListener = null;
     var _touchElement = null;
     let _inputEventHandler = inputEventHandler.instance();
@@ -65,9 +62,6 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     let _prevPrevActiveScanElements = null; // flattened elements active one step before last change
     let _safeWindowMs = 120;
     let _isSelecting = false;
-    let _lastVisualActiveElements = null; // the elements used to render the scanning line last
-    let _lastVisualUpdateTs = 0;
-    let _lastLineCenter = null;
 
     function init() {
         parseOptions(options);
@@ -300,50 +294,6 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             }
             _currentActiveScanElements = elems[index];
 
-            // Visual scanning line (optional)
-            if (_inputConfig && _inputConfig.visualIndicatorsEnabled && _inputConfig.showScanLine && VisualIndicators.isPerformanceCapable()) {
-                // Determine orientation based on scanning depth and vertical setting
-                const isRowLevel = _scanningDepth === 0;
-                const isCellLevel = _scanningDepth >= 1;
-                const isVerticalLine = isRowLevel ? !!scanVertical : !scanVertical; // reverse at cell level
-                const desiredOrientation = isVerticalLine ? 'v' : 'h';
-
-                if (!_scanningLine || _scanningLineOrientation !== desiredOrientation) {
-                    if (_scanningLine) {
-                        // clean up previous orientation instance
-                        _scanningLine.destroy();
-                    }
-                    _scanningLine = VisualIndicators.createScanningLine('#grid-container', isVerticalLine, _inputConfig.scanLineColor || undefined);
-                    _scanningLineOrientation = desiredOrientation;
-                }
-                // For row/column level: smooth movement. For cell-level: configurable snap vs animate
-                let duration = 0;
-                if (isRowLevel) {
-                    duration = (index === 0 && elems.length > 2) ? (scanTimeoutMs * scanTimeoutFirstElementFactor) : scanTimeoutMs;
-                    if (didWrap) {
-                        duration = 0; // teleport between groups
-                    } else {
-                        // Compute remaining time budget to avoid skimming faster in sub-groups
-                        const elapsed = Date.now() - _lastScanChangeTs;
-                        const remaining = Math.max(0, duration - elapsed);
-                        // Apply a small safety margin so visuals finish just before logic advances
-                        const safety = Math.min(50, Math.floor(duration * 0.1));
-                        duration = Math.max(0, remaining - safety);
-                    }
-                } else {
-                    // Cell-level: snap or animate based on config flag
-                    const snap = (_inputConfig?.scanLineSnapAtCellLevel ?? false);
-                    duration = snap ? 0 : scanTimeoutMs;
-                }
-                const visTargets = L.flattenArray(elems[index]);
-                _lastVisualActiveElements = visTargets;
-                _lastVisualUpdateTs = Date.now();
-                if (_scanningLine.getLineCenter) {
-                    _lastLineCenter = _scanningLine.getLineCenter();
-                }
-                _scanningLine.show(visTargets, duration);
-            }
-
             _nextScanFn = () => {
                 if (_isSelecting) return; // freeze visual at selection moment
                 scan(elems, { index: index + 1, count: count + 1 });
@@ -450,11 +400,6 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             L.removeClass(itemSelector, scanInactiveClass);
         }
 
-        // Hide visual scanning line
-        if (_scanningLine) {
-            _scanningLine.hide();
-        }
-
         _inputEventHandler.stopListening();
         _startEventHandler.stopListening();
     };
@@ -462,12 +407,6 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     thiz.destroy = function () {
         thiz.stopScanning();
         thiz.disableTouchScanning();
-
-        // Clean up visual scanning line
-        if (_scanningLine) {
-            _scanningLine.destroy();
-            _scanningLine = null;
-        }
 
         _inputEventHandler.destroy();
         _startEventHandler.destroy();
@@ -569,13 +508,9 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             const isCellLevel = _scanningDepth >= 1;
 
             // Choose the most reliable active set
-            // Prefer the exact targets used by the scanning line if they were updated very recently
             let stableActive = [];
             const boundaryMs = Math.max(60, Math.min(160, Math.floor(scanTimeoutMs * 0.2)));
-            const sinceVisual = now - _lastVisualUpdateTs;
-            if (_lastVisualActiveElements && sinceVisual <= boundaryMs) {
-                stableActive = _lastVisualActiveElements;
-            } else if (isCellLevel && sinceChange <= boundaryMs) {
+            if (isCellLevel && sinceChange <= boundaryMs) {
                 stableActive = (_prevActiveScanElements && _prevActiveScanElements.length)
                     ? _prevActiveScanElements
                     : L.flattenArray(_currentActiveScanElements || []);
