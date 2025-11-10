@@ -138,6 +138,45 @@
                         </div>
                     </accordion>
                 </div>
+                <h3 class="mt-5">{{ $t('visualIndicatorsForAccessibility') }}</h3>
+                <div class="srow">
+                    <input id="visualIndicatorsEnabled" type="checkbox" v-model="metadata.inputConfig.visualIndicatorsEnabled" @change="saveMetadata(metadata)"/>
+                    <label for="visualIndicatorsEnabled">{{ $t('enableVisualIndicators') }}</label>
+                </div>
+                <div class="srow mt-3" v-show="metadata.inputConfig.visualIndicatorsEnabled">
+                    <accordion :acc-label="$t('scanningIndicators')" class="eleven columns">
+                        <div class="srow">
+                            <input id="showScanHighlight" type="checkbox" v-model="metadata.inputConfig.showScanHighlight" @change="saveMetadata(metadata)"/>
+                            <label for="showScanHighlight">{{ $t('showScanningHighlight') }}</label>
+                        </div>
+                    </accordion>
+                </div>
+                <div class="srow mt-3" v-show="metadata.inputConfig.visualIndicatorsEnabled">
+                    <accordion :acc-label="$t('hoverIndicators')" class="eleven columns">
+                        <div class="srow">
+                            <input id="showHoverProgress" type="checkbox" v-model="metadata.inputConfig.showHoverProgress" @change="saveMetadata(metadata)"/>
+                            <label for="showHoverProgress">{{ $t('showHoverProgressIndicator') }}</label>
+                        </div>
+                        <div class="srow" v-show="metadata.inputConfig.showHoverProgress">
+                            <label class="three columns" for="hoverProgressColor">
+                                <span>{{ $t('hoverProgressColor') }}</span>
+                            </label>
+                            <input id="hoverProgressColor" v-model="metadata.inputConfig.hoverProgressColor" class="five columns" type="color" @change="saveMetadata(metadata)">
+                            <button class="three columns" @click="metadata.inputConfig.hoverProgressColor = constants.DEFAULT_HOVER_PROGRESS_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                        </div>
+                        <div class="srow">
+                            <input id="showHoverDot" type="checkbox" v-model="metadata.inputConfig.showHoverDot" @change="saveMetadata(metadata)"/>
+                            <label for="showHoverDot">{{ $t('showHoverDotIndicator') }}</label>
+                        </div>
+                        <div class="srow" v-show="metadata.inputConfig.showHoverDot">
+                            <label class="three columns" for="hoverDotColor">
+                                <span>{{ $t('hoverDotColor') }}</span>
+                            </label>
+                            <input id="hoverDotColor" v-model="metadata.inputConfig.hoverDotColor" class="five columns" type="color" @change="saveMetadata(metadata)">
+                            <button class="three columns" @click="metadata.inputConfig.hoverDotColor = constants.DEFAULT_HOVER_DOT_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                        </div>
+                    </accordion>
+                </div>
             </div>
             <div class="three columns">
                 <h3 class="mt-3">{{ $t('appearanceDemo') }}</h3>

@@ -229,6 +229,52 @@ nav #helpButton:focus {
     }
 }
 
+/* Visual indicators for accessibility */
+.hover-clock-progress {
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+    /* Performance optimizations */
+    will-change: transform;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+.hover-shrinking-dot {
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    /* Performance optimizations */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+/* Ensure visual indicators are visible on different backgrounds */
+.element-container {
+    position: relative;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .hover-clock-progress {
+        filter: drop-shadow(0 0 4px rgba(0,0,0,0.8));
+        border-width: 4px !important;
+    }
+
+    .hover-shrinking-dot {
+        filter: drop-shadow(0 0 4px rgba(0,0,0,0.8));
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .hover-clock-progress {
+        animation: none;
+    }
+
+    .hover-shrinking-dot {
+        transition: none;
+    }
+}
+
 
 .text-content {
     margin-left: 1em;
