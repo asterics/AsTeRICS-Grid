@@ -410,5 +410,8 @@
         padding: 0 1em;
         box-shadow: none;
         background-color: transparent;
+        cursor: pointer;
+        z-index: 1;
+        pointer-events: auto;
     }
 </style>

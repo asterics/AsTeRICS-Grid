@@ -14,7 +14,7 @@
                         <div class="srow">
                             <label class="four columns" for="languageSelect">{{ $t('selectLanguage') }}</label>
                             <select id="languageSelect" v-model="selectedLanguage" class="eight columns">
-                                <option v-for="lang in availableLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                                <option v-for="lang in languagesToShow" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                             </select>
                         </div>
 
@@ -77,6 +77,7 @@
             return {
                 selectedLanguage: i18nService.getContentLang(),
                 availableLanguages: i18nService.getAllLanguages(),
+                usedLocales: [],
                 sortOrder: 'alphabetical',
                 includeGridNames: true,
                 removeDuplicates: false,
@@ -90,6 +91,16 @@
             },
             labelCount() {
                 return this.allLabels.length;
+            },
+            languagesToShow() {
+                // If there are used locales, only show those
+                if (this.usedLocales.length > 0) {
+                    return this.availableLanguages.filter(lang => {
+                        return this.usedLocales.includes(lang.code);
+                    });
+                }
+                // If no used locales yet, show all languages
+                return this.availableLanguages;
             }
         },
         methods: {
@@ -172,9 +183,44 @@
                 link.click();
 
                 this.$emit('close');
+            },
+            findUsedLocales() {
+                this.usedLocales = [];
+                let grids = this.gridsData || [];
+
+                for (let grid of grids) {
+                    // Check grid label languages
+                    if (grid.label && typeof grid.label === 'object') {
+                        for (let lang of Object.keys(grid.label)) {
+                            if (!this.usedLocales.includes(lang) && !!grid.label[lang]) {
+                                this.usedLocales.push(lang);
+                            }
+                        }
+                    }
+
+                    // Check element label languages
+                    for (let element of grid.gridElements) {
+                        if (element.label && typeof element.label === 'object') {
+                            for (let lang of Object.keys(element.label)) {
+                                if (!this.usedLocales.includes(lang) && !!element.label[lang]) {
+                                    this.usedLocales.push(lang);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Sort alphabetically by language name
+                this.usedLocales.sort((a, b) => {
+                    let langA = this.availableLanguages.find(l => l.code === a);
+                    let langB = this.availableLanguages.find(l => l.code === b);
+                    if (!langA || !langB) return 0;
+                    return i18nService.getTranslationAppLang(langA).localeCompare(i18nService.getTranslationAppLang(langB));
+                });
             }
         },
         mounted() {
+            this.findUsedLocales();
         }
     }
 </script>
