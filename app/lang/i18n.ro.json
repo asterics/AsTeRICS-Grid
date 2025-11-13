@@ -102,7 +102,7 @@
   "YT_VOLUME_UP": "Crește volumul videoclipului",
   "YT_VOLUME_DOWN": "Redu volumul videoclipului",
   "YT_VOLUME_MUTE": "Opriti/porniti sunetul videoclipului",
-  "PLAY": "Play",
+  "PLAY": "",
   "PAUSE": "Pause",
   "TOGGLE": "Toggle play/pause",
   "STEP_FORWARD": "Step forward",
