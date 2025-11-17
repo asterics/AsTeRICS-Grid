@@ -64,7 +64,7 @@ fileUtil.createZip = async function(fileMap = {}, options = {}) {
         if (!util.isString(content) && !ArrayBuffer.isView(content)) {
             content = JSON.stringify(content);
         }
-        zip.file(path, content, {binary: true}); //binary: true, in order to keep special chars correctly
+        zip.file(path, content, {binary: !util.isString(content)}); //binary: true, in order to keep special chars correctly
     }
     return zip.generateAsync({ type: 'blob' }, (metadata) => {
         options.progressFn(metadata.percent);
