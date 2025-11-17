@@ -62,7 +62,7 @@ button.btn-primary:hover {
 }
 
 header {
-    z-index: 13;
+    z-index: 101;
     margin: 0;
     padding: 2vh;
     border-bottom: 2px solid lightgray;
