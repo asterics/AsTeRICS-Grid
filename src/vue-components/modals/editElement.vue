@@ -19,6 +19,7 @@
                         <edit-element-live v-if="currentTab === TABS.TAB_LIVE_DATA" :grid-element="gridElement"></edit-element-live>
                         <edit-element-image v-if="currentTab === TABS.TAB_IMAGE" :grid-element="gridElement" :grid-data="gridData" :image-search="imageSearch"></edit-element-image>
                         <edit-element-word-forms v-if="currentTab === TABS.TAB_WORDFORMS" :grid-element="gridElement" :grid-data="gridData" @reloadData="initInternal(true)"></edit-element-word-forms>
+                        <edit-element-translation v-if="currentTab === TABS.TAB_TRANSLATION" :grid-element="gridElement" :grid-data="gridData"></edit-element-translation>
                         <edit-element-actions v-if="currentTab === TABS.TAB_ACTIONS" :grid-element="gridElement" :grid-data="gridData"></edit-element-actions>
                     </div>
 
@@ -68,13 +69,15 @@
     import EditElementWordForms from "./editElementWordForms.vue";
     import EditElementLive from './editElementLive.vue';
     import EditElementMatrix from './editElementMatrix.vue';
+    import EditElementTranslation from './editElementTranslation.vue';
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_IMAGE = 'TAB_IMAGE';
     const TAB_WORDFORMS = 'TAB_WORDFORMS';
+    const TAB_TRANSLATION = 'TAB_TRANSLATION';
     const TAB_ACTIONS = 'TAB_ACTIONS';
     const TAB_LIVE_DATA = 'TAB_LIVE_DATA';
-    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_ACTIONS, TAB_LIVE_DATA};
+    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_TRANSLATION, TAB_ACTIONS, TAB_LIVE_DATA};
 
     export default {
         props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
@@ -84,6 +87,7 @@
             EditElementWordForms,
             EditElementHeader,
             EditElementCollect,
+            EditElementTranslation,
             NavTabs, EditElementGeneral, EditElementImage, EditElementActions, EditElementYoutube
         },
         data: function () {
@@ -177,17 +181,17 @@
                         thiz.gridData.gridElements.push(thiz.gridElement);
                     }
                     if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_NORMAL) {
-                        this.possibleTabs = { TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_ACTIONS };
+                        this.possibleTabs = { TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_TRANSLATION, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
-                        this.possibleTabs = { TAB_GENERAL, TAB_ACTIONS };
+                        this.possibleTabs = { TAB_GENERAL, TAB_TRANSLATION, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
-                        this.possibleTabs = { TAB_GENERAL, TAB_ACTIONS };
+                        this.possibleTabs = { TAB_GENERAL, TAB_TRANSLATION, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                         this.possibleTabs = { TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
-                        this.possibleTabs = { TAB_GENERAL, TAB_LIVE_DATA, TAB_IMAGE, TAB_ACTIONS };
+                        this.possibleTabs = { TAB_GENERAL, TAB_LIVE_DATA, TAB_IMAGE, TAB_TRANSLATION, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
-                        this.possibleTabs = { TAB_GENERAL, TAB_ACTIONS };
+                        this.possibleTabs = { TAB_GENERAL, TAB_TRANSLATION, TAB_ACTIONS };
                     }
                     thiz.originalGridElement = JSON.parse(JSON.stringify(thiz.gridElement));
                 });

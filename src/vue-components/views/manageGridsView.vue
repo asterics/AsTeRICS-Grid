@@ -109,6 +109,7 @@
         <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
         <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
+        <export-labels-modal v-if="labelsModal.show" :grids-data="grids" @close="labelsModal.show = false"></export-labels-modal>
         <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
     </div>
@@ -133,6 +134,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService.js";
     import {util} from "../../js/util/util.js";
     import ExportModal from "../modals/exportModal.vue";
+    import ExportLabelsModal from "../modals/exportLabelsModal.vue";
     import ImportModal from "../modals/importModal.vue";
     import NoGridsPage from "../components/noGridsPage.vue";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
@@ -154,7 +156,7 @@
     let vueApp = null;
     let vueConfig = {
         components: {
-            NoGridsPage, ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
+            NoGridsPage, ImportModal, ExportModal, ExportLabelsModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
         data() {
             return {
                 metadata: null,
@@ -179,6 +181,9 @@
                 backupModal: {
                     show: false,
                     exportOptions: {}
+                },
+                labelsModal: {
+                    show: false
                 },
                 importModal: {
                     show: false
@@ -274,6 +279,9 @@
             exportToPdf(gridId) {
                 this.pdfModal.printGridId = gridId;
                 this.pdfModal.show = true;
+            },
+            exportLabels() {
+                this.labelsModal.show = true;
             },
             importBackupFromFile: async function (event) {
                 let importFile = event && event.target && event.target.files[0] ? event.target.files[0] : null;
@@ -643,6 +651,7 @@
         var CONTEXT_NEW = "CONTEXT_NEW";
         var CONTEXT_EXPORT = "CONTEXT_EXPORT";
         var CONTEXT_EXPORT_CUSTOM = "CONTEXT_EXPORT_CUSTOM";
+        var CONTEXT_EXPORT_LABELS = "CONTEXT_EXPORT_LABELS";
         var CONTEXT_IMPORT = "CONTEXT_IMPORT";
         var CONTEXT_IMPORT_BACKUP = "CONTEXT_IMPORT_BACKUP";
         var CONTEXT_EXPORT_PDF_MODAL = "CONTEXT_EXPORT_PDF_MODAL";
@@ -660,6 +669,11 @@
             CONTEXT_EXPORT_CUSTOM: {
                 name: i18nService.t('saveCustomDataToFile'),
                 icon: "fas fa-file-export",
+                disabled: noGrids
+            },
+            CONTEXT_EXPORT_LABELS: {
+                name: i18nService.t('exportElementLabels'),
+                icon: "fas fa-file-alt",
                 disabled: noGrids
             },
             CONTEXT_EXPORT_PDF_MODAL: {
@@ -715,6 +729,10 @@
                 }
                 case CONTEXT_EXPORT_CUSTOM: {
                     vueApp.exportCustom();
+                    break;
+                }
+                case CONTEXT_EXPORT_LABELS: {
+                    vueApp.exportLabels();
                     break;
                 }
                 case CONTEXT_RESET: {
