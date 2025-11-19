@@ -177,7 +177,7 @@
     import {util} from "../../js/util/util";
     import {dataService} from "../../js/service/data/dataService";
     import { GridData } from '../../js/model/GridData';
-    import { speechService } from '../../js/service/speechService';
+    import { speechService } from '../../js/service/speech/speechService';
 
     const TRANSLATE_TYPES = {
         ALL_TEXTS: "ALL_TEXTS",

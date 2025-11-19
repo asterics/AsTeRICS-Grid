@@ -98,8 +98,8 @@
     import {i18nService} from "../../../js/service/i18nService";
     import {dataService} from "../../../js/service/data/dataService";
     import {localStorageService} from "../../../js/service/data/localStorageService";
-    import {speechService} from "../../../js/service/speechService";
-    import {speechServiceExternal} from "../../../js/service/speechServiceExternal.js";
+    import {speechService} from "../../../js/service/speech/speechService";
+    import {speechServiceExternal} from "../../../js/service/speech/speechServiceExternal.js";
     import {util} from "../../../js/util/util";
     import { gridUtil } from '../../../js/util/gridUtil';
     import {constants} from "../../../js/util/constants.js";
