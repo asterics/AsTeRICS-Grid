@@ -152,10 +152,36 @@
                 if (this.options.resetBeforeImport) {
                     await dataService.markCurrentConfigAsBackedUp();
                 }
-                MainVue.showProgressBar(100);
-                if (this.reloadFn) {
-                    this.reloadFn();
-                }
+
+                // Wait for progress bar to close, then show success message
+                setTimeout(() => {
+                    let importedGridsCount = this.importData.grids ? this.importData.grids.length : 0;
+                    let importedDictsCount = this.options.importDictionaries && this.importData.dictionaries ? this.importData.dictionaries.length : 0;
+
+                    console.log('Showing success modal with counts:', importedGridsCount, importedDictsCount);
+
+                    let items = [];
+                    if (importedGridsCount > 0) {
+                        items.push(`${importedGridsCount} grid(s) imported`);
+                    }
+                    if (importedDictsCount > 0) {
+                        items.push(`${importedDictsCount} dictionaries imported`);
+                    }
+
+                    MainVue.showSuccessModal({
+                        header: i18nService.t('importSuccessful'),
+                        items: items,
+                        autoCloseDuration: 2000
+                    });
+
+                    // Reload after modal closes
+                    setTimeout(() => {
+                        console.log('Reloading page');
+                        if (this.reloadFn) {
+                            this.reloadFn();
+                        }
+                    }, 2200);
+                }, 500);
             },
             openHelp() {
                 helpService.openHelp();

@@ -13,13 +13,15 @@ import { Router } from '../router';
 import NotificationBar from '../../vue-components/components/notificationBar.vue';
 import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 import SearchModal from "../../vue-components/modals/searchModal.vue";
+import SuccessModal from "../../vue-components/modals/successModal.vue";
 import { systemActionService } from '../service/systemActionService';
 
 let MainVue = {};
 let app = null;
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
-    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR'
+    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR',
+    MODAL_SUCCESS: 'MODAL_SUCCESS'
 };
 
 MainVue.setViewComponent = function (component, properties) {
@@ -85,6 +87,25 @@ MainVue.showSearchModal = function (options) {
     app.modalOptions = options || {};
 };
 
+/**
+ * show success modal
+ * @param options.header header text (default: "Success")
+ * @param options.message message text
+ * @param options.items array of items to show as list
+ * @param options.autoCloseDuration duration in ms before auto-close (default: 3000)
+ */
+MainVue.showSuccessModal = function (options) {
+    if (!app) {
+        return;
+    }
+    app.showModal = modalTypes.MODAL_SUCCESS;
+    app.$nextTick(() => {
+        if (app.$refs.successModal) {
+            app.$refs.successModal.show(options || {});
+        }
+    });
+};
+
 MainVue.searchModalOpened = function() {
     return app.showModal === modalTypes.MODAL_SEARCH;
 };
@@ -95,7 +116,7 @@ MainVue.init = function () {
         app = new Vue({
             i18n: i18n,
             el: '#app',
-            components: { NotificationBar, ProgressBarModal, SearchModal },
+            components: { NotificationBar, ProgressBarModal, SearchModal, SuccessModal },
             data() {
                 return {
                     component: null,
