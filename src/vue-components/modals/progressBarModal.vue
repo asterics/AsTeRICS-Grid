@@ -37,7 +37,8 @@
         header: '',
         closable: false,
         cancelFn: null,
-        text: ''
+        text: '',
+        preventAutoClose: false
     }
 
     export default {
@@ -56,7 +57,7 @@
                         this.options[key] = options[key];
                     }
                 });
-                if (Math.abs(this.progressPercentage - 100) < 0.001) {
+                if (Math.abs(this.progressPercentage - 100) < 0.001 && !this.options.preventAutoClose) {
                     setTimeout(() => {
                         this.options = JSON.parse(JSON.stringify(defaultOptions));
                         this.$emit('close');

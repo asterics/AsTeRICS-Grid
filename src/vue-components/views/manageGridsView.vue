@@ -285,13 +285,44 @@
                     this.resetFileInput(event);
                     return;
                 }
+
+                // Parse file to get import data for success message
+                let importData = await dataService.convertFileToImportData(importFile);
+
                 await dataService.importBackupUploadedFile(importFile, (progress, text) => {
                     MainVue.showProgressBar(progress, {
                         text: text
                     });
                 });
-                this.resetFileInput(event);
-                this.reload();
+
+                // Wait for progress bar to close, then show success message
+                setTimeout(() => {
+                    let importedGridsCount = importData && importData.grids ? importData.grids.length : 0;
+                    let importedDictsCount = importData && importData.dictionaries ? importData.dictionaries.length : 0;
+
+                    console.log('Showing success modal with counts:', importedGridsCount, importedDictsCount);
+
+                    let items = [];
+                    if (importedGridsCount > 0) {
+                        items.push(`${importedGridsCount} grid(s) imported`);
+                    }
+                    if (importedDictsCount > 0) {
+                        items.push(`${importedDictsCount} dictionaries imported`);
+                    }
+
+                    MainVue.showSuccessModal({
+                        header: i18nService.t('importSuccessful'),
+                        items: items,
+                        autoCloseDuration: 2000
+                    });
+
+                    // Reload after modal closes
+                    setTimeout(() => {
+                        console.log('Reloading page');
+                        this.resetFileInput(event);
+                        this.reload();
+                    }, 2200);
+                }, 500);
             },
             reload: function (openGridId) {
                 let thiz = this;
