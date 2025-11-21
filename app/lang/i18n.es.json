@@ -37,6 +37,7 @@
   "WEBRADIO_ACTION_VOLDOWN": "Bajar volumen de la radio",
   "CONFIRM_IMPORT_BACKUP": "Atención: Esta acción eliminará la configuración existente y la reemplazará con los datos del archivo \"{0}\". ¿Continuar?",
   "CONFIRM_DELETE_GRID": "¿Realmente desea eliminar el tablero \"{0}\"?",
+  "CONFIRM_REPLACE_EXISTING_GRID": "El tablero \"{0}\" ya existe. ¿Desea reemplazarlo?",
   "CONFIRM_DELETE_DICT": "¿Realmente desea eliminar el diccionario \"{0}\"?",
   "CONFIRM_RESET_DB": "¿Realmente desea restablecer la configuración predeterminada? ¡Se eliminarán todos los tableros existentes!",
   "CONFIRM_DELETE_ALL_ELEMS": "¿Realmente desea eliminar todas las celdas del tablero actual?",
