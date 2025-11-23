@@ -18,7 +18,8 @@ Scanner.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveC
         touchScanning: false,
         inputEventSelect: inputConfig.scanInputs.filter((e) => e.label === InputConfig.SELECT)[0],
         inputEventNext: inputConfig.scanInputs.filter((e) => e.label === InputConfig.NEXT)[0],
-        scanStartWithAction: inputConfig.scanStartWithAction
+        scanStartWithAction: inputConfig.scanStartWithAction,
+        inputConfig: inputConfig
     });
 };
 
@@ -46,12 +47,21 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var _scanTimeoutHandler = null;
     var _layoutChangeTimeoutHandler = null;
     var _scanningPaused = false;
+    let _inputConfig = options.inputConfig;
     var _touchListener = null;
     var _touchElement = null;
     let _inputEventHandler = inputEventHandler.instance();
     let _startEventHandler = inputEventHandler.instance();
     let _nextScanFn = null;
     let _scanningDepth = 0;
+    let _nextScanRaf = null;
+    let _lastSelectTs = 0;
+    const _SAFE_SELECT_WINDOW_MS = 120;
+    let _lastScanChangeTs = 0;
+    let _prevActiveScanElements = null; // flattened elements active at last change
+    let _prevPrevActiveScanElements = null; // flattened elements active one step before last change
+    let _safeWindowMs = 120;
+    let _isSelecting = false;
 
     function init() {
         parseOptions(options);
@@ -250,8 +260,9 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         elems = elems || [];
         let count = scanOptions.count || 0;
         let index = scanOptions.index || 0;
-        let wrap = index === 0;
-        wrap = wrap || index > elems.length - 1;
+        // Detect wrap specifically when stepping past the last index
+        let didWrap = index > elems.length - 1;
+        let wrap = index === 0 || didWrap;
         index = wrap ? 0 : index;
         if (count >= subScanRepeat * elems.length && _scanningDepth !== 0) {
             thiz.restartScanning();
@@ -264,38 +275,64 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
                 return;
             }
         }
-        _activeListener(L.flattenArray(elems[index]), wrap, scanOptions.restarted);
-        L.removeClass(itemSelector, scanActiveClass);
-        L.addClass(itemSelector, scanInactiveClass);
+        const flattened = L.flattenArray(elems[index]);
+        _activeListener(flattened, wrap, scanOptions.restarted);
+        // track scan change for timing guards and visual duration tuning
+        const nowTs = Date.now();
+        _lastScanChangeTs = nowTs;
+        // shift previous pointers: prevPrev <- prev, prev <- current
+        _prevPrevActiveScanElements = _prevActiveScanElements;
+        _prevActiveScanElements = flattened;
 
         if (_isScanning) {
-            L.addClass(elems[index], scanActiveClass);
-            L.removeClass(elems, scanInactiveClass);
+            // Apply CSS highlighting if enabled
+            if (!_inputConfig || _inputConfig.showScanHighlight === true) {
+                L.removeClass(itemSelector, scanActiveClass);
+                L.addClass(itemSelector, scanInactiveClass);
+                L.addClass(elems[index], scanActiveClass);
+                L.removeClass(elems, scanInactiveClass);
+            }
             _currentActiveScanElements = elems[index];
+
             _nextScanFn = () => {
+                if (_isSelecting) return; // freeze visual at selection moment
                 scan(elems, { index: index + 1, count: count + 1 });
             };
             if (autoScan) {
                 let timeout =
                     index === 0 && elems.length > 2 ? scanTimeoutMs * scanTimeoutFirstElementFactor : scanTimeoutMs;
                 _scanTimeoutHandler = setTimeout(function () {
+                    // If a select just happened, suppress this auto-advance to avoid off-by-one
+                    if (Date.now() - _lastSelectTs <= _SAFE_SELECT_WINDOW_MS) {
+                        return;
+                    }
                     _nextScanFn();
                 }, timeout);
+                // update dynamic safe window proportional to current timeout
+                _safeWindowMs = Math.max(80, Math.min(180, Math.floor(timeout * 0.15)));
             }
         }
     }
 
     function spitToSubarrays(array) {
+        console.log('spitToSubarrays called with:', array);
+        console.log('scanBinary:', scanBinary, 'minBinarySplitThreshold:', minBinarySplitThreshold);
+
         var returnArray = [];
         array = array || [];
         var chunk = 1;
         if (scanBinary && array.length > minBinarySplitThreshold) {
             chunk = Math.ceil(array.length / 2);
         }
+
+        console.log('Using chunk size:', chunk);
+
         for (var i = 0, j = array.length; i < j; i += chunk) {
             var temparray = array.slice(i, i + chunk);
             returnArray.push(temparray);
         }
+
+        console.log('spitToSubarrays returning:', returnArray);
         return returnArray;
     }
 
@@ -329,7 +366,8 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         } else {
             _inputEventHandler.onInputEvent(new InputEventKey({ keyCode: 32 }), thiz.select); //space as default key
         }
-        if (options.inputEventNext) {
+        // Only bind NEXT in manual scanning; in auto-scan it causes off-by-one races if bound to same key as SELECT
+        if (options.inputEventNext && !autoScan) {
             _inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
         }
     }
@@ -356,8 +394,12 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         if (_scanTimeoutHandler) {
             clearTimeout(_scanTimeoutHandler);
         }
-        L.removeClass(itemSelector, scanActiveClass);
-        L.removeClass(itemSelector, scanInactiveClass);
+        // Remove CSS highlighting if it was applied
+        if (!_inputConfig || _inputConfig.showScanHighlight === true) {
+            L.removeClass(itemSelector, scanActiveClass);
+            L.removeClass(itemSelector, scanInactiveClass);
+        }
+
         _inputEventHandler.stopListening();
         _startEventHandler.stopListening();
     };
@@ -365,6 +407,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     thiz.destroy = function () {
         thiz.stopScanning();
         thiz.disableTouchScanning();
+
         _inputEventHandler.destroy();
         _startEventHandler.destroy();
     };
@@ -454,25 +497,52 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
      * event listener.
      */
     thiz.select = function () {
+        // Debounce select very close to scan-advance to avoid off-by-one select
+        const now = Date.now();
+        _lastSelectTs = now;
+
         if (_isScanning) {
+            _isSelecting = true;
+            // Determine if this select is happening near the scan change boundary
+            const sinceChange = now - _lastScanChangeTs;
+            const isCellLevel = _scanningDepth >= 1;
+
+            // Choose the most reliable active set
+            let stableActive = [];
+            const boundaryMs = Math.max(60, Math.min(160, Math.floor(scanTimeoutMs * 0.2)));
+            if (isCellLevel && sinceChange <= boundaryMs) {
+                stableActive = (_prevActiveScanElements && _prevActiveScanElements.length)
+                    ? _prevActiveScanElements
+                    : L.flattenArray(_currentActiveScanElements || []);
+            } else {
+                stableActive = L.flattenArray(_currentActiveScanElements || []);
+            }
+
             thiz.stopScanning();
             _isScanning = true;
             _scanningDepth++;
-            if (_currentActiveScanElements.length > 1) {
-                scan(spitToSubarrays(_currentActiveScanElements));
-            } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
-                scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)));
+
+            if (stableActive.length > 1) {
+                scan(spitToSubarrays(stableActive));
+            } else if (L.flattenArray(stableActive).length > 1) {
+                scan(spitToSubarrays(L.flattenArray(stableActive)));
             } else {
-                if (_selectionListener) {
-                    _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
+                if (_selectionListener && stableActive.length > 0) {
+                    _selectionListener(L.flattenArray(stableActive)[0]);
                 }
                 thiz.restartScanning();
             }
+            _isSelecting = false;
         }
     };
 
     thiz.next = function () {
         if (_nextScanFn) {
+            // If select was pressed very recently, skip this advance to prevent selecting the next item instead
+            const sinceSelect = Date.now() - _lastSelectTs;
+            if (sinceSelect <= _safeWindowMs) {
+                return; // ignore this tick
+            }
             clearTimeout(_scanTimeoutHandler);
             _nextScanFn();
         }
