@@ -122,14 +122,35 @@
                                 <span>{{ $t('colorSchemeForCategories') }}</span>
                             </label>
                             <select id="colorScheme" class="five columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
-                                <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
+                                <optgroup :label="$t('predefinedSchemes')">
+                                    <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
+                                </optgroup>
+                                <optgroup v-if="customColorSchemes.length > 0" :label="$t('customSchemes')">
+                                    <option v-for="scheme in customColorSchemes" :value="scheme.name">{{scheme.displayName}}</option>
+                                </optgroup>
                             </select>
+                            <div class="four columns d-flex" style="justify-content: flex-end; gap: 0.5rem;">
+                                <button class="button-compact" @click="createCustomScheme" :title="$t('createCustomScheme')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>{{ $t('createCustomScheme') }}</span>
+                                </button>
+                                <button
+                                    class="button-compact"
+                                    @click="editCurrentScheme"
+                                    :disabled="!isCurrentSchemeCustom"
+                                    :title="isCurrentSchemeCustom ? $t('editCurrentScheme') : $t('cannotEditPredefinedScheme')"
+                                >
+                                    <i class="fas fa-pencil-alt"></i>
+                                    <span>{{ $t('editScheme') }}</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="srow">
                             <div class="five columns offset-by-three d-flex" style="height: 1.5em">
                                 <div class="flex-grow-1" v-for="(color, index) in MetaData.getActiveColorScheme(metadata).colors" :title="$t(MetaData.getActiveColorScheme(metadata).categories[index])" :style="`background-color: ${color};`"></div>
                             </div>
                         </div>
+
                         <div class="srow">
                             <input id="colorSchemeActive" type="checkbox" v-model="metadata.colorConfig.colorSchemesActivated" @change="saveMetadata(metadata)"/>
                             <label for="colorSchemeActive">
@@ -148,6 +169,15 @@
                 <app-grid-display v-if="testGridData" style="max-width: 200px; height: 500px;" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
             </div>
         </div>
+
+        <!-- Custom Color Scheme Modal -->
+        <custom-color-scheme-modal
+            v-if="showCustomSchemeModal"
+            :scheme="editingScheme"
+            :additional-color-schemes="metadata.colorConfig.additionalColorSchemes || []"
+            @save="onCustomSchemeSaved"
+            @close="closeCustomSchemeModal"
+        />
     </div>
 </template>
 
@@ -165,9 +195,10 @@
     import { GridData } from '../../../js/model/GridData';
     import { util } from '../../../js/util/util';
     import { ColorConfig } from '../../../js/model/ColorConfig';
+    import CustomColorSchemeModal from '../../modals/customColorSchemeModal.vue';
 
     export default {
-        components: { AppGridDisplay, Accordion, SliderInput },
+        components: { AppGridDisplay, Accordion, SliderInput, CustomColorSchemeModal },
         props: ["metadata", "userSettingsLocal"],
         mixins: [settingsSaveMixin],
         data() {
@@ -178,6 +209,17 @@
                 constants: constants,
                 testGridData: null,
                 testElementLabel: i18nService.t("testElement"),
+                showCustomSchemeModal: false,
+                editingScheme: null
+            }
+        },
+        computed: {
+            customColorSchemes() {
+                return this.metadata.colorConfig.additionalColorSchemes || [];
+            },
+            isCurrentSchemeCustom() {
+                return this.metadata.colorConfig.activeColorScheme &&
+                       this.metadata.colorConfig.activeColorScheme.startsWith(constants.COLOR_SCHEME_CUSTOM_PREFIX);
             }
         },
         methods: {
@@ -275,6 +317,63 @@
                     });
                 }, 200, "RESET_TEST_GRD");
 
+            },
+            createCustomScheme() {
+                // Pre-select the exact currently active scheme (variant) as base
+                const currentScheme = MetaData.getActiveColorScheme(this.metadata);
+                const baseSchemeName = currentScheme && currentScheme.name
+                    ? currentScheme.name
+                    : constants.DEFAULT_COLOR_SCHEMES[0].name;
+
+                // Pass the base scheme name so the modal can initialize precisely
+                this.editingScheme = { baseSchemeName };
+                this.showCustomSchemeModal = true;
+            },
+            editCurrentScheme() {
+                if (!this.isCurrentSchemeCustom) {
+                    return;
+                }
+
+                let currentScheme = this.customColorSchemes.find(
+                    scheme => scheme.name === this.metadata.colorConfig.activeColorScheme
+                );
+
+                if (currentScheme) {
+                    this.editingScheme = currentScheme;
+                    this.showCustomSchemeModal = true;
+                }
+            },
+
+            async onCustomSchemeSaved(updatedAdditionalColorSchemes, activeSchemeId) {
+                try {
+                    // Update the metadata with the new additional color schemes
+                    this.metadata.colorConfig.additionalColorSchemes = updatedAdditionalColorSchemes;
+
+                    // Set active scheme if provided
+                    if (activeSchemeId) {
+                        this.metadata.colorConfig.activeColorScheme = activeSchemeId;
+                    }
+
+                    // Ensure active scheme exists; if deleted, fall back to default
+                    const activeId = this.metadata.colorConfig.activeColorScheme;
+                    const exists = MetaData.getAllColorSchemes(this.metadata)
+                        .some(s => s.name === activeId);
+                    if (!exists) {
+                        this.metadata.colorConfig.activeColorScheme = constants.DEFAULT_COLOR_SCHEMES[0].name;
+                    }
+
+                    // Save metadata using the mixin
+                    await this.saveMetadata(this.metadata);
+
+                    this.showCustomSchemeModal = false;
+                    this.editingScheme = null;
+                } catch (error) {
+                    console.error('Error saving custom schemes:', error);
+                }
+            },
+            closeCustomSchemeModal() {
+                this.showCustomSchemeModal = false;
+                this.editingScheme = null;
             }
         },
         async mounted() {
@@ -301,4 +400,46 @@
             border-right: 0;
         }
     }
+
+    .button-small {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
+        border: 1px solid #ccc;
+        background-color: #f8f9fa;
+        color: #333;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .button-small:hover:not(:disabled) {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+
+    .button-small:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .me-2 {
+        margin-right: 0.5rem;
+    }
+
+
+
+    /* Compact, half-height buttons without reducing font size */
+    .button-compact {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.7rem; /* reduce vertical padding to cut height ~in half */
+        line-height: 1.1;
+        white-space: nowrap; /* keep label on one line */
+    }
+
 </style>
