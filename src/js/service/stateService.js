@@ -259,9 +259,11 @@ stateService.nextWordForm = function (elementId) {
     let nextIndexOfIndexes = indexOfIndexes < possibleIndexes.length - 1 ? indexOfIndexes + 1 : 0;
     let nextId = possibleIndexes[nextIndexOfIndexes];
 
-    setTextInUI(element.id, currentLangForms[nextId].value);
-    _currentWordFormIds[element.id] = nextId;
-    return currentId;
+    if (nextId !== undefined) {
+        setTextInUI(element.id, currentLangForms[nextId].value);
+        _currentWordFormIds[element.id] = nextId;
+    }
+    return nextId;
 };
 
 /**
@@ -316,10 +318,9 @@ function getElement(id) {
         return null;
     }
     let globalGridElements = _currentGlobalGrid ? _currentGlobalGrid.gridElements : [];
-    return (
-        _currentGrid.gridElements.filter((e) => e.id === id)[0] ||
-        globalGridElements.filter((e) => e.id === id)[0]
-    );
+    let element = _currentGrid.gridElements.filter((e) => e.id === id)[0] ||
+        globalGridElements.filter((e) => e.id === id)[0];
+    return element;
 }
 
 function setTextInUI (elementId, text) {
