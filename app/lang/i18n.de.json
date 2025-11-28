@@ -1214,6 +1214,7 @@
   "DT_FORMAT_WEEKDAY": "Wochentag",
   "DT_FORMAT_MONTH": "Monat",
   "DT_FORMAT_CUSTOM": "Custom format",
+  "timeOffsetHours": "Time offset (hours)",
   "formatString": "Format string",
   "seeDocumentation": "see documentation",
   "APP_STATE_VOLUME_GLOBAL": "Systemlautstärke",
