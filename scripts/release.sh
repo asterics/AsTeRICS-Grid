@@ -29,6 +29,11 @@ do_gh_pages_update () {
     git checkout $branch
 }
 
+# force to run in correct dir
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$SCRIPT_DIR"
+echo "running in $SCRIPT_DIR";
+
 branch=$(git symbolic-ref --short HEAD)
 if [ $branch != "stable" ]; then
    echo "main release should be done from branch 'stable', currently on '$branch', aborting."
@@ -59,10 +64,16 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/abo
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 
 echo "building..."
+rm -rf app/build
 npm run build
-echo "commiting bundles and manifest..."
+
+# generate and replace paths to cache in serviceWorker.js
+node scripts/getServiceWorkerCachePaths.js
+
+echo "commiting bundles and service worker..."
 git add app/build
 git add serviceWorker.js
+git add serviceWorkerCachePaths.js
 git commit -m "added bundles for release $tagname"
 git push origin HEAD
 git checkout src/vue-components/views/aboutView.vue
