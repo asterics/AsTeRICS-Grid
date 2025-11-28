@@ -35,7 +35,7 @@ TextConfig.TOO_LONG_AUTO= 'AUTO';
 TextConfig.TOO_LONG_TRUNCATE = 'TRUNCATE';
 TextConfig.TOO_LONG_ELLIPSIS = 'ELLIPSIS';
 
-TextConfig.FONTS = ["Arial", "Jost-400-Book", "OpenDyslexic-Regular", "Primae-Bold", "Primae-BoldCursive", "Roboto-Regular", "Times"];
+TextConfig.FONTS = ["Arial", "Jost-400-Book", "OpenDyslexic-Regular", "Prima-Bold", "Prima-BoldCursive", "Roboto-Regular", "Times"];
 
 TextConfig.defaults({
     modelName: TextConfig.getModelName(),
