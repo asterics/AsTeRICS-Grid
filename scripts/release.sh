@@ -29,6 +29,11 @@ do_gh_pages_update () {
     git checkout $branch
 }
 
+# force to run in correct dir
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$SCRIPT_DIR"
+echo "running in $SCRIPT_DIR";
+
 branch=$(git symbolic-ref --short HEAD)
 if [ $branch != "stable" ]; then
    echo "main release should be done from branch 'stable', currently on '$branch', aborting."

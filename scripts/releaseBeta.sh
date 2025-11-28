@@ -7,6 +7,11 @@ set -e
 
 sshUserHost="u91187759@home708826695.1and1-data.host"
 
+# force to run in correct dir
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$SCRIPT_DIR"
+echo "running in $SCRIPT_DIR";
+
 doStash=true
 if git diff-index --quiet HEAD --; then
     doStash=false
