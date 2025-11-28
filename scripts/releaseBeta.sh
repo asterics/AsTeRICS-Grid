@@ -26,6 +26,9 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/abo
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 npm run build
 
+# generate and replace paths to cache in serviceWorker.js
+node scripts/getServiceWorkerCachePaths.js
+
 echo "copy data to host..."
 ssh $sshUserHost "rm -rf ~/asterics-grid-beta/*"
 scp index.html $sshUserHost:~/asterics-grid-beta/

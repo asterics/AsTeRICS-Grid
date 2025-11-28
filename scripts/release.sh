@@ -60,9 +60,14 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 
 echo "building..."
 npm run build
-echo "commiting bundles and manifest..."
+
+# generate and replace paths to cache in serviceWorker.js
+node scripts/getServiceWorkerCachePaths.js
+
+echo "commiting bundles and service worker..."
 git add app/build
 git add serviceWorker.js
+git add serviceWorkerCachePaths.js
 git commit -m "added bundles for release $tagname"
 git push origin HEAD
 git checkout src/vue-components/views/aboutView.vue
