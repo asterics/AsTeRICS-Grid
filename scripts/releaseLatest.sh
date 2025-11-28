@@ -57,6 +57,7 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/abo
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 
 echo "building..."
+rm -rf app/build
 npm run build
 
 # generate and replace paths to cache in serviceWorker.js

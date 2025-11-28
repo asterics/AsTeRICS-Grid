@@ -24,6 +24,8 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/util/constants.js
 sed -i -e "s/#ASTERICS_GRID_ENV#/BETA/g" src/js/util/constants.js
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/aboutView.vue
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
+
+rm -rf app/build
 npm run build
 
 # generate and replace paths to cache in serviceWorker.js
