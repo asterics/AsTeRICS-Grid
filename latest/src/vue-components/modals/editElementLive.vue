@@ -30,6 +30,12 @@
                 </select>
             </div>
         </div>
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_DATETIME">
+            <label class="col-sm-4" for="offsetHours">{{ $t('timeOffsetHours') }}</label>
+            <div class="col-sm-7">
+                <input id="offsetHours" type="number" class="col-12" v-model.number="gridElement.dateTimeOffsetHours" @input="recalcDtValues(300)">
+            </div>
+        </div>
         <div class="row" v-if="gridElement.mode === GridElementLive.MODE_DATETIME && gridElement.dateTimeFormat === GridElementLive.DT_FORMAT_CUSTOM">
             <label class="col-sm-4" for="dt_format_custom">{{ $t('formatString') }}</label>
             <div class="col-sm-7">
@@ -221,7 +227,8 @@
                             mode: GridElementLive.MODE_DATETIME,
                             dateTimeFormat: format,
                             dateTimeLocale: this.gridElement.dateTimeLocale,
-                            dateTimeFormatCustom: this.gridElement.dateTimeFormatCustom
+                            dateTimeFormatCustom: this.gridElement.dateTimeFormatCustom,
+                            dateTimeOffsetHours: this.gridElement.dateTimeOffsetHours
                         }));
                     }
                 }, debounceMs);

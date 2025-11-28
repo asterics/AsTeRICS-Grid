@@ -7,6 +7,11 @@ set -e
 
 sshUserHost="u91187759@home708826695.1and1-data.host"
 
+# force to run in correct dir
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$SCRIPT_DIR"
+echo "running in $SCRIPT_DIR";
+
 doStash=true
 if git diff-index --quiet HEAD --; then
     doStash=false
@@ -24,7 +29,12 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/util/constants.js
 sed -i -e "s/#ASTERICS_GRID_ENV#/BETA/g" src/js/util/constants.js
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/aboutView.vue
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
+
+rm -rf app/build
 npm run build
+
+# generate and replace paths to cache in serviceWorker.js
+node scripts/getServiceWorkerCachePaths.js
 
 echo "copy data to host..."
 ssh $sshUserHost "rm -rf ~/asterics-grid-beta/*"

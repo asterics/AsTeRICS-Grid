@@ -894,6 +894,7 @@
         });
 
         function handleContextMenu(key, elementId, origin) {
+            elementId = elementId || vueApp.markedElementIds[0];
             switch (key) {
                 case CONTEXT_NEW_SINGLE: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL, origin !== ORIGIN_MORE_BTN);
