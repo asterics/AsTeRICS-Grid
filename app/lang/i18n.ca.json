@@ -1214,6 +1214,7 @@
   "DT_FORMAT_WEEKDAY": "Dia de la setmana",
   "DT_FORMAT_MONTH": "Mes",
   "DT_FORMAT_CUSTOM": "Format personalitzat",
+  "timeOffsetHours": "Time offset (hours)",
   "formatString": "Format string",
   "seeDocumentation": "Veure documentació",
   "APP_STATE_VOLUME_GLOBAL": "Volum del sistema",
