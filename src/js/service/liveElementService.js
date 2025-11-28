@@ -151,7 +151,7 @@ function updateElements(options = {}) {
 }
 
 function getValueDateTime(element) {
-    let offset = element.dateTimeOffsetHours || 0;
+    let offset = parseFloat(element.dateTimeOffsetHours) || 0;
     let date = new Date(new Date().getTime() + offset * 60 * 60 * 1000);
     switch (element.dateTimeFormat) {
         case GridElementLive.DT_FORMAT_DATE:
