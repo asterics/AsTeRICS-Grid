@@ -1214,6 +1214,7 @@
   "DT_FORMAT_WEEKDAY": "أيام الأسبوع",
   "DT_FORMAT_MONTH": "شهر",
   "DT_FORMAT_CUSTOM": "Custom format",
+  "timeOffsetHours": "Time offset (hours)",
   "formatString": "Format string",
   "seeDocumentation": "see documentation",
   "APP_STATE_VOLUME_GLOBAL": "مستوى صوت النظام",
