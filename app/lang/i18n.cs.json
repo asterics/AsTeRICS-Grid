@@ -1214,6 +1214,7 @@
   "DT_FORMAT_WEEKDAY": "Den v týdnu",
   "DT_FORMAT_MONTH": "Měsíc",
   "DT_FORMAT_CUSTOM": "Custom format",
+  "timeOffsetHours": "Time offset (hours)",
   "formatString": "Format string",
   "seeDocumentation": "see documentation",
   "APP_STATE_VOLUME_GLOBAL": "Hlasitost systému",

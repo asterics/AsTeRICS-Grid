@@ -1214,6 +1214,7 @@
   "DT_FORMAT_WEEKDAY": "Munkanap",
   "DT_FORMAT_MONTH": "Hónap",
   "DT_FORMAT_CUSTOM": "Egyéni formátum",
+  "timeOffsetHours": "Time offset (hours)",
   "formatString": "Fomátum string",
   "seeDocumentation": "részletek a dokumentációban",
   "APP_STATE_VOLUME_GLOBAL": "Rendszer hangerő",
