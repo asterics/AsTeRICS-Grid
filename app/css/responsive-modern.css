@@ -1,0 +1,384 @@
+/**
+ * AsTeRICS-Grid Modern Responsive Styles
+ * Améliorations pour mobile et tablette
+ */
+
+/* ===== BREAKPOINTS STANDARDS ===== */
+/*
+  Mobile:  < 640px
+  Tablet:  640px - 1024px
+  Desktop: > 1024px
+*/
+
+/* ===== TOUCH TARGETS (44x44px minimum) ===== */
+@media (max-width: 1024px) {
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  .button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 24px;
+    min-height: 24px;
+  }
+}
+
+/* ===== MOBILE (< 640px) ===== */
+@media (max-width: 640px) {
+  /* Typography responsive */
+  html {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: var(--text-xl);
+  }
+
+  h2 {
+    font-size: var(--text-lg);
+  }
+
+  /* Espacements réduits */
+  .p-lg {
+    padding: var(--space-md);
+  }
+
+  .p-xl {
+    padding: var(--space-lg);
+  }
+
+  .m-lg {
+    margin: var(--space-md);
+  }
+
+  .m-xl {
+    margin: var(--space-lg);
+  }
+
+  /* Boutons pleine largeur */
+  .button-container button,
+  .modal-footer button {
+    width: 100%;
+    margin-bottom: var(--space-sm);
+  }
+
+  /* Navigation simplifiée */
+  nav button {
+    font-size: var(--text-lg);
+    padding: var(--space-md);
+  }
+
+  /* Cacher les textes longs sur mobile */
+  .hide-mobile-text {
+    font-size: 0;
+  }
+
+  .hide-mobile-text i {
+    font-size: var(--text-xl);
+  }
+
+  /* Inputs plus grands */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px; /* Évite le zoom automatique sur iOS */
+    padding: var(--space-md);
+  }
+
+  /* Select amélioré */
+  select {
+    background-size: 20px;
+    padding-right: var(--space-2xl);
+  }
+}
+
+/* ===== TABLETTE (640px - 1024px) ===== */
+@media (min-width: 640px) and (max-width: 1024px) {
+  /* Layout à 2 colonnes */
+  .grid-2-col-tablet {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  /* Sidebar plus large */
+  .hg-sidebar {
+    flex: 0 0 200px;
+  }
+}
+
+/* ===== LANDSCAPE MOBILE ===== */
+@media (max-width: 850px) and (max-height: 500px) and (orientation: landscape) {
+  /* Réduire les marges verticales */
+  .modal-container {
+    padding: var(--space-md) var(--space-xl);
+  }
+
+  .modal-header,
+  .modal-footer {
+    margin-top: var(--space-sm);
+  }
+
+  /* Header plus compact */
+  header {
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* ===== SIDEBAR RESPONSIVE ===== */
+@media (max-width: 850px) {
+  .hg-sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    height: 100vh;
+    width: 250px;
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-xl);
+    transition: left var(--transition-slow);
+    z-index: var(--z-modal);
+  }
+
+  .hg-sidebar.open {
+    left: 0;
+  }
+
+  /* Overlay pour fermer la sidebar */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: calc(var(--z-modal) - 1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-slow);
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* ===== MODALES PLEIN ÉCRAN SUR MOBILE ===== */
+@media (max-width: 640px) {
+  .modal-wrapper {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .modal-container {
+    max-width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    padding: var(--space-lg);
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--color-white);
+    z-index: 10;
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .modal-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: var(--color-white);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-gray-200);
+  }
+}
+
+/* ===== GRILLES RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .grid-container {
+    padding: var(--space-sm);
+  }
+
+  /* Grille plus petite sur mobile */
+  .grid-item {
+    min-height: 60px;
+  }
+}
+
+/* ===== NAVIGATION TABS RESPONSIVE ===== */
+@media (max-width: 640px) {
+  nav ul {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  nav ul::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  nav li {
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+}
+
+/* ===== ACCESSIBILITÉ MOBILE ===== */
+
+/* Zone de saisie agrandie */
+@media (max-width: 640px) and (hover: none) {
+  button,
+  a,
+  input,
+  select {
+    min-height: 48px;
+  }
+}
+
+/* Safe areas pour iPhone X+ */
+@supports (padding: max(0px)) {
+  .modal-container,
+  .hg-sidebar,
+  header {
+    padding-left: max(var(--space-lg), env(safe-area-inset-left));
+    padding-right: max(var(--space-lg), env(safe-area-inset-right));
+  }
+
+  .modal-footer,
+  .toast-container {
+    padding-bottom: max(var(--space-lg), env(safe-area-inset-bottom));
+  }
+}
+
+/* ===== SCROLL AMÉLIORÉ ===== */
+
+/* Smooth scrolling */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Scroll snap pour carousels/listes */
+.scroll-snap-x {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-x > * {
+  scroll-snap-align: start;
+}
+
+/* ===== UTILITAIRES RESPONSIVE ===== */
+
+/* Cacher sur mobile */
+@media (max-width: 640px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Cacher sur tablette */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+/* Cacher sur desktop */
+@media (min-width: 1024px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Afficher seulement sur mobile */
+.show-mobile {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* Afficher seulement sur tablette */
+.show-tablet {
+  display: none !important;
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  .show-tablet {
+    display: block !important;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .no-print,
+  .sidebar,
+  .modal,
+  .toast-container,
+  button.close-button {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .modal-container {
+    box-shadow: none;
+    border: 1px solid black;
+  }
+}
+
+/* ===== AMÉLIORATIONS PWA ===== */
+
+/* Styles pour app installée */
+@media (display-mode: standalone) {
+  /* Retirer les marges du navigateur */
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Ajuster pour le notch */
+  .app-header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* ===== ORIENTATION ===== */
+
+/* Message de rotation pour certains écrans */
+@media (max-width: 640px) and (max-height: 400px) and (orientation: landscape) {
+  .rotate-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-white);
+    z-index: 9999;
+  }
+}

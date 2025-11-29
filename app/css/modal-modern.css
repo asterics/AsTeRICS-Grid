@@ -1,0 +1,285 @@
+/**
+ * AsTeRICS-Grid Modern Modal Styles
+ * Modernisation des modales avec les design tokens
+ * Remplace progressivement les styles de src/css/modal.css
+ */
+
+/* ===== MODAL BACKDROP ===== */
+.modal-mask {
+  position: fixed;
+  z-index: var(--z-modal-backdrop);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity var(--transition-slow);
+  animation: fadeIn var(--transition-slow);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== MODAL WRAPPER ===== */
+.modal-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: var(--space-md);
+}
+
+/* ===== MODAL CONTAINER ===== */
+.modal-container {
+  width: 100%;
+  max-width: 920px;
+  max-height: 85vh;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-3xl);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  transition: all var(--transition-slow);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: modalSlideIn var(--transition-slow);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-container-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 850px) {
+  .modal-container {
+    padding: var(--space-xl);
+    max-height: 95vh;
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-wrapper {
+    padding: 0;
+  }
+
+  .modal-container {
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0;
+    padding: var(--space-lg);
+  }
+}
+
+/* ===== MODAL HEADER ===== */
+.modal h1 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-900);
+  margin: 0 0 var(--space-md) 0;
+  line-height: var(--line-height-tight);
+}
+
+.modal h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-800);
+  margin: var(--space-lg) 0 var(--space-sm) 0;
+  line-height: var(--line-height-normal);
+}
+
+.modal h3 {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-700);
+  margin: var(--space-md) 0 var(--space-sm) 0;
+}
+
+.modal-header h3 {
+  margin-top: 0;
+  color: var(--color-primary);
+}
+
+/* ===== MODAL BODY ===== */
+.modal-body {
+  margin-top: var(--space-xl);
+}
+
+.modal-body img {
+  outline: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+}
+
+.testGrid img {
+  outline: 0;
+}
+
+.modal-body label {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-700);
+}
+
+.modal .srow {
+  margin-top: var(--space-md);
+}
+
+/* ===== MODAL FOOTER ===== */
+.modal-footer-flex {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.modal-footer {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+/* ===== CLOSE BUTTON ===== */
+.close-button,
+.close-button:focus {
+  float: right;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-gray-600);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  font-size: var(--text-xl);
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: var(--color-gray-900);
+  background-color: var(--color-gray-100);
+  transform: scale(1.05);
+}
+
+.close-button:active {
+  transform: scale(0.98);
+}
+
+/* ===== UTILITY COLORS ===== */
+.modal .warn {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-warning-dark);
+  background-color: var(--color-warning-light);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--color-warning);
+}
+
+.modal .success {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-success-dark);
+  background-color: var(--color-success-light);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--color-success);
+}
+
+.modal .error {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-danger-dark);
+  background-color: var(--color-danger-light);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--color-danger);
+}
+
+.modal .info {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-info-dark);
+  background-color: var(--color-info-light);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--color-info);
+}
+
+.black,
+.black:focus {
+  color: var(--color-black);
+}
+
+.blue {
+  color: var(--color-primary);
+}
+
+/* ===== TRANSITIONS ===== */
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  transform: translateY(-10px) scale(0.98);
+}
+
+/* ===== FILE INPUT (maintenu pour compatibilité) ===== */
+.file-input input[type="file"] {
+  position: absolute;
+  top: -1000px;
+}
+
+/* ===== AMÉLIORATION DES SCROLLBARS ===== */
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: var(--color-gray-100);
+  border-radius: var(--radius-sm);
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400);
+}
+
+/* ===== ACCESSIBILITÉ - FOCUS TRAP ===== */
+.modal-container:focus {
+  outline: none;
+}
+
+/* ===== ANIMATIONS DE PERFORMANCE ===== */
+@media (prefers-reduced-motion: reduce) {
+  .modal-mask,
+  .modal-container,
+  .close-button {
+    animation: none;
+    transition: none;
+  }
+}
