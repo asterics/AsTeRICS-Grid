@@ -12,11 +12,12 @@
 
 /* ===== TOUCH TARGETS (44x44px minimum) ===== */
 @media (max-width: 1024px) {
-  button,
-  a,
-  input[type="button"],
-  input[type="submit"],
-  .button {
+  /* Ne pas appliquer aux éléments de la grille et aux boutons d'action */
+  button:not(.grid-item-content button):not(.element-container button):not([data-grid-element]),
+  a:not(.grid-item-content a):not(.element-container a),
+  input[type="button"]:not(.grid-item-content input):not(.element-container input),
+  input[type="submit"]:not(.grid-item-content input):not(.element-container input),
+  .button:not(.grid-item-content .button):not(.element-container .button) {
     min-height: 44px;
     min-width: 44px;
     padding: var(--space-md) var(--space-lg);

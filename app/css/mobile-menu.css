@@ -57,6 +57,28 @@
   }
 }
 
+/* S'assurer que le bouton burger fonctionne en mode plein écran */
+:fullscreen .mobile-menu-toggle,
+:-webkit-full-screen .mobile-menu-toggle,
+:-moz-full-screen .mobile-menu-toggle,
+:-ms-fullscreen .mobile-menu-toggle {
+  z-index: 2147483647 !important; /* Valeur max pour être au-dessus de tout en fullscreen */
+}
+
+:fullscreen .sidebar-overlay,
+:-webkit-full-screen .sidebar-overlay,
+:-moz-full-screen .sidebar-overlay,
+:-ms-fullscreen .sidebar-overlay {
+  z-index: 2147483646 !important;
+}
+
+:fullscreen .hg-sidebar,
+:-webkit-full-screen .hg-sidebar,
+:-moz-full-screen .hg-sidebar,
+:-ms-fullscreen .hg-sidebar {
+  z-index: 2147483646 !important;
+}
+
 @keyframes fadeInScale {
   from {
     opacity: 0;
@@ -119,9 +141,14 @@
     flex-direction: column;
   }
 
-  /* Cacher les boutons burger originaux dans la sidebar sur mobile */
-  .hg-sidebar a[href="javascript:void(0)"] button i.fa-bars {
-    display: none;
+  /* Cacher le bouton burger original dans la sidebar sur mobile */
+  .hg-sidebar .show-mobile {
+    display: none !important;
+  }
+
+  /* S'assurer que même le div hide-mobile ne montre pas de burger */
+  .hg-sidebar .hide-mobile a[href="javascript:void(0)"] i.fa-bars {
+    display: none !important;
   }
 
   /* Zone de fermeture dans la sidebar */
