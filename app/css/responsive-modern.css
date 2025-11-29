@@ -135,42 +135,7 @@
 }
 
 /* ===== SIDEBAR RESPONSIVE ===== */
-@media (max-width: 850px) {
-  .hg-sidebar {
-    position: fixed;
-    top: 0;
-    left: -250px;
-    height: 100vh;
-    width: 250px;
-    background-color: var(--color-white);
-    box-shadow: var(--shadow-xl);
-    transition: left var(--transition-slow);
-    z-index: var(--z-modal);
-  }
-
-  .hg-sidebar.open {
-    left: 0;
-  }
-
-  /* Overlay pour fermer la sidebar */
-  .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: calc(var(--z-modal) - 1);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--transition-slow);
-  }
-
-  .sidebar-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-}
+/* Styles de sidebar déplacés vers mobile-menu.css pour éviter les conflits */
 
 /* ===== MODALES PLEIN ÉCRAN SUR MOBILE ===== */
 @media (max-width: 640px) {
