@@ -13,7 +13,9 @@ import { Router } from '../router';
 import NotificationBar from '../../vue-components/components/notificationBar.vue';
 import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 import SearchModal from "../../vue-components/modals/searchModal.vue";
+import ToastNotification from '../../vue-components/components/toast-notification.vue';
 import { systemActionService } from '../service/systemActionService';
+import { toastService } from '../service/toastService';
 
 let MainVue = {};
 let app = null;
@@ -89,13 +91,36 @@ MainVue.searchModalOpened = function() {
     return app.showModal === modalTypes.MODAL_SEARCH;
 };
 
+/**
+ * Show toast notification
+ * @param options can be a string (message) or an object with {type, message, title, duration, closable, icon}
+ * Type can be: 'success', 'error', 'warning', 'info'
+ */
+MainVue.showToast = function(type, options) {
+    if (typeof options === 'string') {
+        options = { message: options };
+    }
+    switch (type) {
+        case 'success':
+            return toastService.success(options);
+        case 'error':
+            return toastService.error(options);
+        case 'warning':
+            return toastService.warning(options);
+        case 'info':
+            return toastService.info(options);
+        default:
+            return toastService.info(options);
+    }
+};
+
 MainVue.init = function () {
     Vue.use(VueI18n);
     return i18nService.getVueI18n().then((i18n) => {
         app = new Vue({
             i18n: i18n,
             el: '#app',
-            components: { NotificationBar, ProgressBarModal, SearchModal },
+            components: { NotificationBar, ProgressBarModal, SearchModal, ToastNotification },
             data() {
                 return {
                     component: null,
@@ -128,6 +153,13 @@ MainVue.init = function () {
                 openSidebar() {
                     $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                 },
+                toggleSidebar() {
+                    if (this.showSidebar) {
+                        this.closeSidebar();
+                    } else {
+                        this.openSidebar();
+                    }
+                },
                 openHelp() {
                     helpService.openHelp();
                 },
@@ -142,6 +174,12 @@ MainVue.init = function () {
             },
             mounted() {
                 let thiz = this;
+
+                // Initialiser le service de toast avec le composant
+                if (this.$refs.toastNotification) {
+                    toastService.init(this.$refs.toastNotification);
+                }
+
                 $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
                     if (thiz.showSidebar) {
                         return;

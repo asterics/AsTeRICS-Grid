@@ -27,6 +27,10 @@ class InputConfig extends Model({
     hoverTimeoutMs: Number,
     hoverHideCursor: [Boolean],
     hoverDisableHoverpane: [Boolean],
+    hoverProgressIndicator: [String], // 'circle', 'border', 'glow', 'classic'
+    hoverProgressColor: [String], // color for progress indicator
+    hoverShowPercentage: [Boolean], // show percentage during hover
+    hoverFeedbackAnimation: [String], // 'smooth', 'pulse', 'none'
     mouseclickEnabled: [Boolean],
     mouseDoubleClickEnabled: [Boolean],
     mouseDownInsteadClick: [Boolean],
@@ -134,6 +138,10 @@ InputConfig.defaults({
     scanRoundsUntilBack: 3,
     hoverTimeoutMs: 1000,
     hoverDisableHoverpane: true,
+    hoverProgressIndicator: 'circle',
+    hoverProgressColor: '#2196F3',
+    hoverShowPercentage: false,
+    hoverFeedbackAnimation: 'smooth',
     mouseclickEnabled: true,
     mouseDoubleClickEnabled: false,
     mouseDownInsteadClick: false,

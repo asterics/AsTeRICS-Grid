@@ -20,7 +20,11 @@ Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
         inputEventNext: inputConfig.seqInputs.filter((e) => e.label === InputConfig.NEXT)[0],
         timeoutMs: inputConfig.hoverTimeoutMs,
         demoMode: options.demoMode || inputConfig.hoverDisableHoverpane,
-        hideCursor: inputConfig.hoverHideCursor
+        hideCursor: inputConfig.hoverHideCursor,
+        progressIndicator: inputConfig.hoverProgressIndicator || 'circle',
+        progressColor: inputConfig.hoverProgressColor || '#2196F3',
+        showPercentage: inputConfig.hoverShowPercentage || false,
+        feedbackAnimation: inputConfig.hoverFeedbackAnimation || 'smooth'
     });
 };
 
@@ -31,8 +35,14 @@ function HoverConstructor(itemSelector, options) {
     let _demoMode = options.demoMode;
     let _selectionListener = options.selectionListener;
     let _activeListener = options.activeListener;
+    let _progressIndicator = options.progressIndicator || 'circle';
+    let _progressColor = options.progressColor || '#2196F3';
+    let _showPercentage = options.showPercentage || false;
+    let _feedbackAnimation = options.feedbackAnimation || 'smooth';
 
     var _hoverMap = {};
+    var _progressMap = {}; // Store progress indicators for each element
+    var _intervalMap = {}; // Store animation intervals
     let _elements = [];
     let _lastElement = null;
     let _lastTouchEvent = null;
@@ -110,6 +120,86 @@ function HoverConstructor(itemSelector, options) {
         });
     }
 
+    // Create progress indicator element based on type
+    function createProgressIndicator(element, type) {
+        let indicator = document.createElement('div');
+        indicator.className = 'hover-progress-indicator hover-progress-' + type;
+        indicator.style.setProperty('--progress-color', _progressColor);
+
+        if (type === 'circle') {
+            let size = Math.min(element.offsetWidth, element.offsetHeight) * 0.8;
+            indicator.innerHTML = `
+                <svg class="progress-circle" width="${size}" height="${size}" viewBox="0 0 100 100">
+                    <circle class="progress-circle-bg" cx="50" cy="50" r="45" />
+                    <circle class="progress-circle-fill" cx="50" cy="50" r="45" />
+                    ${_showPercentage ? '<text class="progress-text" x="50" y="50" text-anchor="middle" dominant-baseline="middle">0%</text>' : ''}
+                </svg>
+            `;
+        } else if (type === 'border') {
+            indicator.innerHTML = `<div class="progress-border"></div>`;
+        } else if (type === 'glow') {
+            indicator.innerHTML = `<div class="progress-glow"></div>`;
+        }
+
+        return indicator;
+    }
+
+    // Animate progress indicator
+    function animateProgress(element, indicator, startTime) {
+        let type = _progressIndicator;
+
+        function updateProgress() {
+            let elapsed = Date.now() - startTime;
+            let progress = Math.min(elapsed / _hoverTimeoutMs, 1);
+            let percentage = Math.round(progress * 100);
+
+            if (type === 'circle') {
+                let circle = indicator.querySelector('.progress-circle-fill');
+                if (circle) {
+                    let circumference = 2 * Math.PI * 45;
+                    let offset = circumference * (1 - progress);
+                    circle.style.strokeDasharray = circumference;
+                    circle.style.strokeDashoffset = offset;
+                }
+                if (_showPercentage) {
+                    let text = indicator.querySelector('.progress-text');
+                    if (text) {
+                        text.textContent = percentage + '%';
+                    }
+                }
+            } else if (type === 'border') {
+                let border = indicator.querySelector('.progress-border');
+                if (border) {
+                    border.style.setProperty('--progress', progress);
+                }
+            } else if (type === 'glow') {
+                let glow = indicator.querySelector('.progress-glow');
+                if (glow) {
+                    glow.style.opacity = 0.3 + (progress * 0.7);
+                    glow.style.transform = `scale(${1 + progress * 0.1})`;
+                }
+            }
+
+            if (progress < 1) {
+                _intervalMap[element] = requestAnimationFrame(updateProgress);
+            }
+        }
+
+        _intervalMap[element] = requestAnimationFrame(updateProgress);
+    }
+
+    // Remove progress indicator
+    function removeProgressIndicator(element) {
+        if (_intervalMap[element]) {
+            cancelAnimationFrame(_intervalMap[element]);
+            _intervalMap[element] = null;
+        }
+        if (_progressMap[element]) {
+            _progressMap[element].remove();
+            _progressMap[element] = null;
+        }
+    }
+
     function onElement(element) {
         if (_lastElement && _lastElement !== element) {
             offElement(_lastElement);
@@ -118,6 +208,16 @@ function HoverConstructor(itemSelector, options) {
             return;
         }
         L.addClass(element, 'mouseentered');
+        L.addClass(element, 'hover-animation-' + _feedbackAnimation);
+
+        // Add progress indicator if not classic mode
+        if (_progressIndicator !== 'classic' && _hoverTimeoutMs > 0) {
+            let indicator = createProgressIndicator(element, _progressIndicator);
+            element.appendChild(indicator);
+            _progressMap[element] = indicator;
+            animateProgress(element, indicator, Date.now());
+        }
+
         if (_activeListener && element !== _lastElement) {
             _activeListener(element);
         }
@@ -135,6 +235,10 @@ function HoverConstructor(itemSelector, options) {
             return;
         }
         L.removeClass(element, 'mouseentered');
+        L.removeClass(element, 'hover-animation-smooth');
+        L.removeClass(element, 'hover-animation-pulse');
+        L.removeClass(element, 'hover-animation-none');
+        removeProgressIndicator(element);
         clearTimeout(_hoverMap[element]);
         _hoverMap[element] = null;
         _lastElement = null;
@@ -214,6 +318,7 @@ function HoverConstructor(itemSelector, options) {
             item.removeEventListener('mouseleave', mouseLeave);
             item.removeEventListener('mouseup', mouseUp);
             item.removeEventListener('click', clickHandler);
+            removeProgressIndicator(item);
         });
         _inputEventHandler.destroy();
         document.removeEventListener('mousemove', mouseMove);

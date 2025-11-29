@@ -34,6 +34,34 @@
                             <input type="number" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
                         </div>
                         <div class="srow" v-show="inputConfig.hoverEnabled">
+                            <label class="four columns" for="progressIndicator">{{ $t('progressIndicator') }}</label>
+                            <select id="progressIndicator" v-model="inputConfig.hoverProgressIndicator" class="eight columns">
+                                <option value="circle">{{ $t('circleIndicator') }}</option>
+                                <option value="border">{{ $t('borderIndicator') }}</option>
+                                <option value="glow">{{ $t('glowIndicator') }}</option>
+                                <option value="classic">{{ $t('classicIndicator') }}</option>
+                            </select>
+                        </div>
+                        <div class="srow" v-show="inputConfig.hoverEnabled">
+                            <label class="four columns" for="feedbackAnimation">{{ $t('feedbackAnimation') }}</label>
+                            <select id="feedbackAnimation" v-model="inputConfig.hoverFeedbackAnimation" class="eight columns">
+                                <option value="smooth">{{ $t('smoothAnimation') }}</option>
+                                <option value="pulse">{{ $t('pulseAnimation') }}</option>
+                                <option value="none">{{ $t('noAnimation') }}</option>
+                            </select>
+                        </div>
+                        <div class="srow" v-show="inputConfig.hoverEnabled">
+                            <label class="four columns" for="progressColor">{{ $t('progressColor') }}</label>
+                            <input type="color" id="progressColor" v-model="inputConfig.hoverProgressColor" class="three columns"/>
+                            <span class="five columns" style="padding-top: 0.5em;">{{ inputConfig.hoverProgressColor }}</span>
+                        </div>
+                        <div class="srow" v-show="inputConfig.hoverEnabled && inputConfig.hoverProgressIndicator === 'circle'">
+                            <div class="twelve columns">
+                                <input type="checkbox" id="showPercentage" v-model="inputConfig.hoverShowPercentage"/>
+                                <label class="inline" for="showPercentage">{{ $t('showPercentage') }}</label>
+                            </div>
+                        </div>
+                        <div class="srow" v-show="inputConfig.hoverEnabled">
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="hoverHideCursor" v-model="inputConfig.hoverHideCursor"/>
                                 <label class="inline" for="hoverHideCursor">{{ $t('hideCursor') }}</label>
