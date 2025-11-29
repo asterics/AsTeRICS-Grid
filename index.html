@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="app/css/modal-modern.css">
     <link rel="stylesheet" href="app/css/focus-and-buttons.css">
     <link rel="stylesheet" href="app/css/responsive-modern.css">
+    <link rel="stylesheet" href="app/css/mobile-menu.css">
 </head>
 <body onload="window.loaded = true;">
 <div style="display: none" aria-hidden="false">
@@ -26,11 +27,32 @@
 </div>
 <div id="app" class="holy-grail">
     <h1 class="sr-only">AsTeRICS Grid</h1>
+
+    <!-- Bouton burger fixe pour mobile -->
+    <button
+        class="mobile-menu-toggle"
+        :class="{'hide-when-sidebar-open': showSidebar}"
+        @click="toggleSidebar()"
+        :aria-label="$t('openSidebar')"
+        aria-controls="sidebar"
+    >
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Overlay pour fermer la sidebar en cliquant à l'extérieur -->
+    <div
+        class="sidebar-overlay"
+        :class="{'active': showSidebar}"
+        @click="closeSidebar()"
+        aria-hidden="true"
+    ></div>
+
     <div id="touchElement" class="grid-container" style="z-index: 2; display: none; -webkit-touch-callout: none; -webkit-user-select: none;">
     </div>
     <audio style="display: none" id="audioPlayer" src="" preload="none"></audio>
     <video style="display: none" id="videoPlayer" src="" preload="none"></video>
     <notification-bar ref="notificationBar"></notification-bar>
+    <toast-notification ref="toastNotification"></toast-notification>
     <progress-bar-modal v-show="showModal === modalTypes.MODAL_PROGRESSBAR" ref="progressBar" @close="showModal = null"></progress-bar-modal>
     <search-modal v-if="showModal === modalTypes.MODAL_SEARCH" @close="showModal = null;" :route-to-edit="Router.getCurrentView() === Router.VIEWS.GridEditView" :options="modalOptions"></search-modal>
     <div class="grid-container grid-mask" v-if="false">
@@ -40,7 +62,7 @@
         </div>
     </div>
     <div class="holy-grail-body" v-cloak>
-        <div class="holy-grail-sidebar-1 hg-sidebar no-print" v-show="showSidebar">
+        <div class="holy-grail-sidebar-1 hg-sidebar no-print" v-show="showSidebar" :class="{'sidebar-open': showSidebar}" id="sidebar">
             <div style="flex: 0 0 auto;">
                 <div class="show-mobile">
                     <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>

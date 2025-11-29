@@ -1,0 +1,244 @@
+/**
+ * Menu Burger Mobile - Bouton fixe
+ * Bouton hamburger qui reste visible même quand la sidebar est fermée
+ */
+
+/* ===== BOUTON BURGER FIXE SUR MOBILE ===== */
+
+/* Conteneur du bouton burger */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: var(--space-md);
+  left: var(--space-md);
+  z-index: calc(var(--z-modal) + 1);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-xl);
+}
+
+.mobile-menu-toggle:active {
+  transform: scale(0.98);
+}
+
+.mobile-menu-toggle i {
+  font-size: 24px;
+}
+
+/* Afficher seulement sur mobile et quand la sidebar est cachée */
+@media (max-width: 850px) {
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  /* Cacher le bouton quand la sidebar est ouverte */
+  .mobile-menu-toggle.hide-when-sidebar-open {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Animation du bouton */
+  .mobile-menu-toggle {
+    animation: fadeInScale var(--transition-slow);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== SIDEBAR MOBILE AMÉLIORÉE ===== */
+
+@media (max-width: 850px) {
+  /* Forcer l'affichage de la sidebar sur mobile (override v-show) */
+  .hg-sidebar {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-2xl);
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow);
+    z-index: var(--z-modal);
+    overflow-y: auto;
+  }
+
+  /* Sidebar ouverte */
+  .hg-sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  /* Overlay pour fermer en cliquant à l'extérieur */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: calc(var(--z-modal) - 1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-slow);
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Améliorer la sidebar elle-même */
+  .hg-sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Zone de fermeture dans la sidebar */
+  .hg-sidebar .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .hg-sidebar .sidebar-close-button {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+  }
+
+  .hg-sidebar .sidebar-close-button:hover {
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-900);
+  }
+}
+
+/* ===== AJUSTEMENTS DU CONTENU PRINCIPAL ===== */
+
+@media (max-width: 850px) {
+  .holy-grail-content {
+    margin-left: 0 !important;
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+
+  /* Éviter que le contenu passe sous le bouton burger */
+  .holy-grail-content > .srow:first-child {
+    padding-top: var(--space-lg);
+  }
+}
+
+/* ===== ICÔNE HAMBURGER ANIMÉE ===== */
+
+.hamburger-icon {
+  display: inline-block;
+  width: 24px;
+  height: 18px;
+  position: relative;
+}
+
+.hamburger-icon span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background: currentColor;
+  border-radius: 3px;
+  opacity: 1;
+  left: 0;
+  transform: rotate(0deg);
+  transition: all var(--transition-fast);
+}
+
+.hamburger-icon span:nth-child(1) {
+  top: 0;
+}
+
+.hamburger-icon span:nth-child(2) {
+  top: 7px;
+}
+
+.hamburger-icon span:nth-child(3) {
+  top: 14px;
+}
+
+/* Animation quand le menu est ouvert (en X) */
+.menu-open .hamburger-icon span:nth-child(1) {
+  top: 7px;
+  transform: rotate(135deg);
+}
+
+.menu-open .hamburger-icon span:nth-child(2) {
+  opacity: 0;
+  left: -60px;
+}
+
+.menu-open .hamburger-icon span:nth-child(3) {
+  top: 7px;
+  transform: rotate(-135deg);
+}
+
+/* ===== SWIPE GESTURE SUPPORT ===== */
+
+@media (max-width: 850px) and (hover: none) and (pointer: coarse) {
+  /* Zone de swipe pour ouvrir la sidebar */
+  .swipe-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 100vh;
+    z-index: calc(var(--z-modal) - 2);
+  }
+
+  /* Indicateur visuel du swipe */
+  .swipe-indicator {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    width: 4px;
+    height: 60px;
+    background: var(--color-primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    transform: translateY(-50%) translateX(-4px);
+    opacity: 0.3;
+    transition: all var(--transition-fast);
+  }
+
+  .swipe-indicator:active,
+  .swipe-area:active + .swipe-indicator {
+    transform: translateY(-50%) translateX(0);
+    opacity: 0.8;
+  }
+}
