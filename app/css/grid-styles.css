@@ -56,10 +56,123 @@
     0% { filter: brightness(50%); }
 }
 
+/* Modern hover feedback styles */
 .mouseentered.element-container {
+    z-index: 10;
+    position: relative;
+}
+
+/* Classic style (backward compatible) */
+.mouseentered.element-container:not(.hover-animation-smooth):not(.hover-animation-pulse):not(.hover-animation-none) {
     outline: thick solid green !important;
     background: lightgreen;
-    z-index: 10;
+}
+
+/* Smooth animation style */
+.mouseentered.element-container.hover-animation-smooth {
+    outline: 3px solid var(--progress-color, #2196F3) !important;
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.4);
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.02);
+}
+
+/* Pulse animation style */
+.mouseentered.element-container.hover-animation-pulse {
+    outline: 3px solid var(--progress-color, #2196F3) !important;
+    animation: pulse-glow 0.8s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(33, 150, 243, 0.6);
+        transform: scale(1.02);
+    }
+}
+
+/* No animation style */
+.mouseentered.element-container.hover-animation-none {
+    outline: 3px solid var(--progress-color, #2196F3) !important;
+}
+
+/* Progress indicator container */
+.hover-progress-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 15;
+}
+
+/* Circle progress indicator */
+.hover-progress-circle .progress-circle {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.hover-progress-circle .progress-circle-bg {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.1);
+    stroke-width: 4;
+}
+
+.hover-progress-circle .progress-circle-fill {
+    fill: none;
+    stroke: var(--progress-color, #2196F3);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.05s linear;
+}
+
+.hover-progress-circle .progress-text {
+    font-size: 24px;
+    font-weight: bold;
+    fill: var(--progress-color, #2196F3);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Border progress indicator */
+.hover-progress-border {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 3px solid transparent;
+    border-radius: inherit;
+    background: linear-gradient(90deg,
+        var(--progress-color, #2196F3) 0%,
+        var(--progress-color, #2196F3) calc(var(--progress, 0) * 100%),
+        rgba(0, 0, 0, 0.1) calc(var(--progress, 0) * 100%)
+    );
+    background-origin: border-box;
+    background-clip: border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: --progress 0.05s linear;
+}
+
+/* Glow progress indicator */
+.hover-progress-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: inherit;
+    background: radial-gradient(
+        circle at center,
+        var(--progress-color, #2196F3),
+        transparent 70%
+    );
+    opacity: 0.3;
+    transition: opacity 0.05s linear, transform 0.05s linear;
 }
 
 .marked.element-container {
