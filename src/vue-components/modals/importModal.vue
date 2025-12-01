@@ -171,7 +171,8 @@
                     MainVue.showSuccessModal({
                         header: i18nService.t('importSuccessful'),
                         items: items,
-                        autoCloseDuration: 2000
+                        autoCloseDuration: 2000,
+                        showCloseButton: true
                     });
 
                     // Reload after modal closes

@@ -92,17 +92,77 @@ MainVue.showSearchModal = function (options) {
  * @param options.header header text (default: "Success")
  * @param options.message message text
  * @param options.items array of items to show as list
- * @param options.autoCloseDuration duration in ms before auto-close (default: 3000)
+ * @param options.autoCloseDuration duration in ms before auto-close (default: 2000)
+ * @param options.type modal type: 'success', 'question', 'warning', 'info'
+ * @param options.buttonPreset button preset: 'ok', 'yesno', 'okcancel'
+ * @param options.buttons custom buttons array
+ * @param options.showCloseButton show X close button (default: false)
+ * @returns Promise that resolves with button value
  */
 MainVue.showSuccessModal = function (options) {
     if (!app) {
-        return;
+        return Promise.resolve(false);
     }
     app.showModal = modalTypes.MODAL_SUCCESS;
-    app.$nextTick(() => {
-        if (app.$refs.successModal) {
-            app.$refs.successModal.show(options || {});
-        }
+    return new Promise((resolve) => {
+        app.$nextTick(() => {
+            if (app.$refs.successModal) {
+                app.$refs.successModal.show(options || {}).then(resolve);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+};
+
+/**
+ * show confirmation dialog (replaces native confirm())
+ * @param message confirmation message
+ * @param options.header header text (default: "Question")
+ * @param options.buttonPreset button preset: 'yesno' (default), 'okcancel', 'ok'
+ * @returns Promise that resolves to true if confirmed, false if cancelled
+ */
+MainVue.showConfirmDialog = function (message, options = {}) {
+    return MainVue.showSuccessModal({
+        type: 'question',
+        header: options.header,
+        message: message,
+        buttonPreset: options.buttonPreset || 'yesno',
+        showCloseButton: options.showCloseButton !== undefined ? options.showCloseButton : true
+    });
+};
+
+/**
+ * show warning dialog
+ * @param message warning message
+ * @param options.header header text (default: "Warning")
+ * @param options.buttonPreset button preset (default: 'ok')
+ * @returns Promise that resolves with button value
+ */
+MainVue.showWarningDialog = function (message, options = {}) {
+    return MainVue.showSuccessModal({
+        type: 'warning',
+        header: options.header,
+        message: message,
+        buttonPreset: options.buttonPreset || 'ok',
+        showCloseButton: options.showCloseButton !== undefined ? options.showCloseButton : true
+    });
+};
+
+/**
+ * show info dialog
+ * @param message info message
+ * @param options.header header text (default: "Information")
+ * @param options.buttonPreset button preset (default: 'ok')
+ * @returns Promise that resolves with button value
+ */
+MainVue.showInfoDialog = function (message, options = {}) {
+    return MainVue.showSuccessModal({
+        type: 'info',
+        header: options.header,
+        message: message,
+        buttonPreset: options.buttonPreset || 'ok',
+        showCloseButton: options.showCloseButton !== undefined ? options.showCloseButton : true
     });
 };
 
