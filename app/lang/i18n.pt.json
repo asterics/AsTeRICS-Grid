@@ -1214,7 +1214,7 @@
   "DT_FORMAT_WEEKDAY": "Dia da semana",
   "DT_FORMAT_MONTH": "Mês",
   "DT_FORMAT_CUSTOM": "Formato personalizado",
-  "timeOffsetHours": "Time offset (hours)",
+  "timeOffsetHours": "Diferença horária (horas)",
   "formatString": "Formatar elemento",
   "seeDocumentation": "ver documentação",
   "APP_STATE_VOLUME_GLOBAL": "Volume do sistema",
