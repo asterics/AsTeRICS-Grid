@@ -44,12 +44,12 @@ speechServiceExternal.speak = async function (text, providerId, voice) {
             return;
         }
         let blob = await response.blob();
-        let binary = new Uint8Array(await blob.arrayBuffer());
-        if (binary.length === 0) {
+        let buffer = await blob.arrayBuffer();
+        if (buffer.byteLength === 0) {
             log.warn("got no data from external speech service.");
             return;
         }
-        await audioUtil.playAudioUint8(binary, {
+        await audioUtil.playAudioUint8(buffer, {
             onended: () => {
                 playingInternal = false;
             }
