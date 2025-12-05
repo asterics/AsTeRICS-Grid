@@ -80,6 +80,7 @@
     import {helpService} from "../../js/service/helpService";
     import {i18nService} from "../../js/service/i18nService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
+    import {messageUtil} from "../../js/util/messageUtil.js";
 
 
     export default {
@@ -153,36 +154,12 @@
                     await dataService.markCurrentConfigAsBackedUp();
                 }
 
-                // Wait for progress bar to close, then show success message
-                setTimeout(() => {
-                    let importedGridsCount = this.importData.grids ? this.importData.grids.length : 0;
-                    let importedDictsCount = this.options.importDictionaries && this.importData.dictionaries ? this.importData.dictionaries.length : 0;
-
-                    console.log('Showing success modal with counts:', importedGridsCount, importedDictsCount);
-
-                    let items = [];
-                    if (importedGridsCount > 0) {
-                        items.push(`${importedGridsCount} grid(s) imported`);
+                // Show success message and reload on close
+                await messageUtil.showImportSuccess(this.importData, () => {
+                    if (this.reloadFn) {
+                        this.reloadFn();
                     }
-                    if (importedDictsCount > 0) {
-                        items.push(`${importedDictsCount} dictionaries imported`);
-                    }
-
-                    MainVue.showSuccessModal({
-                        header: i18nService.t('importSuccessful'),
-                        items: items,
-                        autoCloseDuration: 2000,
-                        showCloseButton: true
-                    });
-
-                    // Reload after modal closes
-                    setTimeout(() => {
-                        console.log('Reloading page');
-                        if (this.reloadFn) {
-                            this.reloadFn();
-                        }
-                    }, 2200);
-                }, 500);
+                });
             },
             openHelp() {
                 helpService.openHelp();

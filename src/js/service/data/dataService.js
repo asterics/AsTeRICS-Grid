@@ -575,12 +575,13 @@ dataService.importBackupUploadedFile = async function (file, progressFn) {
     if (!importData) {
         progressFn(100);
         MainVue.setTooltip(i18nService.t('backupFileDoesntContainData'), { msgType: 'warn' });
-        return;
+        return null;
     }
-    return dataService.importBackupData(importData, {
+    await dataService.importBackupData(importData, {
         progressFn: progressFn,
         generateGlobalGrid: fileUtil.isObzFile(file)
     });
+    return importData;
 };
 
 dataService.importBackupFromPreview = async function(preview, options = {}) {

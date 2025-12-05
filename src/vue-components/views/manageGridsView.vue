@@ -124,6 +124,7 @@
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {gridUtil} from "../../js/util/gridUtil";
+    import {messageUtil} from "../../js/util/messageUtil";
     import Accordion from "../components/accordion.vue";
     import {imageUtil} from "../../js/util/imageUtil";
     import GridLinkModal from "../modals/gridLinkModal.vue";
@@ -286,44 +287,17 @@
                     return;
                 }
 
-                // Parse file to get import data for success message
-                let importData = await dataService.convertFileToImportData(importFile);
-
-                await dataService.importBackupUploadedFile(importFile, (progress, text) => {
+                let importData = await dataService.importBackupUploadedFile(importFile, (progress, text) => {
                     MainVue.showProgressBar(progress, {
                         text: text
                     });
                 });
 
-                // Wait for progress bar to close, then show success message
-                setTimeout(() => {
-                    let importedGridsCount = importData && importData.grids ? importData.grids.length : 0;
-                    let importedDictsCount = importData && importData.dictionaries ? importData.dictionaries.length : 0;
-
-                    console.log('Showing success modal with counts:', importedGridsCount, importedDictsCount);
-
-                    let items = [];
-                    if (importedGridsCount > 0) {
-                        items.push(`${importedGridsCount} grid(s) imported`);
-                    }
-                    if (importedDictsCount > 0) {
-                        items.push(`${importedDictsCount} dictionaries imported`);
-                    }
-
-                    MainVue.showSuccessModal({
-                        header: i18nService.t('importSuccessful'),
-                        items: items,
-                        autoCloseDuration: 2000,
-                        showCloseButton: true
-                    });
-
-                    // Reload after modal closes
-                    setTimeout(() => {
-                        console.log('Reloading page');
-                        this.resetFileInput(event);
-                        this.reload();
-                    }, 2200);
-                }, 500);
+                // Show success message and reload on close
+                await messageUtil.showImportSuccess(importData, () => {
+                    this.resetFileInput(event);
+                    this.reload();
+                });
             },
             reload: function (openGridId) {
                 let thiz = this;

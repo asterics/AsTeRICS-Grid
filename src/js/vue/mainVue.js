@@ -13,7 +13,7 @@ import { Router } from '../router';
 import NotificationBar from '../../vue-components/components/notificationBar.vue';
 import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 import SearchModal from "../../vue-components/modals/searchModal.vue";
-import SuccessModal from "../../vue-components/modals/successModal.vue";
+import MessageBox from "../../vue-components/modals/messageBox.vue";
 import { systemActionService } from '../service/systemActionService';
 
 let MainVue = {};
@@ -68,13 +68,14 @@ MainVue.clearTooltip = function () {
  * @param options.text
  * @param options.cancelFn (optional) a function that is called if the user closes the progressbar modal
  * @param options.closable if true, the user can close the modal
+ * @returns Promise that resolves when progress is set (and modal closes if percentage is 100)
  */
 MainVue.showProgressBar = function (percentage, options) {
     if (!app) {
-        return;
+        return Promise.resolve();
     }
     app.showModal = modalTypes.MODAL_PROGRESSBAR;
-    app.$refs.progressBar.setProgress(percentage, options);
+    return app.$refs.progressBar.setProgress(percentage, options);
 };
 
 /**
@@ -88,26 +89,27 @@ MainVue.showSearchModal = function (options) {
 };
 
 /**
- * show success modal
- * @param options.header header text (default: "Success")
+ * show message box (generic method for all message types)
+ * @param options.header header text (will be translated)
  * @param options.message message text
  * @param options.items array of items to show as list
- * @param options.autoCloseDuration duration in ms before auto-close (default: 2000)
- * @param options.type modal type: 'success', 'question', 'warning', 'info'
+ * @param options.autoCloseDuration duration in ms before auto-close (default: 0 = no auto-close)
+ * @param options.type modal type: 'success', 'question', 'warning', 'info' (default: 'success')
  * @param options.buttonPreset button preset: 'ok', 'yesno', 'okcancel'
  * @param options.buttons custom buttons array
- * @param options.showCloseButton show X close button (default: false)
+ * @param options.showCloseButton show X close button (default: true)
+ * @param options.onClose callback function called when modal closes
  * @returns Promise that resolves with button value
  */
-MainVue.showSuccessModal = function (options) {
+MainVue.showMessageBox = function (options) {
     if (!app) {
         return Promise.resolve(false);
     }
     app.showModal = modalTypes.MODAL_SUCCESS;
     return new Promise((resolve) => {
         app.$nextTick(() => {
-            if (app.$refs.successModal) {
-                app.$refs.successModal.show(options || {}).then(resolve);
+            if (app.$refs.messageBox) {
+                app.$refs.messageBox.show(options || {}).then(resolve);
             } else {
                 resolve(false);
             }
@@ -118,12 +120,12 @@ MainVue.showSuccessModal = function (options) {
 /**
  * show confirmation dialog (replaces native confirm())
  * @param message confirmation message
- * @param options.header header text (default: "Question")
+ * @param options.header header text
  * @param options.buttonPreset button preset: 'yesno' (default), 'okcancel', 'ok'
  * @returns Promise that resolves to true if confirmed, false if cancelled
  */
-MainVue.showConfirmDialog = function (message, options = {}) {
-    return MainVue.showSuccessModal({
+MainVue.showConfirmBox = function (message, options = {}) {
+    return MainVue.showMessageBox({
         type: 'question',
         header: options.header,
         message: message,
@@ -132,39 +134,9 @@ MainVue.showConfirmDialog = function (message, options = {}) {
     });
 };
 
-/**
- * show warning dialog
- * @param message warning message
- * @param options.header header text (default: "Warning")
- * @param options.buttonPreset button preset (default: 'ok')
- * @returns Promise that resolves with button value
- */
-MainVue.showWarningDialog = function (message, options = {}) {
-    return MainVue.showSuccessModal({
-        type: 'warning',
-        header: options.header,
-        message: message,
-        buttonPreset: options.buttonPreset || 'ok',
-        showCloseButton: options.showCloseButton !== undefined ? options.showCloseButton : true
-    });
-};
-
-/**
- * show info dialog
- * @param message info message
- * @param options.header header text (default: "Information")
- * @param options.buttonPreset button preset (default: 'ok')
- * @returns Promise that resolves with button value
- */
-MainVue.showInfoDialog = function (message, options = {}) {
-    return MainVue.showSuccessModal({
-        type: 'info',
-        header: options.header,
-        message: message,
-        buttonPreset: options.buttonPreset || 'ok',
-        showCloseButton: options.showCloseButton !== undefined ? options.showCloseButton : true
-    });
-};
+// Backward compatibility aliases
+MainVue.showSuccessModal = MainVue.showMessageBox;
+MainVue.showConfirmDialog = MainVue.showConfirmBox;
 
 MainVue.searchModalOpened = function() {
     return app.showModal === modalTypes.MODAL_SEARCH;
@@ -176,7 +148,7 @@ MainVue.init = function () {
         app = new Vue({
             i18n: i18n,
             el: '#app',
-            components: { NotificationBar, ProgressBarModal, SearchModal, SuccessModal },
+            components: { NotificationBar, ProgressBarModal, SearchModal, MessageBox },
             data() {
                 return {
                     component: null,

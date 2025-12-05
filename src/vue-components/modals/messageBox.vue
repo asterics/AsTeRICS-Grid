@@ -8,13 +8,13 @@
                     </a>
 
                     <div class="modal-header">
-                        <i :class="iconClass" :style="iconStyle"></i>
+                        <i :class="iconClass"></i>
                         <h1>{{header}}</h1>
                     </div>
 
                     <div class="modal-body">
                         <div class="message-text">{{message}}</div>
-                        <ul v-if="items && items.length > 0" class="success-items">
+                        <ul v-if="items && items.length > 0" class="message-items">
                             <li v-for="item in items" :key="item">{{item}}</li>
                         </ul>
                     </div>
@@ -24,9 +24,8 @@
                             v-for="(button, index) in buttons"
                             :key="index"
                             @click="handleButtonClick(button)"
-                            :class="['modal-btn', button.primary ? 'btn-primary' : 'btn-secondary']"
                         >
-                            {{button.label | translate}}
+                            <i v-if="button.icon" :class="button.icon"></i> <span>{{button.label | translate}}</span>
                         </button>
                     </div>
                 </div>
@@ -57,39 +56,29 @@
                 header: '',
                 message: '',
                 items: [],
-                autoCloseDuration: 2000,
+                autoCloseDuration: 0,
                 timeoutId: null,
                 type: MODAL_TYPE_SUCCESS,
                 buttons: [],
                 showCloseButton: false,
                 resolve: null,
-                reject: null
+                reject: null,
+                onCloseFn: null
             }
         },
         computed: {
             iconClass() {
                 const icons = {
-                    [MODAL_TYPE_SUCCESS]: 'fas fa-check-circle',
-                    [MODAL_TYPE_QUESTION]: 'fas fa-question-circle',
-                    [MODAL_TYPE_WARNING]: 'fas fa-exclamation-triangle',
-                    [MODAL_TYPE_INFO]: 'fas fa-info-circle'
+                    [MODAL_TYPE_SUCCESS]: 'fas fa-check-circle icon-success',
+                    [MODAL_TYPE_QUESTION]: 'fas fa-question-circle icon-question',
+                    [MODAL_TYPE_WARNING]: 'fas fa-exclamation-triangle icon-warning',
+                    [MODAL_TYPE_INFO]: 'fas fa-info-circle icon-info'
                 };
                 return icons[this.type] || icons[MODAL_TYPE_SUCCESS];
-            },
-            iconStyle() {
-                const styles = {
-                    [MODAL_TYPE_SUCCESS]: 'color: green; font-size: 3em; margin-bottom: 0.5em;',
-                    [MODAL_TYPE_QUESTION]: 'color: #007bff; font-size: 3em; margin-bottom: 0.5em;',
-                    [MODAL_TYPE_WARNING]: 'color: #ff9800; font-size: 3em; margin-bottom: 0.5em;',
-                    [MODAL_TYPE_INFO]: 'color: #2196F3; font-size: 3em; margin-bottom: 0.5em;'
-                };
-                return styles[this.type] || styles[MODAL_TYPE_SUCCESS];
             }
         },
         methods: {
             show(options) {
-                console.log('Modal show() called with options:', options);
-
                 // Clear any existing timeout
                 if (this.timeoutId) {
                     clearTimeout(this.timeoutId);
@@ -97,28 +86,19 @@
 
                 // Set basic properties
                 this.type = options.type || MODAL_TYPE_SUCCESS;
-                this.header = options.header || this.getDefaultHeader();
+                this.header = options.header ? i18nService.t(options.header) : this.getDefaultHeader();
                 this.message = options.message || '';
                 this.items = options.items || [];
+                this.onCloseFn = options.onClose || null;
 
                 // Handle buttons
                 this.buttons = this.processButtons(options);
 
-                // Handle auto-close (only for success/info without custom buttons)
-                this.autoCloseDuration = options.autoCloseDuration !== undefined ? options.autoCloseDuration :
-                    (this.type === MODAL_TYPE_SUCCESS && this.buttons.length === 0 ? 2000 : 0);
+                // Handle auto-close
+                this.autoCloseDuration = options.autoCloseDuration !== undefined ? options.autoCloseDuration : 0;
 
-                // Show close button by default (even for auto-closing modals, in case user wants to dismiss early)
+                // Show close button by default
                 this.showCloseButton = options.showCloseButton !== undefined ? options.showCloseButton : true;
-
-                console.log('Modal data set:', {
-                    type: this.type,
-                    header: this.header,
-                    message: this.message,
-                    items: this.items,
-                    buttons: this.buttons,
-                    autoCloseDuration: this.autoCloseDuration
-                });
 
                 // Return a promise for async usage (e.g., confirm dialogs)
                 return new Promise((resolve, reject) => {
@@ -127,7 +107,6 @@
 
                     if (this.autoCloseDuration > 0) {
                         this.timeoutId = setTimeout(() => {
-                            console.log('Modal auto-closing');
                             this.handleClose(true);
                         }, this.autoCloseDuration);
                     }
@@ -149,40 +128,29 @@
                     return this.getButtonPreset(BUTTONS_YES_NO);
                 }
 
-                // Otherwise, no buttons (auto-close for success/info)
+                // Otherwise, no buttons
                 return [];
             },
             getButtonPreset(preset) {
                 const presets = {
                     [BUTTONS_OK]: [
-                        { label: i18nService.t('ok'), value: true, primary: true }
+                        { label: 'ok', value: true, icon: 'fas fa-check' }
                     ],
                     [BUTTONS_YES_NO]: [
-                        { label: i18nService.t('no'), value: false, primary: false },
-                        { label: i18nService.t('yes'), value: true, primary: true }
+                        { label: 'no', value: false, icon: 'fas fa-times' },
+                        { label: 'yes', value: true, icon: 'fas fa-check' }
                     ],
                     [BUTTONS_OK_CANCEL]: [
-                        { label: i18nService.t('cancel'), value: false, primary: false },
-                        { label: i18nService.t('ok'), value: true, primary: true }
+                        { label: 'cancel', value: false, icon: 'fas fa-times' },
+                        { label: 'ok', value: true, icon: 'fas fa-check' }
                     ]
                 };
                 return presets[preset] || presets[BUTTONS_OK];
             },
             getDefaultHeader() {
-                const headers = {
-                    [MODAL_TYPE_SUCCESS]: i18nService.t('success'),
-                    [MODAL_TYPE_QUESTION]: i18nService.t('question'),
-                    [MODAL_TYPE_WARNING]: i18nService.t('warning'),
-                    [MODAL_TYPE_INFO]: i18nService.t('information')
-                };
-                return headers[this.type] || headers[MODAL_TYPE_SUCCESS];
+                return i18nService.t(this.type);
             },
             handleButtonClick(button) {
-                // Call button's callback if provided
-                if (button.callback) {
-                    button.callback();
-                }
-
                 // Resolve promise with button value
                 if (this.resolve) {
                     this.resolve(button.value);
@@ -193,10 +161,14 @@
                 this.cleanup();
             },
             handleClose(autoClose = false) {
-                // For auto-close on success, resolve with true
-                // For manual close (X button), resolve with false/null
+                // For auto-close or manual close
                 if (this.resolve) {
                     this.resolve(autoClose);
+                }
+
+                // Call onClose callback if provided
+                if (this.onCloseFn) {
+                    this.onCloseFn();
                 }
 
                 this.$emit('close');
@@ -209,6 +181,7 @@
                 }
                 this.resolve = null;
                 this.reject = null;
+                this.onCloseFn = null;
             }
         },
         mounted() {
@@ -229,6 +202,27 @@
         padding-bottom: 1em;
     }
 
+    .modal-header i {
+        font-size: 3em;
+        margin-bottom: 0.5em;
+    }
+
+    .icon-success {
+        color: green;
+    }
+
+    .icon-question {
+        color: #007bff;
+    }
+
+    .icon-warning {
+        color: #ff9800;
+    }
+
+    .icon-info {
+        color: #2196F3;
+    }
+
     .modal-body {
         text-align: center;
         padding: 0;
@@ -239,14 +233,14 @@
         margin-bottom: 0.5em;
     }
 
-    .success-items {
+    .message-items {
         list-style: none;
         padding: 0;
         font-size: 1.1em;
         margin-top: 0.5em;
     }
 
-    .success-items li {
+    .message-items li {
         margin: 0.3em 0;
     }
 
@@ -256,34 +250,6 @@
         gap: 1em;
         padding: 1.5em 0 0;
         flex-wrap: wrap;
-    }
-
-    .modal-btn {
-        padding: 0.7em 2em;
-        font-size: 1em;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.2s;
-        min-width: 100px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .btn-secondary:hover {
-        background-color: #545b62;
     }
 
     .modal-close-link {
