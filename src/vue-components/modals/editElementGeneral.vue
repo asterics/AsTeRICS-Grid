@@ -10,6 +10,15 @@
             </div>
         </div>
         <div class="row">
+            <label class="col-sm-2" for="inputPronunciation">{{ $t('pronunciation') }}</label>
+            <div class="col-sm-7" style="position: relative">
+                <input type="text" class="col-12" id="inputPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[currentLang]" :placeholder="getPronunciationPlaceholder(currentLang)"/>
+                <button @click="speak(currentLang)" class="input-button" :title="$t('testPronunciation')">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row">
             <label class="col-sm-2" for="colorCategory">{{ $t('colorCategory') }}</label>
             <div class="col-sm-7">
                 <select class="col-12" id="colorCategory" v-model="gridElement.colorCategory" @change="colorCategoryNotFitting = false">
@@ -22,6 +31,42 @@
         <div class="srow mb-5">
             <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
             <label for="inputHidden">{{ $t('hideElement') }}</label>
+        </div>
+        <div class="srow">
+            <accordion :acc-label="$t('Translation')">
+                <div class="row">
+                    <label class="col-sm-2" for="translationLanguage">{{ $t('language') }}</label>
+                    <div class="col-sm-5">
+                        <select class="col-12" id="translationLanguage" v-model="chosenLocale">
+                            <option
+                                v-for="lang in selectLanguages"
+                                :value="lang.code"
+                            >
+                                {{ lang | extractTranslationAppLang }} ({{ lang.code }})
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5 checkbox-container">
+                        <input type="checkbox" id="selectAllLanguages" v-model="selectAllLanguages"/>
+                        <label for="selectAllLanguages" class="checkbox-label-small">{{ $t('showAllLanguages') }}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2" for="translatedLabel">{{ $t('label') }} ({{ chosenLocale }})</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="col-12" id="translatedLabel" v-if="gridElement" v-model="gridElement.label[chosenLocale]" :placeholder="getLocaleTranslation(chosenLocale)" :lang="chosenLocale"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2" for="translatedPronunciation">{{ $t('pronunciation') }} ({{ chosenLocale }})</label>
+                    <div class="col-sm-7" style="position: relative">
+                        <input type="text" class="col-12" id="translatedPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[chosenLocale]" :placeholder="getPronunciationPlaceholder(chosenLocale)" :lang="chosenLocale"/>
+                        <button @click="speak(chosenLocale)" class="input-button" :title="$t('testPronunciation')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </accordion>
         </div>
         <div class="srow" v-if="metadata">
             <accordion :acc-label="$t('advancedOptions')">
@@ -77,6 +122,7 @@
     import {constants} from "../../js/util/constants.js";
     import {dataService} from "../../js/service/data/dataService.js";
     import {MetaData} from "../../js/model/MetaData.js";
+    import {speechService} from "../../js/service/speechService";
     import Accordion from '../components/accordion.vue';
     import SliderInput from './input/sliderInput.vue';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
@@ -96,7 +142,21 @@
                 testGridData: null,
                 GridElement: GridElement,
                 ColorConfig: ColorConfig,
-                colorCategoryNotFitting: false
+                colorCategoryNotFitting: false,
+                chosenLocale: i18nService.isCurrentContentLangEN() ? 'de' : 'en',
+                selectAllLanguages: false,
+                allLanguages: i18nService.getAllLanguages(),
+                gridLanguages: []
+            }
+        },
+        computed: {
+            selectLanguages() {
+                if (this.selectAllLanguages) {
+                    return this.allLanguages;
+                }
+                return this.allLanguages.filter(lang =>
+                    this.gridLanguages.includes(lang.code)
+                );
             }
         },
         methods: {
@@ -107,10 +167,57 @@
                 this.testGridData = new GridData({
                     gridElements: [element]
                 });
+            },
+            getPronunciationPlaceholder(locale) {
+                let label = this.gridElement.label[locale] || '';
+                return i18nService.t('pronunciationOf', label);
+            },
+            getLocaleTranslation(locale) {
+                return i18nService.getTranslationAppLang(this.allLanguages.filter((lang) => lang.code === locale)[0]);
+            },
+            speak(locale) {
+                let speakText = this.gridElement.pronunciation[locale] || this.gridElement.label[locale];
+                if (!speakText) {
+                    return;
+                }
+                speechService.speak(speakText, {
+                    lang: locale,
+                    voiceLangIsTextLang: true
+                });
+            },
+            findUsedLocales() {
+                this.gridLanguages = [];
+                dataService.getGrids(true).then((grids) => {
+                    for (let grid of grids) {
+                        for (let element of grid.gridElements) {
+                            for (let lang of Object.keys(element.label)) {
+                                if (!this.gridLanguages.includes(lang) && !!element.label[lang]) {
+                                    this.gridLanguages.push(lang);
+                                }
+                            }
+                        }
+                    }
+                    // Set default chosenLocale to first used language that's not current language
+                    if (this.gridLanguages.length > 0) {
+                        let firstOtherLang = this.gridLanguages.find(lang => lang !== this.currentLang);
+                        if (firstOtherLang) {
+                            this.chosenLocale = firstOtherLang;
+                        }
+                    }
+                });
             }
         },
         mounted() {
+            // Ensure gridElement has proper label and pronunciation structure
+            if (!this.gridElement.label || typeof this.gridElement.label === 'string') {
+                this.$set(this.gridElement, 'label', {});
+            }
+            if (!this.gridElement.pronunciation) {
+                this.$set(this.gridElement, 'pronunciation', {});
+            }
+
             this.resetTestGrid();
+            this.findUsedLocales();
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             dataService.getMetadata().then(metadata => {
                 this.metadata = metadata;
@@ -129,5 +236,32 @@
 <style scoped>
     .row, .srow {
         margin-top: 1em;
+    }
+
+    .input-button {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        line-height: initial;
+        margin: 0;
+        padding: 0 1em;
+        box-shadow: none;
+        background-color: transparent;
+        cursor: pointer;
+        z-index: 1;
+        pointer-events: auto;
+    }
+
+    .checkbox-label-small {
+        font-size: 0.9em;
+        font-weight: normal;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
     }
 </style>
