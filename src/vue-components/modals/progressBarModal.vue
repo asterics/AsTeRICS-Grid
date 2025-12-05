@@ -56,12 +56,20 @@
                         this.options[key] = options[key];
                     }
                 });
-                if (Math.abs(this.progressPercentage - 100) < 0.001) {
-                    setTimeout(() => {
-                        this.options = JSON.parse(JSON.stringify(defaultOptions));
-                        this.$emit('close');
-                    }, 200)
-                }
+
+                return new Promise((resolve) => {
+                    this.$nextTick(() => {
+                        if (Math.abs(this.progressPercentage - 100) < 0.001) {
+                            setTimeout(() => {
+                                this.options = JSON.parse(JSON.stringify(defaultOptions));
+                                this.$emit('close');
+                                resolve();
+                            }, 200);
+                        } else {
+                            resolve();
+                        }
+                    });
+                });
             },
             close() {
                 if (this.options.closable) {
