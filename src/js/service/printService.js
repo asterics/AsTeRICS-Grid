@@ -66,6 +66,7 @@ printService.gridsToPdf = async function (gridsData, options) {
     options.idPageMap = {};
     options.idParentsMap = {};
     options.fontPath = '';
+    gridsData = gridsData.filter(grid => !!grid);
     gridsData.forEach((grid, index) => {
         options.idPageMap[grid.id] = index + 1;
     });

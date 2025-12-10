@@ -12,6 +12,7 @@
   "GridActionYoutube": "Action YouTube",
   "GridActionPodcast": "Action Podcast",
   "GridActionChangeLang": "Changer la langue / voix du contenu",
+  "GridActionVocabLevelToggle": "Change vocabulary level",
   "GridActionOpenWebpage": "Ouvrir la page Web dans un nouvel onglet",
   "COLLECT_ACTION_SPEAK": "Parler du contenu des éléments (séparément)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Parler du contenu des éléments (continuellement)",
@@ -1209,8 +1210,13 @@
   "DT_FORMAT_TIME": "Temps",
   "DT_FORMAT_TIME_LONG": "Temps (long)",
   "DT_FORMAT_DATETIME": "Date et heure",
+  "DT_FORMAT_DATETIME_LONG": "Date and time (long)",
   "DT_FORMAT_WEEKDAY": "Jour de la semaine",
   "DT_FORMAT_MONTH": "Mois",
+  "DT_FORMAT_CUSTOM": "Custom format",
+  "timeOffsetHours": "Time offset (hours)",
+  "formatString": "Format string",
+  "seeDocumentation": "see documentation",
   "APP_STATE_VOLUME_GLOBAL": "Volume du système",
   "APP_STATE_VOLUME_YT": "Volume YouTube",
   "APP_STATE_VOLUME_RADIO": "Volume de la radio:",
@@ -1251,6 +1257,8 @@
   "othersHeading": "Autres",
   "vocabularyLevel": "Niveau de vocabulaire",
   "shownVocabularyLevel": "Niveau du vocabulaire affiché",
+  "vocabLevelToggleDescription": "This action changes the vocabulary level locally on this device only. The configured level in settings remains synchronized across all devices.",
+  "TOGGLE_TO_FULL": "Toggle to full vocabulary",
   "progressiveLanguage": "Langage progressif",
   "untilLevel": "jusqu'au niveau {level}",
   "keyboard": "Clavier",
@@ -1309,5 +1317,6 @@
   "managePodcasts": "Gérer les podcasts",
   "selectedPodcasts": "Podcasts sélectionnés",
   "hideKeyboards": "Masquer le clavier",
-  "automaticallyAddImages": "Ajouter automatiquement les images"
+  "automaticallyAddImages": "Ajouter automatiquement les images",
+  "showAllElements": "show all elements"
 }

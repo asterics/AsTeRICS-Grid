@@ -141,10 +141,7 @@ obfConverter.OBFToGridData = function(obfObject, obfObjects) {
         return Promise.resolve(null);
     }
     let promises = [];
-    let locale = obfObject.locale ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
-    let baseLocale = i18nService.getBaseLang(locale);
-    locale = i18nService.getAllLangCodes().includes(locale) ? locale :
-        (i18nService.getAllLangCodes().includes(baseLocale) ? baseLocale : i18nService.getContentLang());
+    let locale = getLocale(obfObject);
     obfObject.grid = obfObject.grid || { rows: 1, columns: 1, order: [] };
     let gridData = new GridData({
         obfId: obfObject.id,
@@ -250,13 +247,14 @@ obfConverter.OBZToImportData = async function(obzFileMap) {
  *         of the actual gridId therefore postprocessing is needed, also see documentation of obfConverter.OBFToGridData()
  */
 function addActions(gridElement, obfButton, obfObject, obfObjects) {
+    let locale = getLocale(obfObject);
     if (obfButton.vocalization) {
         gridElement.actions = gridElement.actions.filter(
             (action) => action.modelName !== GridActionSpeak.getModelName()
         );
         gridElement.actions.push(
             new GridActionSpeakCustom({
-                speakText: obfButton.vocalization,
+                speakText: i18nService.getTranslationObject(obfButton.vocalization, locale),
                 speakLanguage: obfObject.locale
             })
         );
@@ -352,6 +350,14 @@ function getGridImage(imageId, obfObject, obfObjects) {
         return Promise.resolve(gridImage);
     }
     return Promise.resolve(null);
+}
+
+function getLocale(obfObject = {}) {
+    let locale = obfObject.locale ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
+    let baseLocale = i18nService.getBaseLang(locale);
+    locale = i18nService.getAllLangCodes().includes(locale) ? locale :
+        (i18nService.getAllLangCodes().includes(baseLocale) ? baseLocale : i18nService.getContentLang());
+    return locale;
 }
 
 export { obfConverter };

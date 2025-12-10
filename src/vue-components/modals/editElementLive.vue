@@ -21,6 +21,30 @@
                 </select>
             </div>
         </div>
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_DATETIME">
+            <label class="col-sm-4" for="dt_locale">{{ $t('selectLanguage') }}</label>
+            <div class="col-sm-7">
+                <select class="col-12" id="dt_locale" v-model="gridElement.dateTimeLocale" @change="recalcDtValues">
+                    <option :value="undefined">{{ $t('automatic') }}</option>
+                    <option v-for="lang in allLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_DATETIME">
+            <label class="col-sm-4" for="offsetHours">{{ $t('timeOffsetHours') }}</label>
+            <div class="col-sm-7">
+                <input id="offsetHours" type="number" class="col-12" v-model.number="gridElement.dateTimeOffsetHours" @input="recalcDtValues(300)">
+            </div>
+        </div>
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_DATETIME && gridElement.dateTimeFormat === GridElementLive.DT_FORMAT_CUSTOM">
+            <label class="col-sm-4" for="dt_format_custom">{{ $t('formatString') }}</label>
+            <div class="col-sm-7">
+                <input id="dt_format_custom" type="text" class="col-12" v-model="gridElement.dateTimeFormatCustom" placeholder="EEEE, dd. MMMM yyyy, HH:mm" @input="recalcDtValues(300)">
+            </div>
+            <div class="col-12 offset-sm-4">
+                <span>{{ $t('seeDocumentation') }}</span>: <a target="_blank" href="https://date-fns.org/v4.1.0/docs/format">date-fns.org</a>
+            </div>
+        </div>
         <div class="row" v-if="gridElement.mode === GridElementLive.MODE_APP_STATE">
             <label class="col-sm-4" for="appState">{{ $t('MODE_APP_STATE') }}</label>
             <div class="col-sm-7">
@@ -126,6 +150,7 @@
     import { GridActionPredefined } from '../../js/model/GridActionPredefined';
     import EditAction from './editAction.vue';
     import { i18nService } from '../../js/service/i18nService';
+    import { util } from '../../js/util/util';
 
     export default {
         components: { EditAction },
@@ -142,7 +167,8 @@
                 GridActionPredefined: GridActionPredefined,
                 updateCounter: 0,
                 i18nService: i18nService,
-                currentDtValues: {}
+                currentDtValues: {},
+                allLanguages: i18nService.getAllLanguages()
             }
         },
         computed: {
@@ -193,18 +219,26 @@
                         this.extractInfoChanged();
                     }
                 });
+            },
+            recalcDtValues(debounceMs = 0) {
+                util.debounce(async () => {
+                    for (let format of GridElementLive.DT_FORMATS) {
+                        this.$set(this.currentDtValues, format, await liveElementService.getCurrentValue( {
+                            mode: GridElementLive.MODE_DATETIME,
+                            dateTimeFormat: format,
+                            dateTimeLocale: this.gridElement.dateTimeLocale,
+                            dateTimeFormatCustom: this.gridElement.dateTimeFormatCustom,
+                            dateTimeOffsetHours: this.gridElement.dateTimeOffsetHours
+                        }));
+                    }
+                }, debounceMs);
             }
         },
         async mounted() {
             this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] = this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] || false;
             this.actionType = this.gridElement.liveAction ? this.gridElement.liveAction.modelName : undefined;
             this.extractInfo = this.extractInfoBasedOnCurrent;
-            for (let format of GridElementLive.DT_FORMATS) {
-                this.$set(this.currentDtValues, format, await liveElementService.getCurrentValue( {
-                    mode: GridElementLive.MODE_DATETIME,
-                    dateTimeFormat: format
-                }));
-            }
+            this.recalcDtValues();
         },
         beforeDestroy() {
         }

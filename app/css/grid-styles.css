@@ -110,6 +110,16 @@
 }
 
 @font-face {
+    font-family: "Prima-Bold";
+    src: url("../fonts/Primae-Bold.woff2");
+}
+
+@font-face {
+    font-family: "Prima-BoldCursive";
+    src: url("../fonts/Primae-BoldCursive.woff2");
+}
+
+@font-face {
     font-family: "Jost-500-Medium";
     src: url("../fonts/Jost-500-Medium.woff2");
 }

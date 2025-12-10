@@ -12,6 +12,7 @@
   "GridActionYoutube": "פעולה ביוטיוב",
   "GridActionPodcast": "Podcast action",
   "GridActionChangeLang": "שנה את השפה \\ הקול",
+  "GridActionVocabLevelToggle": "Change vocabulary level",
   "GridActionOpenWebpage": "פתח דף בחלון חדש",
   "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Speak collect element content (continuously)",
@@ -1209,8 +1210,13 @@
   "DT_FORMAT_TIME": "Time",
   "DT_FORMAT_TIME_LONG": "Time (long)",
   "DT_FORMAT_DATETIME": "Date and time",
+  "DT_FORMAT_DATETIME_LONG": "Date and time (long)",
   "DT_FORMAT_WEEKDAY": "Weekday",
   "DT_FORMAT_MONTH": "Month",
+  "DT_FORMAT_CUSTOM": "Custom format",
+  "timeOffsetHours": "Time offset (hours)",
+  "formatString": "Format string",
+  "seeDocumentation": "see documentation",
   "APP_STATE_VOLUME_GLOBAL": "System volume",
   "APP_STATE_VOLUME_YT": "YouTube volume",
   "APP_STATE_VOLUME_RADIO": "Radio volume",
@@ -1251,6 +1257,8 @@
   "othersHeading": "Others",
   "vocabularyLevel": "Vocabulary level",
   "shownVocabularyLevel": "Shown vocabulary level",
+  "vocabLevelToggleDescription": "This action changes the vocabulary level locally on this device only. The configured level in settings remains synchronized across all devices.",
+  "TOGGLE_TO_FULL": "Toggle to full vocabulary",
   "progressiveLanguage": "Progressive language",
   "untilLevel": "up to level {level}",
   "keyboard": "Keyboard",
@@ -1309,5 +1317,6 @@
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Automatically add images",
+  "showAllElements": "show all elements"
 }

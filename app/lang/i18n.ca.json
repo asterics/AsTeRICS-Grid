@@ -12,6 +12,7 @@
   "GridActionYoutube": "Acció de Youtube",
   "GridActionPodcast": "Acció de Podcast",
   "GridActionChangeLang": "Canviar l'idioma del contingut/veu",
+  "GridActionVocabLevelToggle": "Canviar nivell de vocabulari",
   "GridActionOpenWebpage": "Obrir pàgina web en un altra pestanya",
   "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada (element per element)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Pronunciar frase acumulada (contínua)",
@@ -1209,8 +1210,13 @@
   "DT_FORMAT_TIME": "Hora",
   "DT_FORMAT_TIME_LONG": "Hora (llarga)",
   "DT_FORMAT_DATETIME": "Data i hora",
+  "DT_FORMAT_DATETIME_LONG": "Date and time (long)",
   "DT_FORMAT_WEEKDAY": "Dia de la setmana",
   "DT_FORMAT_MONTH": "Mes",
+  "DT_FORMAT_CUSTOM": "Format personalitzat",
+  "timeOffsetHours": "Time offset (hours)",
+  "formatString": "Format string",
+  "seeDocumentation": "Veure documentació",
   "APP_STATE_VOLUME_GLOBAL": "Volum del sistema",
   "APP_STATE_VOLUME_YT": "Volum de YouTube",
   "APP_STATE_VOLUME_RADIO": "Volum de la ràdio",
@@ -1251,6 +1257,8 @@
   "othersHeading": "Altres",
   "vocabularyLevel": "Nivell de vocabulari",
   "shownVocabularyLevel": "Veure nivell de vocabulari",
+  "vocabLevelToggleDescription": "Aquesta acció canvia el nivell de vocabulari localment només per a aquest dispositiu. El nivell de configuració en els ajustaments romandrà sincronitzat en tots els dispositius",
+  "TOGGLE_TO_FULL": "Canviar a vocabulari complet",
   "progressiveLanguage": "Llenguatge progressiu",
   "untilLevel": "fins al nivell {level}",
   "keyboard": "Teclat",
@@ -1309,5 +1317,6 @@
   "managePodcasts": "Gestionar podcast",
   "selectedPodcasts": "Podcasts seleccionats",
   "hideKeyboards": "Amagar teclats",
-  "automaticallyAddImages": "Afegir imatges automàticament"
+  "automaticallyAddImages": "Afegir imatges automàticament",
+  "showAllElements": "Mostrar totes les cel·les"
 }

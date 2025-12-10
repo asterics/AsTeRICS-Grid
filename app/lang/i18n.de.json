@@ -12,6 +12,7 @@
   "GridActionYoutube": "YouTube Aktion",
   "GridActionPodcast": "Podcast Aktion",
   "GridActionChangeLang": "Sprache der Grids / Stimme ändern",
+  "GridActionVocabLevelToggle": "Vokabular-Level ändern",
   "GridActionOpenWebpage": "Website in neuem Tab öffnen",
   "COLLECT_ACTION_SPEAK": "Inhalt von Sammelelement sprechen (separat)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Inhalt von Sammelelement sprechen (kontinuierlich)",
@@ -1209,8 +1210,13 @@
   "DT_FORMAT_TIME": "Uhrzeit",
   "DT_FORMAT_TIME_LONG": "Uhrzeit (lang)",
   "DT_FORMAT_DATETIME": "Datum und Uhrzeit",
+  "DT_FORMAT_DATETIME_LONG": "Datum und Uhrzeit (lang)",
   "DT_FORMAT_WEEKDAY": "Wochentag",
   "DT_FORMAT_MONTH": "Monat",
+  "DT_FORMAT_CUSTOM": "Benutzerdefiniertes Format",
+  "timeOffsetHours": "Zeitverschiebung (Stunden)",
+  "formatString": "Format-String",
+  "seeDocumentation": "siehe Dokumentation",
   "APP_STATE_VOLUME_GLOBAL": "Systemlautstärke",
   "APP_STATE_VOLUME_YT": "YouTube Lautstärke",
   "APP_STATE_VOLUME_RADIO": "Webradio Lautstärke",
@@ -1251,6 +1257,8 @@
   "othersHeading": "Andere",
   "vocabularyLevel": "Vokabular-Level",
   "shownVocabularyLevel": "Angezeigtes Vokabular-Level",
+  "vocabLevelToggleDescription": "Diese Aktion ändert das angezeigte Vokabular-Level lokal auf diesem Gerät. Die Änderung wird nicht auf andere, synchronisierte Geräte übertragen.",
+  "TOGGLE_TO_FULL": "Zu vollem Vokabular umschalten (alle Elemente anzeigen)",
   "progressiveLanguage": "Mitwachsende Sprache",
   "untilLevel": "bis Level {level}",
   "keyboard": "Tastatur",
@@ -1309,5 +1317,6 @@
   "managePodcasts": "Podcasts verwalten",
   "selectedPodcasts": "Ausgewählte Podcasts",
   "hideKeyboards": "Keyboards ausblenden",
-  "automaticallyAddImages": "Bilder automatisch hinzufügen"
+  "automaticallyAddImages": "Bilder automatisch hinzufügen",
+  "showAllElements": "Alle Elemente anzeigen"
 }

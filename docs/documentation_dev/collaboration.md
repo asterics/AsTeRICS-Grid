@@ -21,7 +21,8 @@ Everyone is welcome to [create issues on GitHub](https://github.com/asterics/AsT
 ### Labelling of issues
 There are these labels for issues:
 * [good first issue](https://github.com/asterics/AsTeRICS-Grid/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22): issues that could be solved by first-time contributors
-* [fix-needs-review](https://github.com/asterics/AsTeRICS-Grid/issues?q=state%3Aopen%20label%3Afix-needs-review): issues with existing pull request, which can be reviewed
+* [needs-beta-review](https://github.com/asterics/AsTeRICS-Grid/issues?q=state%3Aopen%20label%3A%22needs-beta-review%22): issues with existing pull request, where the beta release can be reviewed (functional review)
+* [needs-code-review](https://github.com/asterics/AsTeRICS-Grid/issues?q=state%3Aopen%20label%3Aneeds-code-review): issues where functional review of beta release was approved, but need code review before merging the PR.
 * `priority-[id]`: issues which have high priority are labelled with `priority` tags. The `id` in the tag specifies which person or subproject needs this issue with priority.
    * examples: [priority-arasaac](https://github.com/asterics/AsTeRICS-Grid/issues?q=state%3Aopen%20label%3Apriority-arasaac) and [priority-mialingvo](https://github.com/asterics/AsTeRICS-Grid/issues?q=state%3Aopen%20label%3Apriority-mialingvo)
 
@@ -41,7 +42,8 @@ This is the workflow if you want to work on an issue:
 * create a comment in the PR referencing the issue number for linking PR and issue
 * a GitHub workflow will automatically create a preview release for testing your changes and comment the link for testing to your PR
 * comment the URL for the preview release to the issue and ask other people to test your changes
-* after the changes are approved within the issue, request a code review in the PR
+* add label `needs-beta-review` to the issue, signaling that it is ready for functional test and feedback
+* after the changes are approved (functional) within the issue, request a code review in the PR, add label `needs-code-review` to the PR.
 * the **issue is for discussing the implementation from the user's side** (UI, testing environment) while the **PR is for discussing the code changes and technical background**
 * after both the functionality and the code is approved, the PR will merged to branch `master` and released with the next release
 

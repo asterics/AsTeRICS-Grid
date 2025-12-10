@@ -434,7 +434,7 @@ dataService.getBackupData = async function (gridIds, options = {}) {
                 elem.label[contentLang] = elem.label[contentLang] || elem.label[contentLangBase];
                 Object.keys(elem.label).forEach((key) => key === contentLang || delete elem.label[key]);
                 for (let action of elem.actions) {
-                    if (action.speakText) {
+                    if (action.speakText && !util.isString(action.speakText)) {
                         Object.keys(action.speakText).forEach(
                             (key) => key === contentLang || delete action.speakText[key]
                         );

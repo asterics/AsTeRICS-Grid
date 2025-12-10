@@ -41,9 +41,9 @@
                 </template>
             </i18n>
         </div>
-        <h3>{{ $t('Matrix messenger') }}</h3>
+        <h3>Matrix messenger</h3>
         <div class="srow">
-            <button @click="currentModal = MODALS.MODAL_MATRIX"><i class="fas fa-cog"></i> Configure matrix messenger</button>
+            <button @click="currentModal = MODALS.MODAL_MATRIX"><i class="fas fa-cog"></i> {{ $t('configureMatrixMessenger') }}</button>
         </div>
         <configure-matrix v-if="currentModal === MODALS.MODAL_MATRIX" @close="currentModal = null"></configure-matrix>
     </div>
