@@ -32,42 +32,6 @@
             <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
             <label for="inputHidden">{{ $t('hideElement') }}</label>
         </div>
-        <div class="srow">
-            <accordion :acc-label="$t('Translation')">
-                <div class="row">
-                    <label class="col-sm-2" for="translationLanguage">{{ $t('language') }}</label>
-                    <div class="col-sm-5">
-                        <select class="col-12" id="translationLanguage" v-model="chosenLocale">
-                            <option
-                                v-for="lang in selectLanguages"
-                                :value="lang.code"
-                            >
-                                {{ lang | extractTranslationAppLang }} ({{ lang.code }})
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-sm-5 checkbox-container">
-                        <input type="checkbox" id="selectAllLanguages" v-model="selectAllLanguages"/>
-                        <label for="selectAllLanguages" class="checkbox-label-small">{{ $t('showAllLanguages') }}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class="col-sm-2" for="translatedLabel">{{ $t('label') }} ({{ chosenLocale }})</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="col-12" id="translatedLabel" v-if="gridElement" v-model="gridElement.label[chosenLocale]" :placeholder="getLocaleTranslation(chosenLocale)" :lang="chosenLocale"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class="col-sm-2" for="translatedPronunciation">{{ $t('pronunciation') }} ({{ chosenLocale }})</label>
-                    <div class="col-sm-7" style="position: relative">
-                        <input type="text" class="col-12" id="translatedPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[chosenLocale]" :placeholder="getPronunciationPlaceholder(chosenLocale)" :lang="chosenLocale"/>
-                        <button @click="speak(chosenLocale)" class="input-button" :title="$t('testPronunciation')">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-                </div>
-            </accordion>
-        </div>
         <div class="srow" v-if="metadata">
             <accordion :acc-label="$t('advancedOptions')">
                 <div class="row">
@@ -112,6 +76,42 @@
                 <app-grid-display class="testGrid" v-if="metadata" style="max-width: 200px; height: 200px;" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
             </accordion>
         </div>
+        <div class="srow">
+            <accordion :acc-label="$t('Translation')">
+                <div class="row">
+                    <label class="col-sm-2" for="translationLanguage">{{ $t('language') }}</label>
+                    <div class="col-sm-5">
+                        <select class="col-12" id="translationLanguage" v-model="chosenLocale">
+                            <option
+                                v-for="lang in selectLanguages"
+                                :value="lang.code"
+                            >
+                                {{ lang | extractTranslationAppLang }} ({{ lang.code }})
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5 checkbox-container">
+                        <input type="checkbox" id="selectAllLanguages" v-model="selectAllLanguages"/>
+                        <label for="selectAllLanguages" class="checkbox-label-small">{{ $t('showAllLanguages') }}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2" for="translatedLabel">{{ $t('label') }} ({{ chosenLocale }})</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="col-12" id="translatedLabel" v-if="gridElement" v-model="gridElement.label[chosenLocale]" :placeholder="getLocaleTranslation(chosenLocale)" :lang="chosenLocale"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2" for="translatedPronunciation">{{ $t('pronunciation') }} ({{ chosenLocale }})</label>
+                    <div class="col-sm-7" style="position: relative">
+                        <input type="text" class="col-12" id="translatedPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[chosenLocale]" :placeholder="getPronunciationPlaceholder(chosenLocale)" :lang="chosenLocale"/>
+                        <button @click="speak(chosenLocale)" class="input-button" :title="$t('testPronunciation')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </accordion>
+        </div>
     </div>
 </template>
 
@@ -143,8 +143,8 @@
                 GridElement: GridElement,
                 ColorConfig: ColorConfig,
                 colorCategoryNotFitting: false,
-                chosenLocale: i18nService.isCurrentContentLangEN() ? 'de' : 'en',
-                selectAllLanguages: false,
+                chosenLocale: i18nService.getAllLanguages().find(lang => lang.code !== i18nService.getContentLang())?.code || 'en',
+                selectAllLanguages: true,
                 allLanguages: i18nService.getAllLanguages(),
                 gridLanguages: []
             }
@@ -197,12 +197,21 @@
                             }
                         }
                     }
-                    // Set default chosenLocale to first used language that's not current language
-                    if (this.gridLanguages.length > 0) {
+
+                    if (this.gridLanguages.length > 1) {
+                        // Has multiple used languages: default to first used language, uncheck "show all"
                         let firstOtherLang = this.gridLanguages.find(lang => lang !== this.currentLang);
                         if (firstOtherLang) {
                             this.chosenLocale = firstOtherLang;
                         }
+                        this.selectAllLanguages = false;
+                    } else {
+                        // Only one or no used languages: default to first available language, check "show all"
+                        let firstAvailableLang = this.allLanguages.find(lang => lang.code !== this.currentLang);
+                        if (firstAvailableLang) {
+                            this.chosenLocale = firstAvailableLang.code;
+                        }
+                        this.selectAllLanguages = true;
                     }
                 });
             }
