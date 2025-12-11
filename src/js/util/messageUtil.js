@@ -1,4 +1,5 @@
 import { MainVue } from '../vue/mainVue';
+import { constants } from './constants';
 
 let messageUtil = {};
 
@@ -27,10 +28,10 @@ messageUtil.showImportSuccess = async function(importData, onCloseFn) {
 
     // Show success message box
     return MainVue.showMessageBox({
-        type: 'success',
+        type: constants.MODAL_TYPE_SUCCESS,
         header: 'importSuccessful',
         items: items,
-        buttonPreset: 'ok',
+        buttonPreset: constants.BUTTONS_OK,
         onClose: onCloseFn
     });
 };

@@ -21,7 +21,7 @@ let app = null;
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
     MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR',
-    MODAL_SUCCESS: 'MODAL_SUCCESS'
+    MODAL_MESSAGEBOX: 'MODAL_MESSAGEBOX'
 };
 
 MainVue.setViewComponent = function (component, properties) {
@@ -105,7 +105,7 @@ MainVue.showMessageBox = function (options) {
     if (!app) {
         return Promise.resolve(false);
     }
-    app.showModal = modalTypes.MODAL_SUCCESS;
+    app.showModal = modalTypes.MODAL_MESSAGEBOX;
     return new Promise((resolve) => {
         app.$nextTick(() => {
             if (app.$refs.messageBox) {
@@ -126,17 +126,13 @@ MainVue.showMessageBox = function (options) {
  */
 MainVue.showConfirmBox = function (message, options = {}) {
     return MainVue.showMessageBox({
-        type: 'question',
+        type: constants.MODAL_TYPE_QUESTION,
         header: options.header,
         message: message,
-        buttonPreset: options.buttonPreset || 'yesno',
+        buttonPreset: options.buttonPreset || constants.BUTTONS_YES_NO,
         showCloseButton: options.showCloseButton !== undefined ? options.showCloseButton : true
     });
 };
-
-// Backward compatibility aliases
-MainVue.showSuccessModal = MainVue.showMessageBox;
-MainVue.showConfirmDialog = MainVue.showConfirmBox;
 
 MainVue.searchModalOpened = function() {
     return app.showModal === modalTypes.MODAL_SEARCH;

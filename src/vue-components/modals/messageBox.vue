@@ -37,17 +37,16 @@
 <script>
     import './../../css/modal.css';
     import { i18nService } from '../../js/service/i18nService';
+    import { constants } from '../../js/util/constants';
 
-    // Modal types
-    const MODAL_TYPE_SUCCESS = 'success';
-    const MODAL_TYPE_QUESTION = 'question';
-    const MODAL_TYPE_WARNING = 'warning';
-    const MODAL_TYPE_INFO = 'info';
-
-    // Button presets
-    const BUTTONS_OK = 'ok';
-    const BUTTONS_YES_NO = 'yesno';
-    const BUTTONS_OK_CANCEL = 'okcancel';
+    // Import constants for easier reference
+    const MODAL_TYPE_SUCCESS = constants.MODAL_TYPE_SUCCESS;
+    const MODAL_TYPE_QUESTION = constants.MODAL_TYPE_QUESTION;
+    const MODAL_TYPE_WARNING = constants.MODAL_TYPE_WARNING;
+    const MODAL_TYPE_INFO = constants.MODAL_TYPE_INFO;
+    const BUTTONS_OK = constants.BUTTONS_OK;
+    const BUTTONS_YES_NO = constants.BUTTONS_YES_NO;
+    const BUTTONS_OK_CANCEL = constants.BUTTONS_OK_CANCEL;
 
     export default {
         props: [],

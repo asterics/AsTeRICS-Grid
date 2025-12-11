@@ -15,6 +15,17 @@ constants.VALIDATION_ERROR_EXISTING = 'VALIDATION_ERROR_EXISTING';
 constants.VALIDATION_ERROR_FAILED = 'VALIDATION_ERROR_FAILED';
 constants.VALIDATION_VALID = 'VALIDATION_VALID';
 
+// MessageBox modal types
+constants.MODAL_TYPE_SUCCESS = 'success';
+constants.MODAL_TYPE_QUESTION = 'question';
+constants.MODAL_TYPE_WARNING = 'warning';
+constants.MODAL_TYPE_INFO = 'info';
+
+// MessageBox button presets
+constants.BUTTONS_OK = 'ok';
+constants.BUTTONS_YES_NO = 'yesno';
+constants.BUTTONS_OK_CANCEL = 'okcancel';
+
 constants.EVENT_DB_CONNECTION_LOST = 'EVENT_DB_CONNECTION_LOST';
 constants.EVENT_DB_PULL_UPDATED = 'EVENT_DB_PULL_UPDATED';
 constants.EVENT_DB_SYNC_STATE_CHANGE = 'EVENT_DB_SYNC_STATE_CHANGE';
