@@ -3,7 +3,7 @@
         <div class="row">
             <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
             <div class="col-sm-7">
-                <input type="text" class="col-12" id="inputLabel" v-focus @keydown.enter.exact="$emit('searchImage')" v-if="gridElement" v-model="gridElement.label[currentLang]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_LIVE ? $t('canIncludePlaceholderLike') : ''"/>
+                <input type="text" class="col-12" id="inputLabel" v-focus @keydown.enter.exact="$emit('searchImage')" v-if="gridElement" v-model="gridElement.label[currentLang]" :placeholder="getLabelPlaceholder(currentLang)"/>
             </div>
             <div class="col-sm-3">
                 <button @click="$emit('searchImage')" class="col-12 m-0" :title="$t('searchForImages')" style="line-height: 1.5"><i class="fas fa-search"/> {{$t('searchForImages')}}</button>
@@ -12,7 +12,7 @@
         <div class="row">
             <label class="col-sm-2" for="inputPronunciation">{{ $t('pronunciation') }}</label>
             <div class="col-sm-7" style="position: relative">
-                <input type="text" class="col-12" id="inputPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[currentLang]" :placeholder="getPronunciationPlaceholder(currentLang)"/>
+                <input type="text" class="col-12" id="inputPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[currentLang]" :placeholder="getPronunciationPlaceholderWithLang(currentLang)"/>
                 <button @click="speak(currentLang)" class="input-button" :title="$t('testPronunciation')">
                     <i class="fas fa-play"></i>
                 </button>
@@ -98,13 +98,13 @@
                 <div class="row">
                     <label class="col-sm-2" for="translatedLabel">{{ $t('label') }} ({{ chosenLocale }})</label>
                     <div class="col-sm-7">
-                        <input type="text" class="col-12" id="translatedLabel" v-if="gridElement" v-model="gridElement.label[chosenLocale]" :placeholder="getLocaleTranslation(chosenLocale)" :lang="chosenLocale"/>
+                        <input type="text" class="col-12" id="translatedLabel" v-if="gridElement" v-model="gridElement.label[chosenLocale]" :placeholder="getLabelPlaceholder(chosenLocale)" :lang="chosenLocale"/>
                     </div>
                 </div>
                 <div class="row">
                     <label class="col-sm-2" for="translatedPronunciation">{{ $t('pronunciation') }} ({{ chosenLocale }})</label>
                     <div class="col-sm-7" style="position: relative">
-                        <input type="text" class="col-12" id="translatedPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[chosenLocale]" :placeholder="getPronunciationPlaceholder(chosenLocale)" :lang="chosenLocale"/>
+                        <input type="text" class="col-12" id="translatedPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[chosenLocale]" :placeholder="getPronunciationPlaceholderWithLang(chosenLocale)" :lang="chosenLocale"/>
                         <button @click="speak(chosenLocale)" class="input-button" :title="$t('testPronunciation')">
                             <i class="fas fa-play"></i>
                         </button>
@@ -168,9 +168,40 @@
                     gridElements: [element]
                 });
             },
+            getLabelPlaceholder(locale) {
+                // If LIVE element, show special placeholder
+                if (this.gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                    return i18nService.t('canIncludePlaceholderLike');
+                }
+
+                // If label exists in requested locale, no placeholder needed
+                if (this.gridElement.label[locale]) {
+                    return '';
+                }
+
+                // Find first available label in another language
+                let availableLangs = Object.keys(this.gridElement.label).filter(lang => this.gridElement.label[lang]);
+                if (availableLangs.length > 0) {
+                    let firstLang = availableLangs[0];
+                    let langName = this.getLocaleTranslation(firstLang);
+                    return `${langName}: ${this.gridElement.label[firstLang]}`;
+                }
+
+                // No label available in any language
+                let langName = this.getLocaleTranslation(locale);
+                return `${langName} label`;
+            },
             getPronunciationPlaceholder(locale) {
                 let label = this.gridElement.label[locale] || '';
                 return i18nService.t('pronunciationOf', label);
+            },
+            getPronunciationPlaceholderWithLang(locale) {
+                let label = this.gridElement.label[locale] || '';
+                let langName = this.getLocaleTranslation(locale);
+                if (label) {
+                    return `${langName} pronunciation of "${label}"`;
+                }
+                return `${langName} pronunciation`;
             },
             getLocaleTranslation(locale) {
                 return i18nService.getTranslationAppLang(this.allLanguages.filter((lang) => lang.code === locale)[0]);
