@@ -13,13 +13,15 @@ import { Router } from '../router';
 import NotificationBar from '../../vue-components/components/notificationBar.vue';
 import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 import SearchModal from "../../vue-components/modals/searchModal.vue";
+import MessageBox from "../../vue-components/modals/messageBox.vue";
 import { systemActionService } from '../service/systemActionService';
 
 let MainVue = {};
 let app = null;
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
-    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR'
+    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR',
+    MODAL_MESSAGEBOX: 'MODAL_MESSAGEBOX'
 };
 
 MainVue.setViewComponent = function (component, properties) {
@@ -66,13 +68,14 @@ MainVue.clearTooltip = function () {
  * @param options.text
  * @param options.cancelFn (optional) a function that is called if the user closes the progressbar modal
  * @param options.closable if true, the user can close the modal
+ * @returns Promise that resolves when progress is set (and modal closes if percentage is 100)
  */
 MainVue.showProgressBar = function (percentage, options) {
     if (!app) {
-        return;
+        return Promise.resolve();
     }
     app.showModal = modalTypes.MODAL_PROGRESSBAR;
-    app.$refs.progressBar.setProgress(percentage, options);
+    return app.$refs.progressBar.setProgress(percentage, options);
 };
 
 /**
@@ -85,6 +88,52 @@ MainVue.showSearchModal = function (options) {
     app.modalOptions = options || {};
 };
 
+/**
+ * show message box (generic method for all message types)
+ * @param options.header header text (will be translated)
+ * @param options.message message text
+ * @param options.items array of items to show as list
+ * @param options.autoCloseDuration duration in ms before auto-close (default: 0 = no auto-close)
+ * @param options.type modal type: 'success', 'question', 'warning', 'info' (default: 'success')
+ * @param options.buttonPreset button preset: 'ok', 'yesno', 'okcancel'
+ * @param options.buttons custom buttons array
+ * @param options.showCloseButton show X close button (default: true)
+ * @param options.onClose callback function called when modal closes
+ * @returns Promise that resolves with button value
+ */
+MainVue.showMessageBox = function (options) {
+    if (!app) {
+        return Promise.resolve(false);
+    }
+    app.showModal = modalTypes.MODAL_MESSAGEBOX;
+    return new Promise((resolve) => {
+        app.$nextTick(() => {
+            if (app.$refs.messageBox) {
+                app.$refs.messageBox.show(options || {}).then(resolve);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+};
+
+/**
+ * show confirmation dialog (replaces native confirm())
+ * @param message confirmation message
+ * @param options.header header text
+ * @param options.buttonPreset button preset: 'yesno' (default), 'okcancel', 'ok'
+ * @returns Promise that resolves to true if confirmed, false if cancelled
+ */
+MainVue.showConfirmBox = function (message, options = {}) {
+    return MainVue.showMessageBox({
+        type: constants.MODAL_TYPE_QUESTION,
+        header: options.header,
+        message: message,
+        buttonPreset: options.buttonPreset || constants.BUTTONS_YES_NO,
+        showCloseButton: options.showCloseButton !== undefined ? options.showCloseButton : true
+    });
+};
+
 MainVue.searchModalOpened = function() {
     return app.showModal === modalTypes.MODAL_SEARCH;
 };
@@ -95,7 +144,7 @@ MainVue.init = function () {
         app = new Vue({
             i18n: i18n,
             el: '#app',
-            components: { NotificationBar, ProgressBarModal, SearchModal },
+            components: { NotificationBar, ProgressBarModal, SearchModal, MessageBox },
             data() {
                 return {
                     component: null,

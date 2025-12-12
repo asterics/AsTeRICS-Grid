@@ -80,6 +80,7 @@
     import {helpService} from "../../js/service/helpService";
     import {i18nService} from "../../js/service/i18nService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
+    import {messageUtil} from "../../js/util/messageUtil.js";
 
 
     export default {
@@ -152,10 +153,13 @@
                 if (this.options.resetBeforeImport) {
                     await dataService.markCurrentConfigAsBackedUp();
                 }
-                MainVue.showProgressBar(100);
-                if (this.reloadFn) {
-                    this.reloadFn();
-                }
+
+                // Show success message and reload on close
+                await messageUtil.showImportSuccess(this.importData, () => {
+                    if (this.reloadFn) {
+                        this.reloadFn();
+                    }
+                });
             },
             openHelp() {
                 helpService.openHelp();
