@@ -83,7 +83,6 @@ speechService.speak = function (textOrOject, options = {}) {
     if (!text) {
         return;
     }
-    text = text.toLowerCase();
     if (options.voiceLangIsTextLang &&
         preferredVoiceId &&
         i18nService.getBaseLang(prefVoiceLang) !== i18nService.getBaseLang(langToUse) &&
