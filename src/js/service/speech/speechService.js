@@ -429,6 +429,7 @@ async function init() {
     }
     addVoice(constants.VOICE_DEVICE_DEFAULT, await i18nService.tLoad("defaultDeviceVoice"), i18nService.getBrowserLang(), constants.VOICE_TYPE_NATIVE, true, undefined);
 
+    await speechServiceExternal.init();
     let externalVoices = await speechServiceExternal.getVoices();
     let azureVoices = await speechServiceAzure.getVoices();
     for (let voice of externalVoices.concat(azureVoices)) {

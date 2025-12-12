@@ -4,8 +4,11 @@ import {i18nService} from "../i18nService.js";
 import $ from "../../externals/jquery.js";
 import {localStorageService} from "../data/localStorageService.js";
 import {GridActionSpeakCustom} from "../../model/GridActionSpeakCustom.js";
+import { util } from '../../util/util';
 
 let speechServiceExternal = {};
+
+const JWT_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
 let externalSpeechServiceUrl = localStorageService.getAppSettings().externalSpeechServiceUrl;
 let lastSpeakingResult = false;
@@ -15,9 +18,32 @@ let lastGetVoicesResult = null;
 let playingInternal = false;
 let spokeExternalAtAnyTime = false;
 let _caching = false;
+let _jwt = {}; // expects: {token: ..., expires: ...}
 
 let speakFetchController = new AbortController();
 let speakFetchSignal = speakFetchController.signal;
+
+speechServiceExternal.init = async function() {
+    let needsAuth = await util.fetchJson(`${externalSpeechServiceUrl}/user/requires-auth`);
+    if (needsAuth) {
+        await speechServiceExternal.authenticate("alice");
+        if (!_jwt || !_jwt.token || !_jwt.expires) {
+            log.warn('external speech: JWT auth failed!');
+        }
+    }
+}
+
+speechServiceExternal.authenticate = async function(username, password) {
+    if (_jwt && _jwt.expires && _jwt.expires - Date.now() > 2 * JWT_REFRESH_INTERVAL_MS) {
+        log.debug('not updating JWT, not expiring soon.');
+    } else {
+        log.debug('updating external speech JWT token...');
+        _jwt = await util.postJson(`${externalSpeechServiceUrl}/user/login`, { username: username, password: password });
+    }
+    if (_jwt && _jwt.expires) {
+        setTimeout(() => speechServiceExternal.authenticate(username, password), JWT_REFRESH_INTERVAL_MS);
+    }
+};
 
 speechServiceExternal.speak = async function (text, providerId, voice) {
     if (!externalSpeechServiceUrl) {
@@ -173,6 +199,10 @@ speechServiceExternal.validateUrl = async function (url) {
 async function fetchErrorHandling(url, options) {
     let result = null;
     options = options || {};
+    if (_jwt) {
+        options.headers = options.headers || {};
+        options.headers['Authorization'] = `Bearer ${_jwt.token}`;
+    }
     if (options.timeout) {
         let abortController = new AbortController();
         options.signal = abortController.signal;
