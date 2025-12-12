@@ -13,7 +13,7 @@ let lastSpeakingRequestTime = 0;
 let lastGetVoicesTime = 0;
 let lastGetVoicesResult = null;
 let playingInternal = false;
-let spokeAtAnyTime = false;
+let spokeExternalAtAnyTime = false;
 let _caching = false;
 
 let speakFetchController = new AbortController();
@@ -23,12 +23,12 @@ speechServiceExternal.speak = async function (text, providerId, voice) {
     if (!externalSpeechServiceUrl) {
         return;
     }
-    spokeAtAnyTime = true;
     text = encodeURIComponent(text);
     providerId = encodeURIComponent(providerId);
     let voiceId = encodeURIComponent(voice.id);
     if (voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING) {
-        fetchErrorHandling(`${externalSpeechServiceUrl}/speak/${text}/${providerId}/${voiceId}`);
+        spokeExternalAtAnyTime = true;
+        fetchErrorHandling(`${externalSpeechServiceUrl}/tts/speak/${text}/${providerId}/${voiceId}`);
     } else if (voice.type === constants.VOICE_TYPE_EXTERNAL_DATA) {
         speakFetchController.abort();
         speakFetchController = new AbortController();
@@ -75,22 +75,28 @@ speechServiceExternal.getVoices = async function (url) {
 };
 
 speechServiceExternal.stop = function () {
-    if (!externalSpeechServiceUrl || !spokeAtAnyTime) {
+    if (!externalSpeechServiceUrl) {
         return;
     }
-    fetchErrorHandling(`${externalSpeechServiceUrl}/stop`);
     if (playingInternal) {
         audioUtil.stopAudio();
         playingInternal = false;
     }
+    if (!spokeExternalAtAnyTime) {
+        return;
+    }
+    fetchErrorHandling(`${externalSpeechServiceUrl}/tts/stop`);
 };
 
 speechServiceExternal.isSpeaking = async function () {
-    if (!externalSpeechServiceUrl || !spokeAtAnyTime) {
+    if (!externalSpeechServiceUrl) {
         return false;
     }
     if (playingInternal) {
         return true;
+    }
+    if (!spokeExternalAtAnyTime) {
+        return false;
     }
     if (new Date().getTime() - lastSpeakingRequestTime < 200) {
         return lastSpeakingResult;
