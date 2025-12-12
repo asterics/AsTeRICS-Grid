@@ -3,10 +3,19 @@
         <div class="row">
             <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
             <div class="col-sm-7">
-                <input type="text" class="col-12" id="inputLabel" v-focus @keydown.enter.exact="$emit('searchImage')" v-if="gridElement" v-model="gridElement.label[currentLang]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_LIVE ? $t('canIncludePlaceholderLike') : ''"/>
+                <input type="text" class="col-12" id="inputLabel" v-focus @keydown.enter.exact="$emit('searchImage')" v-if="gridElement" v-model="gridElement.label[currentLang]" :placeholder="getLabelPlaceholder(currentLang)"/>
             </div>
             <div class="col-sm-3">
                 <button @click="$emit('searchImage')" class="col-12 m-0" :title="$t('searchForImages')" style="line-height: 1.5"><i class="fas fa-search"/> {{$t('searchForImages')}}</button>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-2" for="inputPronunciation">{{ $t('pronunciation') }}</label>
+            <div class="col-sm-7" style="position: relative">
+                <input type="text" class="col-12" id="inputPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[currentLang]" :placeholder="getPronunciationPlaceholderWithLang(currentLang)"/>
+                <button @click="speak(currentLang)" class="input-button" :title="$t('testPronunciation')">
+                    <i class="fas fa-play"></i>
+                </button>
             </div>
         </div>
         <div class="row">
@@ -67,6 +76,42 @@
                 <app-grid-display class="testGrid" v-if="metadata" style="max-width: 200px; height: 200px;" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
             </accordion>
         </div>
+        <div class="srow">
+            <accordion :acc-label="$t('Translation')">
+                <div class="row">
+                    <label class="col-sm-2" for="translationLanguage">{{ $t('language') }}</label>
+                    <div class="col-sm-5">
+                        <select class="col-12" id="translationLanguage" v-model="chosenLocale">
+                            <option
+                                v-for="lang in selectLanguages"
+                                :value="lang.code"
+                            >
+                                {{ lang | extractTranslationAppLang }} ({{ lang.code }})
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5 checkbox-container">
+                        <input type="checkbox" id="selectAllLanguages" v-model="selectAllLanguages"/>
+                        <label for="selectAllLanguages" class="checkbox-label-small">{{ $t('showAllLanguages') }}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2" for="translatedLabel">{{ $t('label') }} ({{ chosenLocale }})</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="col-12" id="translatedLabel" v-if="gridElement" v-model="gridElement.label[chosenLocale]" :placeholder="getLabelPlaceholder(chosenLocale)" :lang="chosenLocale"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2" for="translatedPronunciation">{{ $t('pronunciation') }} ({{ chosenLocale }})</label>
+                    <div class="col-sm-7" style="position: relative">
+                        <input type="text" class="col-12" id="translatedPronunciation" v-if="gridElement" v-model="gridElement.pronunciation[chosenLocale]" :placeholder="getPronunciationPlaceholderWithLang(chosenLocale)" :lang="chosenLocale"/>
+                        <button @click="speak(chosenLocale)" class="input-button" :title="$t('testPronunciation')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </accordion>
+        </div>
     </div>
 </template>
 
@@ -77,6 +122,7 @@
     import {constants} from "../../js/util/constants.js";
     import {dataService} from "../../js/service/data/dataService.js";
     import {MetaData} from "../../js/model/MetaData.js";
+    import {speechService} from "../../js/service/speechService";
     import Accordion from '../components/accordion.vue';
     import SliderInput from './input/sliderInput.vue';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
@@ -96,7 +142,21 @@
                 testGridData: null,
                 GridElement: GridElement,
                 ColorConfig: ColorConfig,
-                colorCategoryNotFitting: false
+                colorCategoryNotFitting: false,
+                chosenLocale: i18nService.getAllLanguages().find(lang => lang.code !== i18nService.getContentLang())?.code || 'en',
+                selectAllLanguages: true,
+                allLanguages: i18nService.getAllLanguages(),
+                gridLanguages: []
+            }
+        },
+        computed: {
+            selectLanguages() {
+                if (this.selectAllLanguages) {
+                    return this.allLanguages;
+                }
+                return this.allLanguages.filter(lang =>
+                    this.gridLanguages.includes(lang.code)
+                );
             }
         },
         methods: {
@@ -107,10 +167,97 @@
                 this.testGridData = new GridData({
                     gridElements: [element]
                 });
+            },
+            getLabelPlaceholder(locale) {
+                // If LIVE element, show special placeholder
+                if (this.gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                    return i18nService.t('canIncludePlaceholderLike');
+                }
+
+                // If label exists in requested locale, no placeholder needed
+                if (this.gridElement.label[locale]) {
+                    return '';
+                }
+
+                // Find first available label in another language
+                let availableLangs = Object.keys(this.gridElement.label).filter(lang => this.gridElement.label[lang]);
+                if (availableLangs.length > 0) {
+                    let firstLang = availableLangs[0];
+                    let langName = this.getLocaleTranslation(firstLang);
+                    return `${langName}: ${this.gridElement.label[firstLang]}`;
+                }
+
+                // No label available in any language
+                let langName = this.getLocaleTranslation(locale);
+                return `${langName} label`;
+            },
+            getPronunciationPlaceholder(locale) {
+                let label = this.gridElement.label[locale] || '';
+                return i18nService.t('pronunciationOf', label);
+            },
+            getPronunciationPlaceholderWithLang(locale) {
+                let label = this.gridElement.label[locale] || '';
+                let langName = this.getLocaleTranslation(locale);
+                if (label) {
+                    return `${langName} pronunciation of "${label}"`;
+                }
+                return `${langName} pronunciation`;
+            },
+            getLocaleTranslation(locale) {
+                return i18nService.getTranslationAppLang(this.allLanguages.filter((lang) => lang.code === locale)[0]);
+            },
+            speak(locale) {
+                let speakText = this.gridElement.pronunciation[locale] || this.gridElement.label[locale];
+                if (!speakText) {
+                    return;
+                }
+                speechService.speak(speakText, {
+                    lang: locale,
+                    voiceLangIsTextLang: true
+                });
+            },
+            findUsedLocales() {
+                this.gridLanguages = [];
+                dataService.getGrids(true).then((grids) => {
+                    for (let grid of grids) {
+                        for (let element of grid.gridElements) {
+                            for (let lang of Object.keys(element.label)) {
+                                if (!this.gridLanguages.includes(lang) && !!element.label[lang]) {
+                                    this.gridLanguages.push(lang);
+                                }
+                            }
+                        }
+                    }
+
+                    if (this.gridLanguages.length > 1) {
+                        // Has multiple used languages: default to first used language, uncheck "show all"
+                        let firstOtherLang = this.gridLanguages.find(lang => lang !== this.currentLang);
+                        if (firstOtherLang) {
+                            this.chosenLocale = firstOtherLang;
+                        }
+                        this.selectAllLanguages = false;
+                    } else {
+                        // Only one or no used languages: default to first available language, check "show all"
+                        let firstAvailableLang = this.allLanguages.find(lang => lang.code !== this.currentLang);
+                        if (firstAvailableLang) {
+                            this.chosenLocale = firstAvailableLang.code;
+                        }
+                        this.selectAllLanguages = true;
+                    }
+                });
             }
         },
         mounted() {
+            // Ensure gridElement has proper label and pronunciation structure
+            if (!this.gridElement.label || typeof this.gridElement.label === 'string') {
+                this.$set(this.gridElement, 'label', {});
+            }
+            if (!this.gridElement.pronunciation) {
+                this.$set(this.gridElement, 'pronunciation', {});
+            }
+
             this.resetTestGrid();
+            this.findUsedLocales();
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             dataService.getMetadata().then(metadata => {
                 this.metadata = metadata;
@@ -129,5 +276,32 @@
 <style scoped>
     .row, .srow {
         margin-top: 1em;
+    }
+
+    .input-button {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        line-height: initial;
+        margin: 0;
+        padding: 0 1em;
+        box-shadow: none;
+        background-color: transparent;
+        cursor: pointer;
+        z-index: 1;
+        pointer-events: auto;
+    }
+
+    .checkbox-label-small {
+        font-size: 0.9em;
+        font-weight: normal;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
     }
 </style>
