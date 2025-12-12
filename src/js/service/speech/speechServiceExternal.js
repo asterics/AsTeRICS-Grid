@@ -60,7 +60,7 @@ speechServiceExternal.speak = async function (text, providerId, voice) {
         speakFetchController = new AbortController();
         speakFetchSignal = speakFetchController.signal;
         let response = await fetchErrorHandling(
-            `${externalSpeechServiceUrl}/speakdata/${text}/${providerId}/${voiceId}`,
+            `${externalSpeechServiceUrl}/tts/speakdata/${text}/${providerId}/${voiceId}`,
             {
                 signal: speakFetchSignal,
                 noLogErrorNames: ['AbortError']
@@ -92,7 +92,7 @@ speechServiceExternal.getVoices = async function (url) {
     if (new Date().getTime() - lastGetVoicesTime < 1000) {
         return lastGetVoicesResult;
     }
-    let result = await fetchErrorHandling(`${url}/voices`, {
+    let result = await fetchErrorHandling(`${url}/tts/voices`, {
         timeout: 3000
     });
     lastGetVoicesResult = result ? (await result.json()) : [];
@@ -127,7 +127,7 @@ speechServiceExternal.isSpeaking = async function () {
     if (new Date().getTime() - lastSpeakingRequestTime < 200) {
         return lastSpeakingResult;
     }
-    let result = await fetchErrorHandling(`${externalSpeechServiceUrl}/speaking`);
+    let result = await fetchErrorHandling(`${externalSpeechServiceUrl}/tts/speaking`);
     let speaking = result ? (await result.json()) : false;
     lastSpeakingRequestTime = new Date().getTime();
     lastSpeakingResult = speaking;
@@ -168,7 +168,7 @@ speechServiceExternal.cacheAll = async function (grids, externalVoice, progressF
         string = encodeURIComponent(string);
         providerId = encodeURIComponent(providerId);
         voiceId = encodeURIComponent(voiceId);
-        await fetchErrorHandling(`${externalSpeechServiceUrl}/cache/${string}/${providerId}/${voiceId}`);
+        await fetchErrorHandling(`${externalSpeechServiceUrl}/tts/cache/${string}/${providerId}/${voiceId}`);
         doneCount++;
     }
     _caching = false;
