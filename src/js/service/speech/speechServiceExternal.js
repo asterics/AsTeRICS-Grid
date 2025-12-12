@@ -1,11 +1,14 @@
-import {constants} from "../util/constants.js";
-import {audioUtil} from "../util/audioUtil.js";
-import {i18nService} from "./i18nService.js";
-import $ from "../externals/jquery.js";
-import {localStorageService} from "./data/localStorageService.js";
-import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
+import {constants} from "../../util/constants.js";
+import {audioUtil} from "../../util/audioUtil.js";
+import {i18nService} from "../i18nService.js";
+import $ from "../../externals/jquery.js";
+import {localStorageService} from "../data/localStorageService.js";
+import {GridActionSpeakCustom} from "../../model/GridActionSpeakCustom.js";
+import { util } from '../../util/util';
 
 let speechServiceExternal = {};
+
+const JWT_REFRESH_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
 let externalSpeechServiceUrl = localStorageService.getAppSettings().externalSpeechServiceUrl;
 let lastSpeakingResult = false;
@@ -13,28 +16,51 @@ let lastSpeakingRequestTime = 0;
 let lastGetVoicesTime = 0;
 let lastGetVoicesResult = null;
 let playingInternal = false;
-let spokeAtAnyTime = false;
+let spokeExternalAtAnyTime = false;
 let _caching = false;
+let _jwt = {}; // expects: {token: ..., expires: ...}
 
 let speakFetchController = new AbortController();
 let speakFetchSignal = speakFetchController.signal;
+
+speechServiceExternal.init = async function() {
+    let needsAuth = await util.fetchJson(`${externalSpeechServiceUrl}/user/requires-auth`);
+    if (needsAuth) {
+        await speechServiceExternal.authenticate("alice");
+        if (!_jwt || !_jwt.token || !_jwt.expires) {
+            log.warn('external speech: JWT auth failed!');
+        }
+    }
+}
+
+speechServiceExternal.authenticate = async function(username, password) {
+    if (_jwt && _jwt.expires && _jwt.expires - Date.now() > 2 * JWT_REFRESH_INTERVAL_MS) {
+        log.debug('not updating JWT, not expiring soon.');
+    } else {
+        log.debug('updating external speech JWT token...');
+        _jwt = await util.postJson(`${externalSpeechServiceUrl}/user/login`, { username: username, password: password });
+    }
+    if (_jwt && _jwt.expires) {
+        setTimeout(() => speechServiceExternal.authenticate(username, password), JWT_REFRESH_INTERVAL_MS);
+    }
+};
 
 speechServiceExternal.speak = async function (text, providerId, voice) {
     if (!externalSpeechServiceUrl) {
         return;
     }
-    spokeAtAnyTime = true;
     text = encodeURIComponent(text);
     providerId = encodeURIComponent(providerId);
     let voiceId = encodeURIComponent(voice.id);
     if (voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING) {
-        fetchErrorHandling(`${externalSpeechServiceUrl}/speak/${text}/${providerId}/${voiceId}`);
+        spokeExternalAtAnyTime = true;
+        fetchErrorHandling(`${externalSpeechServiceUrl}/tts/speak/${text}/${providerId}/${voiceId}`);
     } else if (voice.type === constants.VOICE_TYPE_EXTERNAL_DATA) {
         speakFetchController.abort();
         speakFetchController = new AbortController();
         speakFetchSignal = speakFetchController.signal;
         let response = await fetchErrorHandling(
-            `${externalSpeechServiceUrl}/speakdata/${text}/${providerId}/${voiceId}`,
+            `${externalSpeechServiceUrl}/tts/speakdata/${text}/${providerId}/${voiceId}`,
             {
                 signal: speakFetchSignal,
                 noLogErrorNames: ['AbortError']
@@ -66,7 +92,7 @@ speechServiceExternal.getVoices = async function (url) {
     if (new Date().getTime() - lastGetVoicesTime < 1000) {
         return lastGetVoicesResult;
     }
-    let result = await fetchErrorHandling(`${url}/voices`, {
+    let result = await fetchErrorHandling(`${url}/tts/voices`, {
         timeout: 3000
     });
     lastGetVoicesResult = result ? (await result.json()) : [];
@@ -75,27 +101,33 @@ speechServiceExternal.getVoices = async function (url) {
 };
 
 speechServiceExternal.stop = function () {
-    if (!externalSpeechServiceUrl || !spokeAtAnyTime) {
+    if (!externalSpeechServiceUrl) {
         return;
     }
-    fetchErrorHandling(`${externalSpeechServiceUrl}/stop`);
     if (playingInternal) {
         audioUtil.stopAudio();
         playingInternal = false;
     }
+    if (!spokeExternalAtAnyTime) {
+        return;
+    }
+    fetchErrorHandling(`${externalSpeechServiceUrl}/tts/stop`);
 };
 
 speechServiceExternal.isSpeaking = async function () {
-    if (!externalSpeechServiceUrl || !spokeAtAnyTime) {
+    if (!externalSpeechServiceUrl) {
         return false;
     }
     if (playingInternal) {
         return true;
     }
+    if (!spokeExternalAtAnyTime) {
+        return false;
+    }
     if (new Date().getTime() - lastSpeakingRequestTime < 200) {
         return lastSpeakingResult;
     }
-    let result = await fetchErrorHandling(`${externalSpeechServiceUrl}/speaking`);
+    let result = await fetchErrorHandling(`${externalSpeechServiceUrl}/tts/speaking`);
     let speaking = result ? (await result.json()) : false;
     lastSpeakingRequestTime = new Date().getTime();
     lastSpeakingResult = speaking;
@@ -136,7 +168,7 @@ speechServiceExternal.cacheAll = async function (grids, externalVoice, progressF
         string = encodeURIComponent(string);
         providerId = encodeURIComponent(providerId);
         voiceId = encodeURIComponent(voiceId);
-        await fetchErrorHandling(`${externalSpeechServiceUrl}/cache/${string}/${providerId}/${voiceId}`);
+        await fetchErrorHandling(`${externalSpeechServiceUrl}/tts/cache/${string}/${providerId}/${voiceId}`);
         doneCount++;
     }
     _caching = false;
@@ -167,6 +199,10 @@ speechServiceExternal.validateUrl = async function (url) {
 async function fetchErrorHandling(url, options) {
     let result = null;
     options = options || {};
+    if (_jwt) {
+        options.headers = options.headers || {};
+        options.headers['Authorization'] = `Bearer ${_jwt.token}`;
+    }
     if (options.timeout) {
         let abortController = new AbortController();
         options.signal = abortController.signal;

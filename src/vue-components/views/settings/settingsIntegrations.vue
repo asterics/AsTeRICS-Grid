@@ -53,8 +53,8 @@
     import { i18nService } from '../../../js/service/i18nService';
     import { util } from '../../../js/util/util';
     import { arasaacService } from '../../../js/service/pictograms/arasaacService';
-    import { speechServiceExternal } from '../../../js/service/speechServiceExternal';
-    import { speechService } from '../../../js/service/speechService';
+    import { speechServiceExternal } from '../../../js/service/speech/speechServiceExternal';
+    import { speechService } from '../../../js/service/speech/speechService';
     import { settingsSaveMixin } from './settingsSaveMixin';
     import ConfigureMatrix from '../../modals/matrix-messenger/configure-matrix.vue';
 

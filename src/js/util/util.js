@@ -434,6 +434,47 @@ util.fetchJson = async function(url, options = {}) {
     }
 };
 
+/**
+ * POST JSON to a given URL and retrieve JSON response
+ *
+ * @param {string} url - The endpoint to fetch from
+ * @param {object} [data={}] - The payload to send as JSON
+ * @param {object} [options={}] - Optional fetch options (headers, method, etc.)
+ * @returns {Promise<object|null>} - Parsed JSON response, or null if any error
+ */
+util.postJson = async function(url, data = {}, options = {}) {
+    try {
+        // Separate headers from other options
+        const { headers: customHeaders = {}, ...otherOptions } = options;
+
+        // Build fetch options
+        const fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...customHeaders
+            },
+            body: JSON.stringify(data),
+            ...otherOptions
+        };
+
+        // Make the request
+        const response = await fetch(url, fetchOptions);
+
+        // Check HTTP status
+        if (!response.ok) {
+            console.error('HTTP error', response.status, response.statusText);
+            return null;
+        }
+
+        // Parse and return JSON
+        return await response.json();
+    } catch (err) {
+        console.warn('postJson error:', err);
+        return null;
+    }
+};
+
 util.fetchWithTimeout = function (url, timeoutMs) {
     // see https://stackoverflow.com/a/50101022/9219743
     const controller = new AbortController()
