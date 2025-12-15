@@ -13,6 +13,7 @@ import { MetaData } from '../model/MetaData';
 import { imageUtil } from './imageUtil';
 import { util } from './util';
 import { dataService } from '../service/data/dataService';
+import { gridUtil } from './gridUtil';
 
 let obfConverter = {};
 let OBF_FORMAT_VERSION = 'open-board-0.1';
@@ -22,7 +23,8 @@ let OBF_BOARD_POSTFIX = '.obf';
 let OBF_MANIFEST_FILENAME = 'manifest.json';
 
 obfConverter.gridDataToOBF = function(gridData, manifest) {
-    let columns = new GridData(gridData).getWidthWithBounds();
+    let columns = gridUtil.getWidthWithBounds(gridData);
+    let rows = gridUtil.getHeightWithBounds(gridData);
     let obfGrid = {
         format: OBF_FORMAT_VERSION,
         id: gridData.id,
@@ -30,9 +32,9 @@ obfConverter.gridDataToOBF = function(gridData, manifest) {
         locale: i18nService.getContentLang(),
         buttons: [],
         grid: {
-            rows: gridData.rowCount,
+            rows: rows,
             columns: columns,
-            order: new Array(gridData.rowCount).fill(null)
+            order: new Array(rows).fill(null)
         },
         images: []
     };
