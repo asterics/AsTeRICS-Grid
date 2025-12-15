@@ -100,13 +100,11 @@ speechService.speak = function (textOrOject, options = {}) {
         speechService.stopSpeaking();
     }
     let voices = getVoicesById(preferredVoiceId) || getVoicesByLang(langToUse);
-    let nativeVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_NATIVE);
-    let azureVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_MS_AZURE);
-    let externalVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING || voice.type === constants.VOICE_TYPE_EXTERNAL_DATA);
-    if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
+    let voiceToUse = voices[0] || {};
+    if (speechService.nativeSpeechSupported() && voiceToUse.type === constants.VOICE_TYPE_NATIVE) {
         var msg = new SpeechSynthesisUtterance(text);
-        msg.voice = nativeVoices[0].ref;
-        let isSelectedVoice = nativeVoices[0].id === preferredVoiceId;
+        msg.voice = voiceToUse.ref;
+        let isSelectedVoice = voiceToUse.id === preferredVoiceId;
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
         msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
         msg.volume = userSettings.systemVolume / 100.0;
@@ -123,11 +121,12 @@ speechService.speak = function (textOrOject, options = {}) {
         msg.addEventListener('end', () => {
             isSpeakingNative = false;
         })
-    } else if (azureVoices.length > 0) {
-        speechServiceAzure.speak(text, azureVoices[0].id);
+    } else if (voiceToUse.type === constants.VOICE_TYPE_MS_AZURE) {
+        speechServiceAzure.speak(text, voiceToUse.id);
         hasSpoken = true;
-    } else if (externalVoices.length > 0) {
-        speechServiceExternal.speak(text, externalVoices[0].ref.providerId, externalVoices[0]);
+    } else if (voiceToUse.type === constants.VOICE_TYPE_EXTERNAL_DATA ||
+        voiceToUse.type === constants.VOICE_TYPE_EXTERNAL_PLAYING) {
+        speechServiceExternal.speak(text, voiceToUse.ref.providerId, voiceToUse);
     }
     testIsSpeaking();
     setTimeout(() => {
@@ -443,6 +442,7 @@ async function init() {
     for (let voice of externalVoices.concat(azureVoices)) {
         addVoice(voice.id, voice.name, voice.lang, voice.type, voice.local || false, voice);
     }
+    allVoices.sort(speechService.voiceSortFn);
     _initPromiseResolveFn();
     let voices = await speechServiceAzure.getVoices();
     log.warn(voices);
