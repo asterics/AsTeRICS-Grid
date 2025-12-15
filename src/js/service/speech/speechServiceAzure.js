@@ -3,6 +3,7 @@ import { constants } from '../../util/constants';
 import { localStorageService } from '../data/localStorageService';
 import { util } from '../../util/util';
 import { i18nService } from '../i18nService';
+import { urlParamService } from '../urlParamService';
 
 let speechServiceAzure = {};
 
@@ -10,6 +11,8 @@ let speechServiceAzure = {};
 const AZURE_KEY = "AZURE_KEY";
 const AZURE_REGION = "AZURE_REGION";
 
+// TODO: remove
+urlParamService.getAzureCredentials();
 let msSubscriptionKey =  window.azureKey || localStorageService.get(AZURE_KEY);
 let msRegion = window.azureRegion || localStorageService.get(AZURE_REGION);
 

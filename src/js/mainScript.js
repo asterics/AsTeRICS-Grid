@@ -20,8 +20,6 @@ import { dataService } from './service/data/dataService';
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
 async function init() {
-    // TODO: remove
-    urlParamService.getAzureCredentials();
     let promises = [];
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
