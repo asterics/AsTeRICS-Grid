@@ -10,8 +10,8 @@ let speechServiceAzure = {};
 const AZURE_KEY = "AZURE_KEY";
 const AZURE_REGION = "AZURE_REGION";
 
-let msSubscriptionKey = localStorageService.get(AZURE_KEY) || "";
-let msRegion = localStorageService.get(AZURE_REGION) || "";
+let msSubscriptionKey = localStorageService.get(AZURE_KEY) || window.azureKey;
+let msRegion = localStorageService.get(AZURE_REGION) || window.azureRegion;
 
 // TODO: remove
 localStorageService.save(AZURE_KEY, msSubscriptionKey);
