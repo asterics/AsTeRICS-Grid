@@ -154,48 +154,27 @@
 <script type="text/javascript" src='app/lib/sjcl.min.js'></script>
 
 <script type="text/javascript">
-    if (Function.bind) {
-        //remove RV log messages without altering RV source (forbidden by license)
-        window.originalLog = console.log.bind(console);
-        console.log = function () {
-            if (['ResponsiveVoice r1.6.5', 'isHidden: false', 'Prerender: false', 'Configuring'].indexOf(arguments[0]) !== -1) {
-                return;
-            } else if (arguments[0] === 'RV: Voice support ready') {
-                console.log = window.originalLog;
-            } else {
-                window.originalLog.apply(null, arguments);
-            }
-        }
+    //determine time needed for JSON.parse/stringify
+    /**window.originalJSONParse = JSON.parse;
+    window.originalJSONStringify = JSON.stringify;
+    window.parseTime = 0;
 
-        //determine time needed for JSON.parse/stringify
-        /**window.originalJSONParse = JSON.parse;
-        window.originalJSONStringify = JSON.stringify;
-        window.parseTime = 0;
-
-        JSON.parse = function (arguments) {
-            let start = new Date().getTime();
-            let result = window.originalJSONParse(arguments);
-            window.parseTime += (new Date().getTime() - start);
-            console.warn(window.parseTime / 1000);
-            return result;
-        }
-
-        JSON.stringify = function (arguments) {
-            let start = new Date().getTime();
-            let result = window.originalJSONStringify(arguments);
-            window.parseTime += (new Date().getTime() - start);
-            console.warn(window.parseTime / 1000);
-            return result;
-        }*/
+    JSON.parse = function (arguments) {
+        let start = new Date().getTime();
+        let result = window.originalJSONParse(arguments);
+        window.parseTime += (new Date().getTime() - start);
+        console.warn(window.parseTime / 1000);
+        return result;
     }
-</script>
 
-<script>
-    var rvApiKey="zGuJFLIV";
-    var rvApiEndpoint = "https://texttospeech.responsivevoice.org/v1/text:synthesize";
+    JSON.stringify = function (arguments) {
+        let start = new Date().getTime();
+        let result = window.originalJSONStringify(arguments);
+        window.parseTime += (new Date().getTime() - start);
+        console.warn(window.parseTime / 1000);
+        return result;
+    }*/
 </script>
-<!--script src="https://code.responsivevoice.org/responsivevoice.js"></script-->
-<script type="text/javascript" src='app/lib/responsive-voice.js'></script>
 
 <script type="module" src="app/build/asterics-grid.bundle.js"></script>
 </body>

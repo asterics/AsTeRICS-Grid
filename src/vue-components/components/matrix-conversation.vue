@@ -63,7 +63,7 @@ import $ from '../../js/externals/jquery';
 import { constants } from '../../js/util/constants';
 import MatrixRoomDescription from './matrix-room-description.vue';
 import { matrixAppService } from '../../js/service/matrixMessenger/matrixAppService';
-import { speechService } from '../../js/service/speechService';
+import { speechService } from '../../js/service/speech/speechService';
 import { util } from '../../js/util/util';
 import { fontUtil } from '../../js/util/fontUtil';
 

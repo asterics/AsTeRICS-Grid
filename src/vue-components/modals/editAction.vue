@@ -322,7 +322,7 @@
 </template>
 
 <script>
-    import {speechService} from './../../js/service/speechService'
+    import {speechService} from '../../js/service/speech/speechService'
     import {predictionService} from "../../js/service/predictionService";
     import {i18nService} from "../../js/service/i18nService";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate";

@@ -1,11 +1,12 @@
-import { stateService } from './stateService';
-import { constants } from '../util/constants';
-import { util } from '../util/util.js';
-import $ from '../externals/jquery.js';
-import { audioUtil } from '../util/audioUtil.js';
+import { stateService } from '../stateService';
+import { constants } from '../../util/constants';
+import { util } from '../../util/util.js';
+import $ from '../../externals/jquery.js';
+import { audioUtil } from '../../util/audioUtil.js';
 import { speechServiceExternal } from './speechServiceExternal.js';
-import { localStorageService } from './data/localStorageService.js';
-import { i18nService } from './i18nService';
+import { localStorageService } from '../data/localStorageService.js';
+import { i18nService } from '../i18nService';
+import { speechServiceAzure } from './speechServiceAzure';
 
 let speechService = {};
 
@@ -15,9 +16,7 @@ let _voicePitch = 1;
 let _voiceRate = 1;
 let _voiceLangIsTextLang = false;
 let allVoices = [];
-let responsiveVoiceVoices = JSON.parse(
-    '[{"name":"UK English Female","lang":"en-GB"},{"name":"UK English Male","lang":"en-GB"},{"name":"US English Female","lang":"en-US"},{"name":"US English Male","lang":"en-US"},{"name":"Arabic Male","lang":"ar-SA"},{"name":"Arabic Female","lang":"ar-SA"},{"name":"Armenian Male","lang":"hy-AM"},{"name":"Australian Female","lang":"en-AU"},{"name":"Australian Male","lang":"en-AU"},{"name":"Bangla Bangladesh Female","lang":"bn-BD"},{"name":"Bangla Bangladesh Male","lang":"bn-BD"},{"name":"Bangla India Female","lang":"bn-IN"},{"name":"Bangla India Male","lang":"bn-IN"},{"name":"Brazilian Portuguese Female","lang":"pt-BR"},{"name":"Chinese Female","lang":"zh-CN"},{"name":"Chinese Male","lang":"zh-CN"},{"name":"Chinese (Hong Kong) Female","lang":"zh-HK"},{"name":"Chinese (Hong Kong) Male","lang":"zh-HK"},{"name":"Chinese Taiwan Female","lang":"zh-TW"},{"name":"Chinese Taiwan Male","lang":"zh-TW"},{"name":"Czech Female","lang":"cs-CZ"},{"name":"Danish Female","lang":"da-DK"},{"name":"Deutsch Female","lang":"de-DE"},{"name":"Deutsch Male","lang":"de-DE"},{"name":"Dutch Female","lang":"nl-NL"},{"name":"Dutch Male","lang":"nl-NL"},{"name":"Estonian Male","lang":"et-EE"},{"name":"Filipino Female","lang":"fil-PH"},{"name":"Finnish Female","lang":"fi-FI"},{"name":"French Female","lang":"fr-FR"},{"name":"French Male","lang":"fr-FR"},{"name":"French Canadian Female","lang":"fr-CA"},{"name":"French Canadian Male","lang":"fr-CA"},{"name":"Greek Female","lang":"el-GR"},{"name":"Hindi Female","lang":"hi-IN"},{"name":"Hindi Male","lang":"hi-IN"},{"name":"Hungarian Female","lang":"hu-HU"},{"name":"Indonesian Female","lang":"id-ID"},{"name":"Indonesian Male","lang":"id-ID"},{"name":"Italian Female","lang":"it-IT"},{"name":"Italian Male","lang":"it-IT"},{"name":"Japanese Female","lang":"ja-JP"},{"name":"Japanese Male","lang":"ja-JP"},{"name":"Korean Female","lang":"ko-KR"},{"name":"Korean Male","lang":"ko-KR"},{"name":"Latin Male","lang":"la"},{"name":"Nepali","lang":"ne-NP"},{"name":"Norwegian Female","lang":"nb-NO"},{"name":"Norwegian Male","lang":"nb-NO"},{"name":"Polish Female","lang":"pl-PL"},{"name":"Polish Male","lang":"pl-PL"},{"name":"Portuguese Female","lang":"pt-BR"},{"name":"Portuguese Male","lang":"pt-BR"},{"name":"Romanian Female","lang":"ro-RO"},{"name":"Russian Female","lang":"ru-RU"},{"name":"Sinhala","lang":"si-LK"},{"name":"Slovak Female","lang":"sk-SK"},{"name":"Spanish Female","lang":"es-ES"},{"name":"Spanish Latin American Female","lang":"es-MX"},{"name":"Spanish Latin American Male","lang":"es-MX"},{"name":"Swedish Female","lang":"sv-SE"},{"name":"Swedish Male","lang":"sv-SE"},{"name":"Tamil Female","lang":"hi-IN"},{"name":"Tamil Male","lang":"hi-IN"},{"name":"Thai Female","lang":"th-TH"},{"name":"Thai Male","lang":"th-TH"},{"name":"Turkish Female","lang":"tr-TR"},{"name":"Turkish Male","lang":"tr-TR"},{"name":"Ukrainian Female","lang":"uk-UA"},{"name":"Vietnamese Female","lang":"vi-VN"},{"name":"Vietnamese Male","lang":"vi-VN"},{"name":"Afrikaans Male","lang":"af-ZA"},{"name":"Albanian Male","lang":"sq-AL"},{"name":"Bosnian Male","lang":"bs"},{"name":"Catalan Male","lang":"ca-ES"},{"name":"Croatian Male","lang":"hr-HR"},{"name":"Esperanto Male","lang":"eo"},{"name":"Icelandic Male","lang":"is-IS"},{"name":"Latvian Male","lang":"lv-LV"},{"name":"Macedonian Male","lang":"mk-MK"},{"name":"Moldavian Female","lang":"md"},{"name":"Montenegrin Male","lang":"me"},{"name":"Serbian Male","lang":"sr-RS"},{"name":"Serbo-Croatian Male","lang":"hr-HR"},{"name":"Swahili Male","lang":"sw-KE"},{"name":"Welsh Male","lang":"cy"},{"name":"Fallback UK Female","lang":"en-GB"}]'
-);
+
 let currentSpeakArray = [];
 let lastSpeakText = null;
 let lastSpeakTime = 0;
@@ -25,7 +24,7 @@ let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by App
 let voiceSortBackList = ['com.apple.eloquence'];
 let hasSpoken = false;
 let isSpeakingNative = false;
-let startedSpeakingRV = false;
+
 let _initPromiseResolveFn;
 let initPromise = new Promise(resolve => {
     _initPromiseResolveFn = resolve;
@@ -84,7 +83,6 @@ speechService.speak = function (textOrOject, options = {}) {
     if (!text) {
         return;
     }
-    text = text.toLowerCase();
     if (options.voiceLangIsTextLang &&
         preferredVoiceId &&
         i18nService.getBaseLang(prefVoiceLang) !== i18nService.getBaseLang(langToUse) &&
@@ -102,13 +100,11 @@ speechService.speak = function (textOrOject, options = {}) {
         speechService.stopSpeaking();
     }
     let voices = getVoicesById(preferredVoiceId) || getVoicesByLang(langToUse);
-    let nativeVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_NATIVE);
-    let responsiveVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_RESPONSIVEVOICE);
-    let externalVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING || voice.type === constants.VOICE_TYPE_EXTERNAL_DATA);
-    if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
+    let voiceToUse = voices[0] || {};
+    if (speechService.nativeSpeechSupported() && voiceToUse.type === constants.VOICE_TYPE_NATIVE) {
         var msg = new SpeechSynthesisUtterance(text);
-        msg.voice = nativeVoices[0].ref;
-        let isSelectedVoice = nativeVoices[0].id === preferredVoiceId;
+        msg.voice = voiceToUse.ref;
+        let isSelectedVoice = voiceToUse.id === preferredVoiceId;
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
         msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
         msg.volume = userSettings.systemVolume / 100.0;
@@ -125,16 +121,12 @@ speechService.speak = function (textOrOject, options = {}) {
         msg.addEventListener('end', () => {
             isSpeakingNative = false;
         })
-    } else if (responsiveVoices.length > 0) {
-        let isSelectedVoice = responsiveVoices[0].id === preferredVoiceId;
-        responsiveVoice.speak(text, responsiveVoices[0].name, {
-            rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1),
-            pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
-        });
-        startedSpeakingRV = true;
+    } else if (voiceToUse.type === constants.VOICE_TYPE_MS_AZURE) {
+        speechServiceAzure.speak(text, voiceToUse.id);
         hasSpoken = true;
-    } else if (externalVoices.length > 0) {
-        speechServiceExternal.speak(text, externalVoices[0].ref.providerId, externalVoices[0]);
+    } else if (voiceToUse.type === constants.VOICE_TYPE_EXTERNAL_DATA ||
+        voiceToUse.type === constants.VOICE_TYPE_EXTERNAL_PLAYING) {
+        speechServiceExternal.speak(text, voiceToUse.ref.providerId, voiceToUse);
     }
     testIsSpeaking();
     setTimeout(() => {
@@ -210,20 +202,18 @@ speechService.speakArray = async function (array, progressFn, index) {
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
     isSpeakingNative = false;
-    startedSpeakingRV = false;
     if (speechService.nativeSpeechSupported()) {
         window.speechSynthesis.cancel();
     }
-    responsiveVoice.cancel();
     speechServiceExternal.stop();
+    speechServiceAzure.stop();
 };
 
 speechService.isSpeaking = async function () {
-    let isSpeakingRV = startedSpeakingRV && responsiveVoice.isPlaying();
-    if (isSpeakingNative || isSpeakingRV) {
+    if (isSpeakingNative) {
         return true;
     }
-    return await speechServiceExternal.isSpeaking();
+    return (await speechServiceExternal.isSpeaking()) || (await speechServiceAzure.isSpeaking());
 };
 
 speechService.doAfterFinishedSpeaking = async function (fn) {
@@ -295,6 +285,14 @@ speechService.getVoicesInitialized = async function () {
 }
 
 speechService.voiceSortFn = function (a, b) {
+    if (!constants.IS_IOS) {
+        if (a.id === constants.VOICE_DEVICE_DEFAULT) {
+            return 1;
+        }
+        if (b.id === constants.VOICE_DEVICE_DEFAULT) {
+            return -1;
+        }
+    }
     if (a.lang !== b.lang) {
         let lang1 = i18nService.te(`lang.${a.lang}`) ? i18nService.t(`lang.${a.lang}`) : a.langFull;
         let lang2 = i18nService.te(`lang.${b.lang}`) ? i18nService.t(`lang.${b.lang}`) : b.langFull;
@@ -437,15 +435,17 @@ async function init() {
         };
     }
     addVoice(constants.VOICE_DEVICE_DEFAULT, await i18nService.tLoad("defaultDeviceVoice"), i18nService.getBrowserLang(), constants.VOICE_TYPE_NATIVE, true, undefined);
-    responsiveVoiceVoices.forEach((voice) => {
-        addVoice(voice.name, voice.name, voice.lang, constants.VOICE_TYPE_RESPONSIVEVOICE, false, voice);
-    });
 
+    await speechServiceExternal.init();
     let externalVoices = await speechServiceExternal.getVoices();
-    for (let voice of externalVoices) {
+    let azureVoices = await speechServiceAzure.getVoices();
+    for (let voice of externalVoices.concat(azureVoices)) {
         addVoice(voice.id, voice.name, voice.lang, voice.type, voice.local || false, voice);
     }
+    allVoices.sort(speechService.voiceSortFn);
     _initPromiseResolveFn();
+    let voices = await speechServiceAzure.getVoices();
+    log.warn(voices);
 }
 init();
 

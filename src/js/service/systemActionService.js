@@ -6,7 +6,7 @@ import $ from '../externals/jquery';
 import { constants } from '../util/constants';
 import { MainVue } from '../vue/mainVue';
 import { i18nService } from './i18nService';
-import { speechService } from './speechService';
+import { speechService } from './speech/speechService';
 import { liveElementService } from './liveElementService';
 
 let systemActionService = {};

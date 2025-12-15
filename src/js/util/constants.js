@@ -83,12 +83,14 @@ constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV && !constants.IS_E
 constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
 constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+constants.IS_IOS = /iPad|iPhone/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 constants.IS_MAC = (navigator.platform || ((navigator.userAgentData || {}).platform) || "").toUpperCase().includes('MAC');
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
 constants.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
 constants.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
+constants.VOICE_TYPE_MS_AZURE = 'VOICE_TYPE_MS_AZURE';
 constants.VOICE_TYPE_EXTERNAL_PLAYING = 'VOICE_TYPE_EXTERNAL_PLAYING';
 constants.VOICE_TYPE_EXTERNAL_DATA = 'VOICE_TYPE_EXTERNAL_DATA';
 constants.VOICE_DEVICE_DEFAULT = 'VOICE_DEVICE_DEFAULT';
