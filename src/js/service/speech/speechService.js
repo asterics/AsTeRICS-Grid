@@ -286,6 +286,14 @@ speechService.getVoicesInitialized = async function () {
 }
 
 speechService.voiceSortFn = function (a, b) {
+    if (!constants.IS_IOS) {
+        if (a.id === constants.VOICE_DEVICE_DEFAULT) {
+            return 1;
+        }
+        if (b.id === constants.VOICE_DEVICE_DEFAULT) {
+            return -1;
+        }
+    }
     if (a.lang !== b.lang) {
         let lang1 = i18nService.te(`lang.${a.lang}`) ? i18nService.t(`lang.${a.lang}`) : a.langFull;
         let lang2 = i18nService.te(`lang.${b.lang}`) ? i18nService.t(`lang.${b.lang}`) : b.langFull;
