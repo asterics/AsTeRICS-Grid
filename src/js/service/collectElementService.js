@@ -235,16 +235,24 @@ collectElementService.doCollectElementActions = async function (action, gridElem
     predictionService.predict(getPredictText(), dictionaryKey);
 };
 
-collectElementService.addWordFormTagsToLast = function (tags, toggle) {
-    let lastElement = collectedElements[collectedElements.length - 1];
-    if (lastElement && !lastElement.wordFormFixated) {
-        let lastElementCopy = JSON.parse(JSON.stringify(lastElement));
-        lastElementCopy.wordFormTags = lastElementCopy.wordFormTags || [];
-        let currentLabel = getPrintTextOfElement(lastElementCopy);
-        lastElementCopy.wordFormTags = stateService.mergeTags(lastElementCopy.wordFormTags, tags, toggle);
-        let newLabel = stateService.getWordForm(lastElementCopy, {searchTags: lastElementCopy.wordFormTags, searchSubTags: true});
+collectElementService.addWordFormTagsToLast = function (tags, toggle, skipLast) {
+    // If skipLast is true, update the second-to-last element instead of the last one
+    // This is useful when the triggering element was just added to the collect bar
+    let targetIndex = skipLast ? collectedElements.length - 2 : collectedElements.length - 1;
+
+    if (targetIndex < 0) {
+        return;
+    }
+
+    let targetElement = collectedElements[targetIndex];
+    if (targetElement && !targetElement.wordFormFixated) {
+        let elementCopy = JSON.parse(JSON.stringify(targetElement));
+        elementCopy.wordFormTags = elementCopy.wordFormTags || [];
+        let currentLabel = getPrintTextOfElement(elementCopy);
+        elementCopy.wordFormTags = stateService.mergeTags(elementCopy.wordFormTags, tags, toggle);
+        let newLabel = stateService.getWordForm(elementCopy, {searchTags: elementCopy.wordFormTags, searchSubTags: true});
         if (newLabel && newLabel !== currentLabel) {
-            collectedElements[collectedElements.length - 1] = lastElementCopy;
+            collectedElements[targetIndex] = elementCopy;
             updateCollectElements();
         }
     }
