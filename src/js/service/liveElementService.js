@@ -196,7 +196,7 @@ async function getValueAppState(element) {
                 return "?";
             }
             let batteryManager = await navigator.getBattery();
-            return batteryManager.level * 100;
+            return Math.round(batteryManager.level * 100);
     }
     return '';
 }
