@@ -139,7 +139,7 @@
   "videoLink": "Video linki",
   "youtubeSearchQuery": "YouTube arama sorgusu",
   "youtubePlaylistLink": "YouTube çalma listesi linki",
-  "youtubeChannelLink": "YouTube kanal linki",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Videonun altyazılarını göster (varsa)",
   "startVideoMuted": "Videoyu sessiz başlat",
   "performActionAfterNavigation": "Gezintiden sonra aksiyon gerçekleştir",
