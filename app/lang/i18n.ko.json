@@ -139,7 +139,7 @@
   "videoLink": "비디오 링크",
   "youtubeSearchQuery": "유튜브 검색",
   "youtubePlaylistLink": "유튜브 재생 목록",
-  "youtubeChannelLink": "유튜브 채널 링크",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "동영상 자막 표시(사용 가능한 경우)",
   "startVideoMuted": "비디오 음소거 시작",
   "performActionAfterNavigation": "탐색 후 작업 수행",
