@@ -139,7 +139,7 @@
   "videoLink": "Link video",
   "youtubeSearchQuery": "Lista de căutare pe YouTube",
   "youtubePlaylistLink": "Link pentru lista de redare YouTube",
-  "youtubeChannelLink": "Link canal YouTube",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Afișați subtitrările videoclipului (dacă sunt disponibile)",
   "startVideoMuted": "Începeți video fără sunet",
   "performActionAfterNavigation": "Efectuare acțiune după navigare",
