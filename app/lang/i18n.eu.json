@@ -139,7 +139,7 @@
   "videoLink": "Bideoaren esteka",
   "youtubeSearchQuery": "YouTubeko bilketa-kontsulta",
   "youtubePlaylistLink": "YouTubeko erreprodukzio zerrendaren esteka",
-  "youtubeChannelLink": "YouTubeko kanalen zerrenda",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Erakutsi bideoaren azpitituluak (eskuragarri badaude)",
   "startVideoMuted": "Bideo isildua hasi",
   "performActionAfterNavigation": "Ekintza egin nabegazioaren ondoren",
