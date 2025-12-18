@@ -139,7 +139,7 @@
   "videoLink": "Link do filmu",
   "youtubeSearchQuery": "Wyszukiwanie YouTube",
   "youtubePlaylistLink": "Link do playlisty YouTube",
-  "youtubeChannelLink": "Link do kanału YouTube",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Wyświetlaj napisy do filmu (jeśli są dostępne)",
   "startVideoMuted": "Odtwarzaj film bez dźwięku",
   "performActionAfterNavigation": "Wykonaj akcję po nawigacji",
