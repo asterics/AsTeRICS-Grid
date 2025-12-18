@@ -139,7 +139,7 @@
   "videoLink": "Video Link",
   "youtubeSearchQuery": "YouTube Suchanfrage",
   "youtubePlaylistLink": "YouTube Playlist Link",
-  "youtubeChannelLink": "YouTube Channel-Link",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Zeige Video-Untertitel (wenn verfügbar)",
   "startVideoMuted": "Video stummgeschaltet starten",
   "performActionAfterNavigation": "Aktion erst nach Navigation ausführen",
