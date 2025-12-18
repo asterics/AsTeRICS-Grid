@@ -166,6 +166,7 @@ youtubeService.play = function (action, videoTimeParam) {
                 case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
                     let playlistId = youtubeService.getPlaylistId(action.data);
                     waitForBuffering = true;
+                    player.stopVideo();
                     player.loadPlaylist({
                         list: playlistId,
                         listType: 'playlist',
