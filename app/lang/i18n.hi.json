@@ -139,7 +139,7 @@
   "videoLink": "वीडियो लिंक",
   "youtubeSearchQuery": "YouTube search query",
   "youtubePlaylistLink": "YouTube playlist link",
-  "youtubeChannelLink": "यूट्यूब चैनल लिंक",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "वीडियो उपशीर्षक दिखाएँ (यदि उपलब्ध हो)",
   "startVideoMuted": "वीडियो म्यूट प्रारंभ करें",
   "performActionAfterNavigation": "नेविगेशन के बाद कार्रवाई करें",
