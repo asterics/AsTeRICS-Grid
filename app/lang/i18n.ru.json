@@ -139,7 +139,7 @@
   "videoLink": "Ссылка на видео",
   "youtubeSearchQuery": "Поиск YouTube",
   "youtubePlaylistLink": "Ссылка на плейлист YouTube",
-  "youtubeChannelLink": "Ссылка на канал YouTube",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Показывать субтитры видео (если доступно)",
   "startVideoMuted": "Запуск видео без звука",
   "performActionAfterNavigation": "Выполнить действие после навигации",
