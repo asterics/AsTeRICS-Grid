@@ -139,7 +139,7 @@
   "videoLink": "Video link",
   "youtubeSearchQuery": "Zoek op YouTube",
   "youtubePlaylistLink": "YouTube afspeellijst link",
-  "youtubeChannelLink": "YouTube-kanaal link",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Toon ondertitels, indien beschikbaar",
   "startVideoMuted": "Start video gedempt",
   "performActionAfterNavigation": "Actie uitvoeren na navigatie",
