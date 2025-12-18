@@ -385,6 +385,27 @@ util.base64ToBytes = function (base64) {
 };
 
 /**
+ * converts a base64 directly to an ArrayBuffer
+ * @param base64
+ * @returns {ArrayBufferLike}
+ */
+util.base64ToArrayBuffer = function(base64) {
+    let binaryString = null;
+    try {
+        binaryString = window.atob(base64);
+    } catch (e) {
+        log.warn('error decoding base64 audio', e);
+        return new Uint8Array(0).buffer;
+    }
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+};
+
+/**
  * Converts the given bytes (Uint8Array) into a base64 encoded string.
  * @param {*} bytes 
  * @returns 
