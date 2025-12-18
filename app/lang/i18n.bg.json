@@ -139,7 +139,7 @@
   "videoLink": "Връзка към видеото",
   "youtubeSearchQuery": "Термин за търсене в YouTube",
   "youtubePlaylistLink": "Връзка за YouTube плейлиста",
-  "youtubeChannelLink": "Връзка за YouTube канал",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Показване на субтитри във видеото (ако са налични)",
   "startVideoMuted": "Пускане на видеото със заглушен звук",
   "performActionAfterNavigation": "Прилагане на действие след навигиране",
