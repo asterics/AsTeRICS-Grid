@@ -139,7 +139,7 @@
   "videoLink": "Link do Vídeo",
   "youtubeSearchQuery": "Pesquisa do YouTube",
   "youtubePlaylistLink": "Link da lista de reprodução do YouTube",
-  "youtubeChannelLink": "Link dos canais do YouTube",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Mostrar legendas do vídeo (se disponíveis)",
   "startVideoMuted": "Iniciar vídeo silenciado",
   "performActionAfterNavigation": "Executar ação após a navegação",
