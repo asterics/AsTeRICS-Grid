@@ -139,7 +139,7 @@
   "videoLink": "رابط الفيديو",
   "youtubeSearchQuery": "استعلام البحث على اليوتيوب",
   "youtubePlaylistLink": "رابط قائمة تشغيل اليوتيوب",
-  "youtubeChannelLink": "أدخل مفتاح خاص reCAPTCHA (في حالة تفعيل)",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "إظهار ترجمات الفيديو (إن وجدت)",
   "startVideoMuted": "بَدْء كتم صوت الفيديو",
   "performActionAfterNavigation": "تنفيذ الإجراء بعد التنقل",
