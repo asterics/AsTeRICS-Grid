@@ -139,7 +139,7 @@
   "videoLink": "Посилання на відео",
   "youtubeSearchQuery": "Пошуковий запит YouTube",
   "youtubePlaylistLink": "Посилання на YouTube плейліст",
-  "youtubeChannelLink": "Посилання на YouTube канал",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Показувати субтитри відео (якщо доступні)",
   "startVideoMuted": "Відтворити відео без звуку",
   "performActionAfterNavigation": "Виконати дію після навігації",
