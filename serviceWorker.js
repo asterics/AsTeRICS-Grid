@@ -41,7 +41,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', event => {
     clients.claim();
     sendToClients({type: constants.SW_EVENT_ACTIVATED, activated: true});
-    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
+    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/release-2025-12-18-13.36/+0100');
 });
 
 self.addEventListener('message', (event) => {
