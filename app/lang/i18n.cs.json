@@ -139,7 +139,7 @@
   "videoLink": "Odkaz na video",
   "youtubeSearchQuery": "YouTube vyhledávání",
   "youtubePlaylistLink": "Odkaz na YouTube playlist",
-  "youtubeChannelLink": "Odkaz na YouTube kanál",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Zobrazit titulky videa (pokud jsou dostupné)",
   "startVideoMuted": "Spustit video ztlumeně",
   "performActionAfterNavigation": "Provést akci po navigaci",
