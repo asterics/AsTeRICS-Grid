@@ -139,7 +139,7 @@
   "videoLink": "Video link",
   "youtubeSearchQuery": "YouTube-keresés",
   "youtubePlaylistLink": "YouTube lejátszási lista link",
-  "youtubeChannelLink": "YouTube csatorna link",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Feliratok kijelzése (ha vannak)",
   "startVideoMuted": "Video némítva indítva",
   "performActionAfterNavigation": "Művelet végrehajtása navigáció után",
