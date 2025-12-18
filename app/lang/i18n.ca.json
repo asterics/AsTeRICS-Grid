@@ -139,7 +139,7 @@
   "videoLink": "Enllaç de video",
   "youtubeSearchQuery": "Cerca a YouTube",
   "youtubePlaylistLink": "Enllaç a llista de reproducció de You Tube",
-  "youtubeChannelLink": "Enllaç a canal de You Tube",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Veure subtítols de vídeo ( si estan disponibles)",
   "startVideoMuted": "Iniciar video silenciat",
   "performActionAfterNavigation": "Realitzar acció després de la navegació",
