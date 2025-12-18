@@ -154,13 +154,8 @@ youtubeService.play = function (action, videoTimeParam) {
                         videoEmbeddable: true
                     }).then((response) => {
                         let videoIds = response.result.items.map((item) => item.id.videoId).filter((id) => !!id);
+                        player.stopVideo();
                         player.loadPlaylist(videoIds, userSettings.ytState.lastPlaylistIndexes[action.data]);
-                        setTimeout(() => {
-                            if (!player) return;
-                            if (!youtubeService.isPlaying()) {
-                                player.loadPlaylist(videoIds, userSettings.ytState.lastPlaylistIndexes[action.data]);
-                            }
-                        }, 500);
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
