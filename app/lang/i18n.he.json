@@ -139,7 +139,7 @@
   "videoLink": "קישור לוידאו",
   "youtubeSearchQuery": "חיפוש ביוטיוב",
   "youtubePlaylistLink": "קישור לרשימת ההשמעה ביוטיוב",
-  "youtubeChannelLink": "קישור לערוץ יוטיוב",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "הצג תרגום של הוידאו (אם יש)",
   "startVideoMuted": "התחל את הוידאו מושתק",
   "performActionAfterNavigation": "בצע פעולה אחרי ניווט",
