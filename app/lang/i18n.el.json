@@ -139,7 +139,7 @@
   "videoLink": "Video link",
   "youtubeSearchQuery": "YouTube search query",
   "youtubePlaylistLink": "YouTube playlist link",
-  "youtubeChannelLink": "YouTube channel link",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Show video subtitles (if available)",
   "startVideoMuted": "Start video muted",
   "performActionAfterNavigation": "Perform action after navigation",
