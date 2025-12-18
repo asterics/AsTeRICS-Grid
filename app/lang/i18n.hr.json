@@ -139,7 +139,7 @@
   "videoLink": "Video poveznica",
   "youtubeSearchQuery": "Pretraži YouTube",
   "youtubePlaylistLink": "Poveznica za popis za reprodukciju na YouTubeu",
-  "youtubeChannelLink": "Poveznica za YouTube kanal",
+  "youtubeChannelLinkOrId": "YouTube channel link / ID",
   "showVideoSubtitlesIfAvailable": "Prikaži titlove (ako je dostupno)",
   "startVideoMuted": "Pokreni video bez zvuka",
   "performActionAfterNavigation": "Izvrši radnju nakon navigacije",
