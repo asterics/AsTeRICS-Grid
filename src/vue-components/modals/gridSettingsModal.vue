@@ -20,10 +20,6 @@
                             <label for="gridCols" class="seven columns">{{ $t('minimumNumberOfColumns') }}</label>
                             <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" :max="gridLayoutUtil.MAX_GRID_SIZE"/>
                         </div>
-                        <div class="srow" v-if="isGlobalGrid && metadata && gridHeight === 1">
-                            <label for="metadataHeight" class="seven columns">{{ $t('heightOfFirstGlobalGridRow') }}</label>
-                            <input id="metadataHeight" type="number" class="three columns" v-model.number="metadata.globalGridHeightPercentage" min="5" max="50"/>
-                        </div>
                         <div v-if="!isGlobalGrid">
                             <h2>{{ $t('globalGrid') }}</h2>
                             <div class="srow">
