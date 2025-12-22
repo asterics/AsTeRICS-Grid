@@ -46,6 +46,12 @@
                                 <option v-for="mode in GridData.KEYBOARD_MODES" :value="mode">{{ $t(mode) }}</option>
                             </select>
                         </div>
+                        <h2>{{ $t('TAB_APPEARANCE') }}</h2>
+                        <div class="srow mb-5">
+                            <label class="four columns" for="bgColor">{{ $t('customBackgroundColor') }}</label>
+                            <input class="three columns" type="color" id="bgColor" v-if="gridData" v-model="gridData.backgroundColor"/>
+                            <button class="three columns" :disabled="!gridData.backgroundColor" @click="gridData.backgroundColor = null;">{{ $t('clear') }}</button>
+                        </div>
                     </div>
 
                     <div class="modal-footer">

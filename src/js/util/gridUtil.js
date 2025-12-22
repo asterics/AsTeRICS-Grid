@@ -743,6 +743,19 @@ gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
     return 'none';
 };
 
+/**
+ * returns CSS needed for element background, depending on in from where the element comes (global or normal grid)
+ * @param elem
+ * @param childGrid
+ * @param globalGrid
+ * @returns {string|string}
+ */
+gridUtil.getElemBackgroundCss = function(elem, childGrid, globalGrid) {
+    let fromGlobal = !!globalGrid.gridElements.find(e => e.id === elem.id);
+    let backgroundColor = fromGlobal ? globalGrid.backgroundColor : childGrid.backgroundColor;
+    return backgroundColor ? `background-color: ${backgroundColor};` : '';
+};
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);
