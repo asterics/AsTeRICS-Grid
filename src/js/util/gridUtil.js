@@ -471,38 +471,67 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     if (grid && globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
         globalGrid = JSON.parse(JSON.stringify(globalGrid));
         grid = options.noDeepCopy ? grid : JSON.parse(JSON.stringify(grid));
-        let autowidth = true;
-        let heightPercentage = options.globalGridHeightPercentage
-            ? options.globalGridHeightPercentage / 100
-            : 0.15;
-        let heightFactorNormal = 1;
-        let heightFactorGlobal = 1;
-        if (gridUtil.getHeight(globalGrid) === 1) {
-            let height = gridUtil.getHeightWithBounds(grid);
-            heightFactorGlobal = (heightPercentage * height) / (1 - heightPercentage);
-            heightFactorNormal = 1 / (height * heightPercentage) - 1 / height;
-            heightFactorGlobal = Math.round(heightPercentage * 100);
-            heightFactorNormal = Math.round(((1 - heightPercentage) / height) * 100);
-        }
-        let offset = gridUtil.getOffset(globalGrid);
-        let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
-        let factorGlobal = autowidth ? gridUtil.getWidthWithBounds(grid) : 1;
-        globalGrid.gridElements.forEach((gridElement) => {
-            gridElement.width *= factorGlobal;
-            gridElement.x *= factorGlobal;
-            if (gridElement.y === 0) {
-                gridElement.height *= heightFactorGlobal;
+        let placeholderElem = globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER);
+        if (placeholderElem) {
+            globalGrid.gridElements = globalGrid.gridElements.filter(e => e.type !== GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER);
+            let placeholderW = placeholderElem.width;
+            let placeholderH = placeholderElem.height;
+            let gridW = gridUtil.getWidthWithBounds(grid);
+            let gridH = gridUtil.getHeightWithBounds(grid)
+            for (let globalElem of globalGrid.gridElements) {
+                globalElem.width *= gridW;
+                globalElem.x *= gridW;
+                globalElem.height *= gridH;
+                globalElem.y *= gridH;
             }
-        });
-        grid.gridElements.forEach((gridElement) => {
-            gridElement.width *= factorGrid;
-            gridElement.x *= factorGrid;
-            gridElement.x += offset.x * factorGlobal;
-            gridElement.y = offset.y * heightFactorGlobal + gridElement.y * heightFactorNormal;
-            gridElement.height *= heightFactorNormal;
-        });
-        grid.rowCount *= heightFactorNormal;
-        grid.rowCount += offset.y * heightFactorGlobal;
+            globalGrid.minColumnCount *= gridW;
+            globalGrid.rowCount *= gridH;
+            let offsetX = placeholderElem.x * gridW;
+            let offsetY = placeholderElem.y * gridH;
+            for (let gridElem of grid.gridElements) {
+                gridElem.width *= placeholderW;
+                gridElem.x = gridElem.x * placeholderW + offsetX;
+                gridElem.height *= placeholderH;
+                gridElem.y = gridElem.y * placeholderH + offsetY;
+            }
+            grid.minColumnCount *= placeholderW;
+            grid.rowCount *= placeholderH;
+            grid.rowCount = Math.max(grid.rowCount + offsetY, globalGrid.rowCount);
+            grid.minColumnCount = Math.max(grid.minColumnCount + offsetX, globalGrid.minColumnCount);
+        } else {
+            let autowidth = true;
+            let heightPercentage = options.globalGridHeightPercentage
+                ? options.globalGridHeightPercentage / 100
+                : 0.15;
+            let heightFactorNormal = 1;
+            let heightFactorGlobal = 1;
+            if (gridUtil.getHeight(globalGrid) === 1) {
+                let height = gridUtil.getHeightWithBounds(grid);
+                heightFactorGlobal = (heightPercentage * height) / (1 - heightPercentage);
+                heightFactorNormal = 1 / (height * heightPercentage) - 1 / height;
+                heightFactorGlobal = Math.round(heightPercentage * 100);
+                heightFactorNormal = Math.round(((1 - heightPercentage) / height) * 100);
+            }
+            let offset = gridUtil.getOffset(globalGrid);
+            let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
+            let factorGlobal = autowidth ? gridUtil.getWidthWithBounds(grid) : 1;
+            globalGrid.gridElements.forEach((gridElement) => {
+                gridElement.width *= factorGlobal;
+                gridElement.x *= factorGlobal;
+                if (gridElement.y === 0) {
+                    gridElement.height *= heightFactorGlobal;
+                }
+            });
+            grid.gridElements.forEach((gridElement) => {
+                gridElement.width *= factorGrid;
+                gridElement.x *= factorGrid;
+                gridElement.x += offset.x * factorGlobal;
+                gridElement.y = offset.y * heightFactorGlobal + gridElement.y * heightFactorNormal;
+                gridElement.height *= heightFactorNormal;
+            });
+            grid.rowCount *= heightFactorNormal;
+            grid.rowCount += offset.y * heightFactorGlobal;
+        }
         grid.gridElements = globalGrid.gridElements.concat(grid.gridElements);
     }
     return grid;

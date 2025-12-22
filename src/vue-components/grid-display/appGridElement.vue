@@ -8,6 +8,7 @@
         <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-live v-if="element.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-matrix-conversation v-if="element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
+        <grid-element-child-placeholder v-if="element.type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER"/>
         <grid-element-hints :grid-element="element" :metadata="metadata" :background-color="backgroundColor"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
@@ -38,9 +39,10 @@ import { ColorConfig } from '../../js/model/ColorConfig';
 import GridElementLive from './grid-elements/gridElementLive.vue';
 import GridElementMatrixConversation from './grid-elements/gridElementMatrixConversation.vue';
 import { gridUtil } from '../../js/util/gridUtil';
+import GridElementChildPlaceholder from './grid-elements/gridElementChildPlaceholder.vue';
 
 export default {
-    components: { GridElementMatrixConversation, GridElementLive, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
+    components: { GridElementChildPlaceholder, GridElementMatrixConversation, GridElementLive, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
     props: ["element", "metadata", "showResizeHandle", "editable", "oneElementSize", "watchForChanges"],
     data() {
         return {
@@ -61,6 +63,9 @@ export default {
         backgroundColor() {
             if (!this.metadata || !this.element) {
                 return '';
+            }
+            if (this.element.type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER) {
+                return constants.COLORS.TRANSPARENT;
             }
             if (this.element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                 return constants.COLORS.PREDICT_BACKGROUND;
