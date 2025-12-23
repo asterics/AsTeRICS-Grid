@@ -1306,6 +1306,8 @@
   "configureMatrixMessenger": "Configure matrix messenger",
   "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password.",
   "newMatrixConversation": "New matrix messenger",
+  "newChildPlaceholder": "New child grid placeholder",
+  "childGrid": "Child Grid",
   "GridActionMatrix": "Matrix messenger action",
   "MATRIX_SEND_COLLECTED": "Odeslat shromážděné fráze (text + obrázek)",
   "MATRIX_SEND_COLLECTED_TEXT": "Odeslat shromážděné fráze (pouze text)",
