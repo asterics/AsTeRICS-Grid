@@ -1306,6 +1306,8 @@
   "configureMatrixMessenger": "Matrix messenger beállítások",
   "ifNoUserCreateMatrixAccount": "Ha nincs Matrix-fiókja, regisztrálhat a {link} címen. A regisztrációhoz felhasználónév és jelszó megadása szükséges.",
   "newMatrixConversation": "Új Matrix messenger",
+  "newChildPlaceholder": "New child grid placeholder",
+  "childGrid": "Child Grid",
   "GridActionMatrix": "Matrix messenger művelet",
   "MATRIX_SEND_COLLECTED": "Gyűjtött kifejezés küldése (szöveg + kép)",
   "MATRIX_SEND_COLLECTED_TEXT": "Gyűjtött kifejezés küldése (csak szöveg)",

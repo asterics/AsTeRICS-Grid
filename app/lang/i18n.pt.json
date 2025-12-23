@@ -1306,6 +1306,8 @@
   "configureMatrixMessenger": "Configurar o Matrix Messenger",
   "ifNoUserCreateMatrixAccount": "Se não tem uma conta matrix messenger, pode registar-se em {link}. Tem que registar-se com um nome de utilizador e uma senha.",
   "newMatrixConversation": "Novo matrix messenger",
+  "newChildPlaceholder": "New child grid placeholder",
+  "childGrid": "Child Grid",
   "GridActionMatrix": "Ação matrix messenger",
   "MATRIX_SEND_COLLECTED": "Enviar a frase (texto + imagem)",
   "MATRIX_SEND_COLLECTED_TEXT": "Enviar a frase (apenas texto)",

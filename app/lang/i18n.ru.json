@@ -1306,6 +1306,8 @@
   "configureMatrixMessenger": "Настроить Matrix мессенджер",
   "ifNoUserCreateMatrixAccount": "Если у вас нет учетной записи Matrix, вы можете зарегистрироваться по ссылке {link}. Вам необходимо зарегистрироваться, используя имя пользователя и пароль.",
   "newMatrixConversation": "Новый Matrix мессенджер",
+  "newChildPlaceholder": "New child grid placeholder",
+  "childGrid": "Child Grid",
   "GridActionMatrix": "Действие мессенджера Matrix",
   "MATRIX_SEND_COLLECTED": "Отправить собранную фразу (текст + изображение)",
   "MATRIX_SEND_COLLECTED_TEXT": "Отправить собранную фразу (только текст)",
