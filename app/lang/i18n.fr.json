@@ -1306,6 +1306,8 @@
   "configureMatrixMessenger": "Configurer la messagerie Matrix",
   "ifNoUserCreateMatrixAccount": "Si vous n'avez pas de compte Matrix, vous pouvez vous inscrire sur {link}. Vous devez vous inscrire en utilisant un nom d'utilisateur et un mot de passe.",
   "newMatrixConversation": "Nouvelle messagerie Matrix",
+  "newChildPlaceholder": "New child grid placeholder",
+  "childGrid": "Child Grid",
   "GridActionMatrix": "Action de messagerie Matrix",
   "MATRIX_SEND_COLLECTED": "Envoyer la phrase collectée (texte + image)",
   "MATRIX_SEND_COLLECTED_TEXT": "Envoyer la phrase collectée (texte uniquement)",
