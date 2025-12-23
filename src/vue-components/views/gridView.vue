@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="srow content d-flex" v-if="renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
-            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata"/>
+            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
     </div>
 </template>
@@ -125,7 +125,8 @@
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
-                systemActionService: systemActionService
+                systemActionService: systemActionService,
+                gridUtil: gridUtil
             }
         },
         components: {

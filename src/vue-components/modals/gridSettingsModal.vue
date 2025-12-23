@@ -20,10 +20,6 @@
                             <label for="gridCols" class="seven columns">{{ $t('minimumNumberOfColumns') }}</label>
                             <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" :max="gridLayoutUtil.MAX_GRID_SIZE"/>
                         </div>
-                        <div class="srow" v-if="isGlobalGrid && metadata && gridHeight === 1">
-                            <label for="metadataHeight" class="seven columns">{{ $t('heightOfFirstGlobalGridRow') }}</label>
-                            <input id="metadataHeight" type="number" class="three columns" v-model.number="metadata.globalGridHeightPercentage" min="5" max="50"/>
-                        </div>
                         <div v-if="!isGlobalGrid">
                             <h2>{{ $t('globalGrid') }}</h2>
                             <div class="srow">
@@ -45,6 +41,12 @@
                                 <option :value="null">({{ $t('automatic') }})</option>
                                 <option v-for="mode in GridData.KEYBOARD_MODES" :value="mode">{{ $t(mode) }}</option>
                             </select>
+                        </div>
+                        <h2>{{ $t('TAB_APPEARANCE') }}</h2>
+                        <div class="srow mb-5">
+                            <label class="four columns" for="bgColor">{{ $t('customBackgroundColor') }}</label>
+                            <input class="three columns" type="color" id="bgColor" v-if="gridData" v-model="gridData.backgroundColor"/>
+                            <button class="three columns" :disabled="!gridData.backgroundColor" @click="gridData.backgroundColor = null;">{{ $t('clear') }}</button>
                         </div>
                     </div>
 
