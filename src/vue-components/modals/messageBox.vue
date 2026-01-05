@@ -155,6 +155,11 @@
                     this.resolve(button.value);
                 }
 
+                // Call onClose callback if provided
+                if (this.onCloseFn) {
+                    this.onCloseFn();
+                }
+
                 // Close modal
                 this.$emit('close');
                 this.cleanup();
