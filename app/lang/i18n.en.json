@@ -1329,5 +1329,6 @@
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
   "automaticallyAddImages": "Automatically add images",
-  "showAllElements": "show all elements"
+  "showAllElements": "show all elements",
+  "firstRowHeightFactor": "Height factor for first row"
 }
