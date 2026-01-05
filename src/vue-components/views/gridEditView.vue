@@ -342,7 +342,9 @@
                         showEdit = true;
                     } else if (type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
                         newElement = new GridElementMatrixConversation(baseProperties);
-                    } else if (type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER) {
+                    } else if (type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER) {
+                        newElement.x = 0;
+                        newElement.y = gridUtil.getHeightWithBounds(this.gridData);
                         newElement.width = gridUtil.getWidthWithBounds(this.gridData);
                         newElement.height = 5;
                     }
@@ -797,13 +799,13 @@
         let CONTEXT_PROPERTY_TRANSFER_APPEARANCE = "CONTEXT_PROPERTY_TRANSFER_APPEARANCE";
         let CONTEXT_PROPERTY_TRANSFER_ALL = "CONTEXT_PROPERTY_TRANSFER_ALL";
 
-        let childPlaceholderDisabledFn = () => !!vueApp.gridData.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER);
+        let childPlaceholderDisabledFn = () => !!vueApp.gridData.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
         let contextMenuNewGroup = {
             name: i18nService.t('new'), icon: "fas fa-plus-circle", items: {
                 'CONTEXT_NEW_SINGLE': {name: i18nService.t('newElement'), icon: "fas fa-plus"},
                 'CONTEXT_NEW_MASS': {name: i18nService.t('manyNewElements'), icon: "fas fa-clone"},
                 'CONTEXT_NEW_CHILD_PLACEHOLDER': {
-                    name: i18nService.t('newChildPlaceholder'),
+                    name: i18nService.t('newDynamicGridPlaceholder'),
                     icon: "fas fa-th",
                     visible: vueApp.isEditingGlobalGrid,
                     disabled: childPlaceholderDisabledFn
@@ -979,7 +981,7 @@
                     break;
                 }
                 case CONTEXT_NEW_CHILD_PLACEHOLDER: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
                     break;
                 }
                 case CONTEXT_COPY_ALL: {
