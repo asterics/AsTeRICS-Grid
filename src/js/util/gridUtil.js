@@ -785,6 +785,15 @@ gridUtil.getWordFormsForLang = function(element, lang = '') {
     return formsLang.length > 0 ? formsLang : formsBaseLang;
 };
 
+/**
+ * returns the label to display for a given element, also  taking word forms into account
+ * @param element
+ * @returns {string|*}
+ */
+gridUtil.getDisplayLabel = function(element) {
+    return gridUtil.getFirstWordForm(element) || i18nService.getTranslation(element.label);
+}
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);

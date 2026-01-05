@@ -142,7 +142,7 @@ stateService.getDisplayText = function (elementId) {
     if (!element) {
         return '';
     }
-    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || gridUtil.getFirstWordForm(element) || i18nService.getTranslation(element.label);
+    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || gridUtil.getDisplayLabel(element);
 };
 
 /**
