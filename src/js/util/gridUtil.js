@@ -758,6 +758,33 @@ gridUtil.getElemBackgroundCss = function(elem, childGrid, globalGrid, defaultBac
     return backgroundColor ? `background-color: ${backgroundColor};` : '';
 };
 
+gridUtil.getFirstForm = function(element, lang = null) {
+    let object = gridUtil.getFirstFormObject(element, lang);
+    return object ? object.value : null;
+};
+
+gridUtil.getFirstFormObject = function(element, lang) {
+    let forms = gridUtil.getWordFormsForLang(element, lang);
+    return forms.length > 0 ? forms[0] : null;
+};
+
+/**
+ * returns a list of all word forms for the given language
+ * If word forms for exact given language (localized, e.g. "en-us") are not existing,
+ * word forms for base language (e.g. "en") or other localized languages (e.g. "en-gb") are returned.
+ * Word forms without language are returned always.
+ *
+ * @param element
+ * @param lang
+ * @returns {T[]}
+ */
+gridUtil.getWordFormsForLang = function(element, lang = '') {
+    lang = lang || i18nService.getContentLang();
+    let formsLang = element.wordForms.filter((form) => !form.lang || form.lang === lang);
+    let formsBaseLang = element.wordForms.filter((form) => !form.lang || i18nService.getBaseLang(form.lang) === i18nService.getBaseLang(lang));
+    return formsLang.length > 0 ? formsLang : formsBaseLang;
+};
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);
