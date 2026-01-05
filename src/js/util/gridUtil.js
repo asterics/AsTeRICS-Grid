@@ -751,8 +751,8 @@ gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
  * @param defaultBackground
  * @returns {string|string}
  */
-gridUtil.getElemBackgroundCss = function(elem, childGrid, globalGrid, defaultBackground = '') {
-    let fromGlobal = !!globalGrid.gridElements.find(e => e.id === elem.id);
+gridUtil.getElemBackgroundCss = function(elem, childGrid = {}, globalGrid, defaultBackground = '') {
+    let fromGlobal = globalGrid && !!globalGrid.gridElements.find(e => e.id === elem.id);
     let backgroundColor = fromGlobal ? globalGrid.backgroundColor : childGrid.backgroundColor;
     backgroundColor = backgroundColor || defaultBackground || constants.DEFAULT_GRID_BACKGROUND_COLOR;
     return backgroundColor ? `background-color: ${backgroundColor};` : '';
