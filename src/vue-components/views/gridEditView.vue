@@ -350,7 +350,6 @@
                     }
                     newElement = JSON.parse(JSON.stringify(newElement));
                     this.gridData.gridElements.push(newElement);
-                    this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, newElement, { dontCopy: true })
                     await this.updateGridWithUndo();
                     if (showEdit) {
                         this.editElementId = newElement.id;
