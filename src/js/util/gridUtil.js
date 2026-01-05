@@ -758,12 +758,12 @@ gridUtil.getElemBackgroundCss = function(elem, childGrid, globalGrid, defaultBac
     return backgroundColor ? `background-color: ${backgroundColor};` : '';
 };
 
-gridUtil.getFirstForm = function(element, lang = null) {
-    let object = gridUtil.getFirstFormObject(element, lang);
+gridUtil.getFirstWordForm = function(element, lang = null) {
+    let object = gridUtil.getFirstWordFormObject(element, lang);
     return object ? object.value : null;
 };
 
-gridUtil.getFirstFormObject = function(element, lang) {
+gridUtil.getFirstWordFormObject = function(element, lang) {
     let forms = gridUtil.getWordFormsForLang(element, lang);
     return forms.length > 0 ? forms[0] : null;
 };

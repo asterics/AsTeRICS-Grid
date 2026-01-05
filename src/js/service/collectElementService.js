@@ -518,7 +518,7 @@ function getOutputObject(element, options) {
         text = getLabel(element);
     }
     if (!text) {
-        text = gridUtil.getFirstForm(element);
+        text = gridUtil.getFirstWordForm(element);
     }
     text = util.convertLowerUppercase(text, convertMode);
     return {

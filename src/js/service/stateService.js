@@ -142,7 +142,7 @@ stateService.getDisplayText = function (elementId) {
     if (!element) {
         return '';
     }
-    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || gridUtil.getFirstForm(element) || i18nService.getTranslation(element.label);
+    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || gridUtil.getFirstWordForm(element) || i18nService.getTranslation(element.label);
 };
 
 /**
@@ -163,7 +163,7 @@ stateService.getSpeakText = function (elementOrId, options) {
     if (wordForm.pronunciation || wordForm.value) {
         return wordForm.pronunciation || wordForm.value;
     }
-    let baseForm = gridUtil.getFirstFormObject(element, options.lang) || {};
+    let baseForm = gridUtil.getFirstWordFormObject(element, options.lang) || {};
     return (
         baseForm.pronunciation ||
         baseForm.value ||
