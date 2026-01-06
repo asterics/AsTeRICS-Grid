@@ -169,27 +169,8 @@
                 });
             },
             getLabelPlaceholder(locale) {
-                // If LIVE element, show special placeholder
-                if (this.gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
-                    return i18nService.t('canIncludePlaceholderLike');
-                }
-
-                // If label exists in requested locale, no placeholder needed
-                if (this.gridElement.label[locale]) {
-                    return '';
-                }
-
-                // Find first available label in another language
-                let availableLangs = Object.keys(this.gridElement.label).filter(lang => this.gridElement.label[lang]);
-                if (availableLangs.length > 0) {
-                    let firstLang = availableLangs[0];
-                    let langName = this.getLocaleTranslation(firstLang);
-                    return `${langName}: ${this.gridElement.label[firstLang]}`;
-                }
-
-                // No label available in any language
                 let langName = this.getLocaleTranslation(locale);
-                return `${langName} label`;
+                return `${i18nService.t('text')} (${langName})`;
             },
             getPronunciationPlaceholder(locale) {
                 let label = this.gridElement.label[locale] || '';
@@ -248,14 +229,6 @@
             }
         },
         mounted() {
-            // Ensure gridElement has proper label and pronunciation structure
-            if (!this.gridElement.label || typeof this.gridElement.label === 'string') {
-                this.$set(this.gridElement, 'label', {});
-            }
-            if (!this.gridElement.pronunciation) {
-                this.$set(this.gridElement, 'pronunciation', {});
-            }
-
             this.resetTestGrid();
             this.findUsedLocales();
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
@@ -276,20 +249,6 @@
 <style scoped>
     .row, .srow {
         margin-top: 1em;
-    }
-
-    .input-button {
-        position: absolute;
-        right: 0;
-        height: 100%;
-        line-height: initial;
-        margin: 0;
-        padding: 0 1em;
-        box-shadow: none;
-        background-color: transparent;
-        cursor: pointer;
-        z-index: 1;
-        pointer-events: auto;
     }
 
     .checkbox-label-small {
