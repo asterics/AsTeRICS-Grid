@@ -940,7 +940,7 @@
   "importData": "Importar dados",
   "doYouWantToDeleteBeforeImporting": "Quer mesmo apagar todas as tabelas e dicionários existentes antes de importar os novos? Esta ação não pode ser anulada!",
   "importDataFromFile": "Importar dados de ficheiro",
-  "importSuccessful": "Import successful!",
+  "importSuccessful": "Importação bem sucedida!",
   "importedGrids": "{count} tabela(s) importada(s).",
   "importedDictionaries": "{count} dicionári{count, plural, one {o} other {os}} importado(s).",
   "exportUserSettingsAndInputConfig": "Exportar definições de utilizador e definições de acesso",
