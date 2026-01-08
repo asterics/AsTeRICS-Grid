@@ -235,10 +235,16 @@ collectElementService.doCollectElementActions = async function (action, gridElem
     predictionService.predict(getPredictText(), dictionaryKey);
 };
 
-collectElementService.addWordFormTagsToLast = function (tags, toggle, skipLast) {
-    // If skipLast is true, update the second-to-last element instead of the last one
-    // This is useful when the triggering element was just added to the collect bar
-    let targetIndex = skipLast ? collectedElements.length - 2 : collectedElements.length - 1;
+collectElementService.addWordFormTagsToLast = function (tags, toggle, skipElementId) {
+    // Find the last element that doesn't have skipElementId
+    // This is more robust than skipLast because it doesn't depend on execution order
+    let targetIndex = -1;
+    for (let i = collectedElements.length - 1; i >= 0; i--) {
+        if (!skipElementId || collectedElements[i].id !== skipElementId) {
+            targetIndex = i;
+            break;
+        }
+    }
 
     if (targetIndex < 0) {
         return;

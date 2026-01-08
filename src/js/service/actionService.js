@@ -184,9 +184,7 @@ async function doAction(gridElement, action, options = {}) {
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
                     stateService.resetWordFormIds(gridElement);
                     stateService.addWordFormTags(action.tags, action.toggle);
-                    // If element was added to collect bar, update the previous element (not the one just added)
-                    // Otherwise update the last element
-                    collectElementService.addWordFormTagsToLast(action.tags, action.toggle, !gridElement.dontCollect);
+                    collectElementService.addWordFormTagsToLast(action.tags, action.toggle, gridElement.dontCollect ? null : gridElement.id);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
                     stateService.resetWordFormIds(gridElement);
