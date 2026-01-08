@@ -1306,6 +1306,8 @@
   "configureMatrixMessenger": "Configurar Matrix Messenger",
   "ifNoUserCreateMatrixAccount": "Si no tens un compte  a Matrix Messenger, pots registrar-te seguint aquest enllaç {link}. (IMPORTANT) Has de registrar-te utilitzant un nom d'usuari i una contrasenya. No utilitzar registre mitjançant botó de Google.",
   "newMatrixConversation": "Nou xat a Matrix Messenger",
+  "newChildPlaceholder": "New child grid placeholder",
+  "childGrid": "Child Grid",
   "GridActionMatrix": "Acció de Matrix Messenger",
   "MATRIX_SEND_COLLECTED": "Enviar frase acumulada (text + imatge)",
   "MATRIX_SEND_COLLECTED_TEXT": "Enviar frase acumulada (text + imatge)",
