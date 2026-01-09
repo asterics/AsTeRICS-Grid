@@ -500,7 +500,7 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
             let placeholderW = placeholderElem.width;
             let placeholderH = placeholderElem.height;
             let gridW = gridUtil.getWidthWithBounds(grid);
-            let gridH = gridUtil.getHeightWithBounds(grid)
+            let gridH = gridUtil.getHeightWithBounds(grid);
             for (let globalElem of globalGrid.gridElements) {
                 globalElem.width *= gridW;
                 globalElem.x *= gridW;
@@ -566,7 +566,7 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
  * @returns {*} the adapted grid
  */
 gridUtil.adaptFirstRowHeight = function(grid, firstRowHeightFactor = 1) {
-    let baseHeightFactor = 100;
+    let baseHeightFactor = 10;
     let factorProp = util.limitValue(firstRowHeightFactor, 0.1, 2, 1);
     firstRowHeightFactor = Math.round(baseHeightFactor * factorProp);
     let firstRowElems = grid.gridElements.filter(e => e.y === 0);
