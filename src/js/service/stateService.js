@@ -5,6 +5,7 @@ import {constants} from "../util/constants.js";
 import {util} from "../util/util.js";
 import {dataService} from "./data/dataService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
+import { gridUtil } from '../util/gridUtil';
 
 let stateService = {};
 let _states = {};
@@ -114,7 +115,7 @@ stateService.getWordFormObject = function (element, options) {
     options.searchTags = options.searchTags ? options.searchTags : _currentWordFormTags;
     options.searchTags = JSON.parse(JSON.stringify(options.searchTags));
     options.lang = options.lang || i18nService.getContentLang();
-    let langForms = stateService.getWordFormsForLang(element, options.lang);
+    let langForms = gridUtil.getWordFormsForLang(element, options.lang);
     if (options.wordFormId !== undefined) {
         return langForms[options.wordFormId];
     }
@@ -136,39 +137,12 @@ stateService.getWordFormObject = function (element, options) {
     return null;
 };
 
-/**
- * returns a list of all word forms for the given language
- * If word forms for exact given language (localized, e.g. "en-us") are not existing,
- * word forms for base language (e.g. "en") or other localized languages (e.g. "en-gb") are returned.
- * Word forms without language are returned always.
- *
- * @param element
- * @param lang
- * @returns {T[]}
- */
-stateService.getWordFormsForLang = function(element, lang = '') {
-    lang = lang || i18nService.getContentLang();
-    let formsLang = element.wordForms.filter((form) => !form.lang || form.lang === lang);
-    let formsBaseLang = element.wordForms.filter((form) => !form.lang || i18nService.getBaseLang(form.lang) === i18nService.getBaseLang(lang));
-    return formsLang.length > 0 ? formsLang : formsBaseLang;
-};
-
-stateService.getFirstForm = function(element, lang = null) {
-    let object = stateService.getFirstFormObject(element, lang);
-    return object ? object.value : null;
-};
-
-stateService.getFirstFormObject = function(element, lang) {
-    let forms = stateService.getWordFormsForLang(element, lang);
-    return forms.length > 0 ? forms[0] : null;
-};
-
 stateService.getDisplayText = function (elementId) {
     let element = getElement(elementId);
     if (!element) {
         return '';
     }
-    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || stateService.getFirstForm(element) || i18nService.getTranslation(element.label);
+    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || gridUtil.getDisplayLabel(element);
 };
 
 /**
@@ -189,7 +163,7 @@ stateService.getSpeakText = function (elementOrId, options) {
     if (wordForm.pronunciation || wordForm.value) {
         return wordForm.pronunciation || wordForm.value;
     }
-    let baseForm = stateService.getFirstFormObject(element, options.lang) || {};
+    let baseForm = gridUtil.getFirstWordFormObject(element, options.lang) || {};
     return (
         baseForm.pronunciation ||
         baseForm.value ||
@@ -222,7 +196,7 @@ stateService.nextWordForm = function (elementId) {
     if (!element) {
         return;
     }
-    let currentLangForms = stateService.getWordFormsForLang(element);
+    let currentLangForms = gridUtil.getWordFormsForLang(element);
 
     // all indexes that match current language
     let possibleIndexes = currentLangForms.map((form, index) => {
