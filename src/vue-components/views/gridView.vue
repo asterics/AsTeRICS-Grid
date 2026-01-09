@@ -411,7 +411,6 @@
                     }
                     this.renderGridData = gridUtil.mergeGrids(gridData, globalGrid, {
                         globalGridHeightPercentage: this.metadata.globalGridHeightPercentage,
-                        firstRowHeightFactor: this.metadata.firstRowHeightFactor,
                         noDeepCopy: true
                     });
                 } else {
