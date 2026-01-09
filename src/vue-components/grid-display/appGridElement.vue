@@ -1,5 +1,5 @@
 <template>
-    <div role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
+    <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
          border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
@@ -8,7 +8,7 @@
         <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-live v-if="element.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-matrix-conversation v-if="element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
-        <grid-element-child-placeholder v-if="element.type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER"/>
+        <grid-element-child-placeholder v-if="element.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER"/>
         <grid-element-hints :grid-element="element" :metadata="metadata" :background-color="backgroundColor"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
@@ -64,7 +64,10 @@ export default {
             if (!this.metadata || !this.element) {
                 return '';
             }
-            if (this.element.type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER) {
+            if (this.element.type === GridElement.ELEMENT_TYPE_UI_FILLER) {
+                return constants.COLORS.TRANSPARENT;
+            }
+            if (this.element.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER) {
                 return constants.COLORS.TRANSPARENT;
             }
             if (this.element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
@@ -98,6 +101,10 @@ export default {
         getBorderColor(element) {
             if (!this.metadata || !this.metadata.colorConfig) {
                 return constants.COLORS.GRAY;
+            }
+
+            if (this.element.type === GridElement.ELEMENT_TYPE_UI_FILLER) {
+                return constants.COLORS.TRANSPARENT;
             }
 
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {
