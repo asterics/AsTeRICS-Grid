@@ -215,10 +215,25 @@ gridUtil.getFreeCoordinates = function (gridData) {
     });
 };
 
-gridUtil.getFillElements = function (gridData) {
+gridUtil.getFillElements = function (gridData, elementType = GridElement.ELEMENT_TYPE_NORMAL) {
     let freeCoordinates = gridUtil.getFreeCoordinates(gridData);
-    return freeCoordinates.map((xy) => new GridElement({ x: xy.x, y: xy.y }));
+    return freeCoordinates.map((xy) => new GridElement({ x: xy.x, y: xy.y, type: elementType }));
 };
+
+/**
+ * fills the given grid data with new elements of the given type, so no empty spaces afterwards
+ * @param gridData
+ * @param elementType
+ * @returns {*|null}
+ */
+gridUtil.fillFreeSpaces = function(gridData, elementType = GridElement.ELEMENT_TYPE_NORMAL) {
+    if (!gridData) {
+        return null;
+    }
+    let fillElements = gridUtil.getFillElements(gridData, elementType);
+    gridData.gridElements = gridData.gridElements.concat(JSON.parse(JSON.stringify(fillElements)));
+    return gridData;
+}
 
 gridUtil.updateOrAddGridElement = function (gridData, updatedGridElement) {
     updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));

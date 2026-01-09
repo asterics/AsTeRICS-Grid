@@ -64,6 +64,9 @@ export default {
             if (!this.metadata || !this.element) {
                 return '';
             }
+            if (this.element.type === GridElement.ELEMENT_TYPE_UI_FILLER) {
+                return constants.COLORS.TRANSPARENT;
+            }
             if (this.element.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER) {
                 return constants.COLORS.TRANSPARENT;
             }
@@ -98,6 +101,10 @@ export default {
         getBorderColor(element) {
             if (!this.metadata || !this.metadata.colorConfig) {
                 return constants.COLORS.GRAY;
+            }
+
+            if (this.element.type === GridElement.ELEMENT_TYPE_UI_FILLER) {
+                return constants.COLORS.TRANSPARENT;
             }
 
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {
