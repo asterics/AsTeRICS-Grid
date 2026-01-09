@@ -9,6 +9,7 @@ import { util } from '../util/util';
 import { podcastService } from './podcastService';
 import { format } from "date-fns";
 import { es, pt, it, enUS, fr, de } from "date-fns/locale";
+import { stateService } from './stateService';
 
 let liveElementService = {};
 
@@ -197,6 +198,9 @@ async function getValueAppState(element) {
             }
             let batteryManager = await navigator.getBattery();
             return Math.round(batteryManager.level * 100);
+        case GridElementLive.APP_STATE_GRID_NAME:
+            let grid = stateService.getCurrentGrid();
+            return grid ? i18nService.getTranslation(grid.label) : '';
     }
     return '';
 }

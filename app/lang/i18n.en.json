@@ -1230,6 +1230,7 @@
   "APP_STATE_VOLUME_YT": "YouTube volume",
   "APP_STATE_VOLUME_RADIO": "Radio volume",
   "APP_STATE_BATTERY_LEVEL": "Battery level",
+  "APP_STATE_GRID_NAME": "Name of current grid",
   "PODCAST_CURRENT_PODCAST": "Current podcast title",
   "PODCAST_CURRENT_EPISODE": "Current episode title",
   "PODCAST_PLAY_TIME": "Playback time",
