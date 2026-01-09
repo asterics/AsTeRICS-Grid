@@ -140,8 +140,8 @@
                     <button class="three columns" @click="metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
                 </div>
                 <div class="srow">
-                    <label for="metadataHeight" class="three columns">{{ $t('firstRowHeightFactor') }}</label>
-                    <input id="metadataHeight" type="number" class="five columns" v-model.number="metadata.firstRowHeightFactor" min="0.1" max="2" step="0.1" @change="saveMetadata(metadata)"/>
+                    <label for="firstRowHeightFactor" class="three columns">{{ $t('firstRowHeightFactor') }}</label>
+                    <input id="firstRowHeightFactor" type="number" class="five columns" v-model.number="metadata.firstRowHeightFactor" min="0.1" max="5" step="0.1" @change="saveMetadata(metadata)"/>
                 </div>
             </div>
             <div class="three columns">
