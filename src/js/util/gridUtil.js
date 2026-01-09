@@ -215,10 +215,25 @@ gridUtil.getFreeCoordinates = function (gridData) {
     });
 };
 
-gridUtil.getFillElements = function (gridData) {
+gridUtil.getFillElements = function (gridData, elementType = GridElement.ELEMENT_TYPE_NORMAL) {
     let freeCoordinates = gridUtil.getFreeCoordinates(gridData);
-    return freeCoordinates.map((xy) => new GridElement({ x: xy.x, y: xy.y }));
+    return freeCoordinates.map((xy) => new GridElement({ x: xy.x, y: xy.y, type: elementType }));
 };
+
+/**
+ * fills the given grid data with new elements of the given type, so no empty spaces afterwards
+ * @param gridData
+ * @param elementType
+ * @returns {*|null}
+ */
+gridUtil.fillFreeSpaces = function(gridData, elementType = GridElement.ELEMENT_TYPE_NORMAL) {
+    if (!gridData) {
+        return null;
+    }
+    let fillElements = gridUtil.getFillElements(gridData, elementType);
+    gridData.gridElements = gridData.gridElements.concat(JSON.parse(JSON.stringify(fillElements)));
+    return gridData;
+}
 
 gridUtil.updateOrAddGridElement = function (gridData, updatedGridElement) {
     updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));
@@ -471,9 +486,9 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     if (grid && globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
         globalGrid = JSON.parse(JSON.stringify(globalGrid));
         grid = options.noDeepCopy ? grid : JSON.parse(JSON.stringify(grid));
-        let placeholderElem = globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER);
+        let placeholderElem = globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
         if (placeholderElem) {
-            globalGrid.gridElements = globalGrid.gridElements.filter(e => e.type !== GridElement.ELEMENT_TYPE_CHILD_GRID_PLACEHOLDER);
+            globalGrid.gridElements = globalGrid.gridElements.filter(e => e.type !== GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
             let placeholderW = placeholderElem.width;
             let placeholderH = placeholderElem.height;
             let gridW = gridUtil.getWidthWithBounds(grid);
@@ -746,7 +761,7 @@ gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
 /**
  * returns CSS needed for element background, depending on in from where the element comes (global or normal grid)
  * @param elem
- * @param childGrid
+ * @param dynamicGrid
  * @param globalGrid
  * @param defaultBackground
  * @returns {string|string}
