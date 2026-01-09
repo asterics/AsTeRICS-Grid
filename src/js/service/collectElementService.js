@@ -24,6 +24,7 @@ import {MapCache} from "../util/MapCache.js";
 import { liveElementService } from './liveElementService';
 import { MetaData } from '../model/MetaData';
 import { GridData } from '../model/GridData';
+import { gridUtil } from '../util/gridUtil';
 
 let collectElementService = {};
 
@@ -517,7 +518,7 @@ function getOutputObject(element, options) {
         text = getLabel(element);
     }
     if (!text) {
-        text = stateService.getFirstForm(element);
+        text = gridUtil.getFirstWordForm(element);
     }
     text = util.convertLowerUppercase(text, convertMode);
     return {

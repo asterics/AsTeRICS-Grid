@@ -766,12 +766,48 @@ gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
  * @param defaultBackground
  * @returns {string|string}
  */
-gridUtil.getElemBackgroundCss = function(elem, dynamicGrid = {}, globalGrid, defaultBackground = '') {
+gridUtil.getElemBackgroundCss = function(elem, childGrid = {}, globalGrid, defaultBackground = '') {
     let fromGlobal = globalGrid && !!globalGrid.gridElements.find(e => e.id === elem.id);
-    let backgroundColor = fromGlobal ? globalGrid.backgroundColor : dynamicGrid.backgroundColor;
+    let backgroundColor = fromGlobal ? globalGrid.backgroundColor : childGrid.backgroundColor;
     backgroundColor = backgroundColor || defaultBackground || constants.DEFAULT_GRID_BACKGROUND_COLOR;
     return backgroundColor ? `background-color: ${backgroundColor};` : '';
 };
+
+gridUtil.getFirstWordForm = function(element, lang = null) {
+    let object = gridUtil.getFirstWordFormObject(element, lang);
+    return object ? object.value : null;
+};
+
+gridUtil.getFirstWordFormObject = function(element, lang) {
+    let forms = gridUtil.getWordFormsForLang(element, lang);
+    return forms.length > 0 ? forms[0] : null;
+};
+
+/**
+ * returns a list of all word forms for the given language
+ * If word forms for exact given language (localized, e.g. "en-us") are not existing,
+ * word forms for base language (e.g. "en") or other localized languages (e.g. "en-gb") are returned.
+ * Word forms without language are returned always.
+ *
+ * @param element
+ * @param lang
+ * @returns {T[]}
+ */
+gridUtil.getWordFormsForLang = function(element, lang = '') {
+    lang = lang || i18nService.getContentLang();
+    let formsLang = element.wordForms.filter((form) => !form.lang || form.lang === lang);
+    let formsBaseLang = element.wordForms.filter((form) => !form.lang || i18nService.getBaseLang(form.lang) === i18nService.getBaseLang(lang));
+    return formsLang.length > 0 ? formsLang : formsBaseLang;
+};
+
+/**
+ * returns the label to display for a given element, also  taking word forms into account
+ * @param element
+ * @returns {string|*}
+ */
+gridUtil.getDisplayLabel = function(element) {
+    return gridUtil.getFirstWordForm(element) || i18nService.getTranslation(element.label);
+}
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
