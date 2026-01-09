@@ -135,10 +135,17 @@ gridUtil.generateGlobalGrid = function (locale, options) {
         }),
         actions: [new GridActionCollectElement({ action: GridActionCollectElement.COLLECT_ACTION_CLEAR })]
     });
+    let elementPlaceholder = new GridElement({
+        type: GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER,
+        width: 15,
+        height: 5,
+        x: 0,
+        y: 1
+    });
     return new GridData({
         label: i18nService.getTranslationObject(i18nService.t('globalGrid'), locale),
-        gridElements: [elementHome, elementBack, elementCollect, elementSpeak, elementBackspace, elementClear],
-        rowCount: 3
+        gridElements: [elementHome, elementBack, elementCollect, elementSpeak, elementBackspace, elementClear, elementPlaceholder],
+        rowCount: 6
     });
 };
 
