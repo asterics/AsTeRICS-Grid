@@ -16,7 +16,8 @@ class MetaData extends Model({
     lastOpenedGridId: [String],
     globalGridId: [String],
     globalGridActive: [Boolean],
-    globalGridHeightPercentage: [Number],
+    globalGridHeightPercentage: [Number], // deprecated, was used before introducing dynamic grid placeholder
+    firstRowHeightFactor: [Number],
     locked: [Boolean],
     fullscreen: [Boolean],
     hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
@@ -37,6 +38,7 @@ class MetaData extends Model({
         this.notificationConfig = properties.notificationConfig || new NotificationConfig();
         this.homeGridId = properties.homeGridId || null;
         this.integrations = Object.assign(new IntegrationConfigSync(), this.integrations);
+        this.firstRowHeightFactor = properties.firstRowHeightFactor || 1;
     }
 
     isEqual(otherMetadata) {
@@ -99,6 +101,7 @@ MetaData.defaults({
     inputConfig: new InputConfig(),
     globalGridActive: false,
     globalGridHeightPercentage: 17,
+    firstRowHeightFactor: 1,
     vocabularyLevel: null,
     integrations: new IntegrationConfigSync()
 });

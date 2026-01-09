@@ -85,13 +85,6 @@
                     <button class="three columns" @click="metadata.colorConfig.elementBackgroundColor = constants.DEFAULT_ELEMENT_BACKGROUND_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
                 </div>
                 <div class="srow">
-                    <label class="three columns" for="appColor">
-                        <span>{{ $t('defaultGridBackgroundColor') }}</span>
-                    </label>
-                    <input id="appColor" v-model="metadata.colorConfig.gridBackgroundColor" class="five columns" type="color" @change="saveMetadata(metadata)">
-                    <button class="three columns" @click="metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
-                </div>
-                <div class="srow">
                     <label class="three columns" for="colorMode">{{ $t('colorMode') }}</label>
                     <select id="colorMode" v-model="metadata.colorConfig.colorMode" class="five columns" @change="saveMetadata(metadata)">
                         <option :value="ColorConfig.COLOR_MODE_BACKGROUND">{{ $t('colorModeBackground') }}</option>
@@ -137,6 +130,18 @@
                             </label>
                         </div>
                     </accordion>
+                </div>
+                <h3 class="mt-5">{{ $t('grid') }}</h3>
+                <div class="srow">
+                    <label class="three columns" for="appColor">
+                        <span>{{ $t('defaultGridBackgroundColor') }}</span>
+                    </label>
+                    <input id="appColor" v-model="metadata.colorConfig.gridBackgroundColor" class="five columns" type="color" @change="saveMetadata(metadata)">
+                    <button class="three columns" @click="metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                </div>
+                <div class="srow">
+                    <label for="firstRowHeightFactor" class="three columns">{{ $t('firstRowHeightFactor') }}</label>
+                    <input id="firstRowHeightFactor" type="number" class="five columns" v-model.number="metadata.firstRowHeightFactor" min="0.1" max="5" step="0.1" @change="saveMetadata(metadata)"/>
                 </div>
             </div>
             <div class="three columns">

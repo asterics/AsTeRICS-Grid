@@ -81,7 +81,6 @@
             return {
                 gridData: JSON.parse(JSON.stringify(this.gridDataParam)),
                 gridHeight: gridUtil.getHeight(this.gridDataParam),
-                metadata: null,
                 allGrids: [],
                 gridLayoutUtil: gridLayoutUtil,
                 GridData: GridData
@@ -96,9 +95,6 @@
                     minColumnCount: this.gridData.minColumnCount
                 });
                 let promises = [];
-                if (this.metadata) {
-                    promises.push(dataService.saveMetadata(this.metadata));
-                }
                 promises.push(this.undoService.updateGrid(this.gridData));
                 Promise.all(promises).then(() => {
                     this.$emit('reload');
@@ -107,11 +103,6 @@
             }
         },
         async mounted() {
-            if (this.isGlobalGrid) {
-                dataService.getMetadata().then(metadata => {
-                    this.metadata = JSON.parse(JSON.stringify(metadata));
-                });
-            }
             this.allGrids = (await dataService.getGrids(false))
                 .sort((a, b) => i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label)));
         }
