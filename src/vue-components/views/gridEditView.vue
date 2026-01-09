@@ -344,10 +344,10 @@
                     } else if (type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
                         newElement = new GridElementMatrixConversation(baseProperties);
                     } else if (type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER) {
-                        newElement.x = 0;
-                        newElement.y = gridUtil.getHeightWithBounds(this.gridData);
-                        newElement.width = gridUtil.getWidthWithBounds(this.gridData);
-                        newElement.height = 5;
+                        newElement = gridLayoutUtil.increaseElement(this.gridData.gridElements, newElement, {
+                            gridWidth: this.gridData.minColumnCount,
+                            gridHeight: this.gridData.rowCount
+                        });
                     }
                     newElement = JSON.parse(JSON.stringify(newElement));
                     this.gridData.gridElements.push(newElement);
