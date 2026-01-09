@@ -463,7 +463,6 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
  * @param grid
  * @param globalGrid
  * @param options.globalGridHeightPercentage the height of the global grid in percentage
- * @param options.firstRowHeightFactor factor to increase/decrease height of first row
  * @param options.noDeepCopy if set to true, not deep copy of the input grids will be done before merging. This is better
  *                           for performance, but will change the original object. Make sure that it's not saved to
  *                           database afterwards, if setting noDeepCopy to true
@@ -535,28 +534,35 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
             grid.rowCount += offset.y * heightFactorGlobal;
         }
         grid.gridElements = globalGrid.gridElements.concat(grid.gridElements);
-
-        // do adaptions for firstRowHeightFactor
-        let baseHeightFactor = 100;
-        let factorProp = util.limitValue(options.firstRowHeightFactor, 0.1, 2, 1);
-        let firstRowHeightFactor = Math.round(baseHeightFactor * factorProp);
-        let firstRowElems = grid.gridElements.filter(e => e.y === 0);
-        let otherElems = grid.gridElements.filter(e => e.y !== 0);
-        if (firstRowElems.length > 0 && factorProp !== 1) {
-            let maxFirstHeight = Math.max(...firstRowElems.map(e => e.height));
-            let otherOffset = (firstRowHeightFactor - baseHeightFactor) * maxFirstHeight;
-            for (let elem of firstRowElems) {
-                elem.height *= firstRowHeightFactor;
-            }
-            for (let elem of otherElems) {
-                elem.height *= baseHeightFactor;
-                elem.y *= baseHeightFactor;
-                elem.y += otherOffset;
-            }
-        }
     }
     return grid;
 }
+
+/**
+ * @param grid
+ * @param firstRowHeightFactor factor to increase/decrease height of first row
+ * @returns {*} the adapted grid
+ */
+gridUtil.adaptFirstRowHeight = function(grid, firstRowHeightFactor = 1) {
+    let baseHeightFactor = 100;
+    let factorProp = util.limitValue(firstRowHeightFactor, 0.1, 2, 1);
+    firstRowHeightFactor = Math.round(baseHeightFactor * factorProp);
+    let firstRowElems = grid.gridElements.filter(e => e.y === 0);
+    let otherElems = grid.gridElements.filter(e => e.y !== 0);
+    if (firstRowElems.length > 0 && factorProp !== 1) {
+        let maxFirstHeight = Math.max(...firstRowElems.map(e => e.height));
+        let otherOffset = (firstRowHeightFactor - baseHeightFactor) * maxFirstHeight;
+        for (let elem of firstRowElems) {
+            elem.height *= firstRowHeightFactor;
+        }
+        for (let elem of otherElems) {
+            elem.height *= baseHeightFactor;
+            elem.y *= baseHeightFactor;
+            elem.y += otherOffset;
+        }
+    }
+    return grid;
+};
 
 gridUtil.getAREFirstAction = function(gridData) {
     let allActions = [];
