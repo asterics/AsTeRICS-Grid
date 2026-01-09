@@ -809,6 +809,13 @@ gridUtil.getDisplayLabel = function(element) {
     return gridUtil.getFirstWordForm(element) || i18nService.getTranslation(element.label);
 }
 
+gridUtil.hasDynamicGridPlaceholder = function(globalGrid) {
+    if (!globalGrid) {
+        return false;
+    }
+    return !!globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
+};
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);

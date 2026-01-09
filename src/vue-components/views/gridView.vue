@@ -405,7 +405,9 @@
                 // just using this.renderGridData for clarity
                 let globalGrid = null;
                 gridData = gridUtil.fillFreeSpaces(gridData, GridElement.ELEMENT_TYPE_UI_FILLER);
-                this.globalGridData = gridUtil.fillFreeSpaces(this.globalGridData, GridElement.ELEMENT_TYPE_UI_FILLER);
+                if (gridUtil.hasDynamicGridPlaceholder(this.globalGridData)) {
+                    this.globalGridData = gridUtil.fillFreeSpaces(this.globalGridData, GridElement.ELEMENT_TYPE_UI_FILLER);
+                }
                 if (gridData.showGlobalGrid) {
                     globalGrid = this.globalGridData;
                     if (gridData.globalGridId) { // custom global grid
