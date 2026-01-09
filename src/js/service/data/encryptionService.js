@@ -3,6 +3,7 @@ import { dataUtil } from '../../util/dataUtil';
 import { sjcl } from '../../externals/sjcl';
 import { log } from '../../util/log.js';
 import { MapCache } from '../../util/MapCache';
+import { webCryptoService } from './webCryptoService';
 
 let STATIC_USER_PW_SALT = 'STATIC_USER_PW_SALT';
 
@@ -16,14 +17,17 @@ let _hashCache = new MapCache();
 let _cryptoTime = 0;
 let _operationStartTime = null;
 
+// Flag to use WebCrypto API (default true if available)
+let _useWebCrypto = webCryptoService.isAvailable();
+
 /**
  * encrypts a given object
  * @see{EncryptedObject}
  *
  * @param object any model object to encrypt
- * @return {*} encrypted object of type @see{EncryptedObject}
+ * @return {Promise<*>} encrypted object of type @see{EncryptedObject}
  */
-encryptionService.encryptObject = function (object) {
+encryptionService.encryptObject = async function (object) {
     throwErrorIfUninitialized();
     if (!object) {
         return object;
@@ -40,9 +44,9 @@ encryptionService.encryptObject = function (object) {
     let jsonString = JSON.stringify(object);
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     let shortVersionDifferent = jsonString !== shortJsonString;
-    encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, _encryptionSalts[0]);
+    encryptedObject.encryptedDataBase64 = await encryptionService.encryptString(jsonString, _encryptionSalts[0]);
     encryptedObject.encryptedDataBase64Short = shortVersionDifferent
-        ? encryptionService.encryptString(shortJsonString, _encryptionSalts[0])
+        ? await encryptionService.encryptString(shortJsonString, _encryptionSalts[0])
         : null;
     return encryptedObject;
 };
@@ -54,9 +58,9 @@ encryptionService.encryptObject = function (object) {
  * @param encryptedObjects an array of encrypted objects or a single encrypted object
  * @param options map of options, can contain:
  *        onlyShortVersion: if true only the short version (with stripped binary data) is decrypted and returned
- * @return {*} an array or single object (depending on input) of decrypted instances of objects
+ * @return {Promise<*>} an array or single object (depending on input) of decrypted instances of objects
  */
-encryptionService.decryptObjects = function (encryptedObjects, options) {
+encryptionService.decryptObjects = async function (encryptedObjects, options) {
     throwErrorIfUninitialized();
     if (!encryptedObjects) {
         return encryptedObjects;
@@ -67,17 +71,18 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
 
     encryptedObjects = encryptedObjects instanceof Array ? encryptedObjects : [encryptedObjects];
     let decryptedObjects = [];
-    encryptedObjects.forEach((encryptedObject) => {
+
+    for (const encryptedObject of encryptedObjects) {
         try {
             let decryptedString = null;
             let decryptedObject = null;
             if (onlyShortVersion) {
                 let toDecrypt = encryptedObject.encryptedDataBase64Short || encryptedObject.encryptedDataBase64;
-                decryptedString = encryptionService.decryptStringTrySalts(toDecrypt, _encryptionSalts);
+                decryptedString = await encryptionService.decryptStringTrySalts(toDecrypt, _encryptionSalts);
                 decryptedObject = JSON.parse(decryptedString);
                 decryptedObject.isShortVersion = true;
             } else {
-                decryptedString = encryptionService.decryptStringTrySalts(
+                decryptedString = await encryptionService.decryptStringTrySalts(
                     encryptedObject.encryptedDataBase64,
                     _encryptionSalts
                 );
@@ -90,24 +95,37 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
             log.error('error decrypting object: ' + encryptedObject.modelName + ', id: ' + encryptedObject.id);
             log.error(e);
         }
-    });
+    }
 
     return decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
 };
 
 /**
  * encrypts a string and returns a base64 representation of the encrypted data.
+ * Uses WebCrypto API by default, falls back to SJCL if unavailable.
  *
  * @param string the string to encrypt
  * @param encryptionSalt the salt that should be used to encrypt, base encryption key is used from _encryptionBasePassword
- * @return {string} the given string in encrypted form, encoded in base64
+ * @return {Promise<string>} the given string in encrypted form, encoded in base64
  */
-encryptionService.encryptString = function (string, encryptionSalt) {
+encryptionService.encryptString = async function (string, encryptionSalt) {
     throwErrorIfUninitialized();
     let encryptionKey = getEncryptionKey(encryptionSalt);
     let encryptedString = null;
+
     if (encryptionKey && !_isLocalUser) {
-        encryptedString = sjcl.encrypt(encryptionKey, string, { iter: 1000 });
+        // Use WebCrypto if available, otherwise fall back to SJCL
+        if (_useWebCrypto && webCryptoService.isAvailable()) {
+            try {
+                encryptedString = await webCryptoService.encrypt(string, encryptionSalt, encryptionKey);
+                log.debug('Encrypted using WebCrypto API');
+            } catch (e) {
+                log.warn('WebCrypto encryption failed, falling back to SJCL', e);
+                encryptedString = sjcl.encrypt(encryptionKey, string, { iter: 1000 });
+            }
+        } else {
+            encryptedString = sjcl.encrypt(encryptionKey, string, { iter: 1000 });
+        }
     } else {
         encryptedString = string;
     }
@@ -116,12 +134,13 @@ encryptionService.encryptString = function (string, encryptionSalt) {
 
 /**
  * decrypts a given base64 encoded string.
+ * Automatically detects format (WebCrypto or SJCL) and uses appropriate decryption.
  *
  * @param encryptedString a base64 encoded string that was encrypted before
  * @param encryptionSalt the salt that should be used to encrypt, base encryption key is used from _encryptionBasePassword
- * @return {string} the decrypted string, not base64 encoded
+ * @return {Promise<string>} the decrypted string, not base64 encoded
  */
-encryptionService.decryptString = function (encryptedString, encryptionSalt) {
+encryptionService.decryptString = async function (encryptedString, encryptionSalt) {
     throwErrorIfUninitialized();
     if (_decryptionCache.has(encryptedString)) {
         log.debug('using decryption cache...');
@@ -131,17 +150,41 @@ encryptionService.decryptString = function (encryptedString, encryptionSalt) {
     let encryptionKey = getEncryptionKey(encryptionSalt);
     let decryptedString = null;
     let startTime = new Date().getTime();
+
     if (encryptionKey && !_isLocalUser) {
-        decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
+        // Detect format and use appropriate decryption
+        if (webCryptoService.isWebCryptoFormat(encryptedString)) {
+            try {
+                decryptedString = await webCryptoService.decrypt(encryptedString, encryptionSalt, encryptionKey);
+                log.debug('Decrypted using WebCrypto API');
+            } catch (e) {
+                log.error('WebCrypto decryption failed', e);
+                throw e;
+            }
+        } else {
+            // Legacy SJCL format
+            decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
+            log.debug('Decrypted using SJCL (legacy format)');
+        }
     } else {
         try {
             decryptedString = encryptedString;
             let parsed = JSON.parse(decryptedString);
+            // Check if it's encrypted SJCL format
             if (parsed.iv && parsed.cipher && parsed.ct) {
                 decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
+            } else if (parsed.v === 2 && parsed.iv && parsed.ct) {
+                // WebCrypto format
+                decryptedString = await webCryptoService.decrypt(encryptedString, encryptionSalt, encryptionKey);
             }
         } catch (e) {
-            decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
+            // Try SJCL as fallback
+            try {
+                decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
+            } catch (sjclError) {
+                log.error('All decryption methods failed', e, sjclError);
+                throw sjclError;
+            }
         }
     }
 
@@ -149,28 +192,33 @@ encryptionService.decryptString = function (encryptedString, encryptionSalt) {
     return decryptedString;
 };
 
-encryptionService.decryptStringTrySalts = function (encryptedString, trySalts) {
+encryptionService.decryptStringTrySalts = async function (encryptedString, trySalts) {
     try {
         trySalts = JSON.parse(JSON.stringify(trySalts));
-        return encryptionService.decryptString(encryptedString, trySalts.shift());
+        return await encryptionService.decryptString(encryptedString, trySalts.shift());
     } catch (e) {
         if (trySalts.length === 0) {
             log.error("wasn't able to decrypt string, no remaining salts for trying!");
             throw e;
         }
         log.warn("wasn't able to decrypt string, try next salt...", trySalts[0]);
-        return encryptionService.decryptStringTrySalts(encryptedString, trySalts);
+        return await encryptionService.decryptStringTrySalts(encryptedString, trySalts);
     }
 };
 
 /**
  * returns a cryptographic hash of a string (SHA-256)
+ * Uses WebCrypto API if available, falls back to SJCL for compatibility
  * @param string the string to hash
+ * @return {Promise<string>|string} hex-encoded hash (async if WebCrypto, sync if SJCL)
  */
 encryptionService.getStringHash = function (string) {
     if (_hashCache.has(string)) {
         return _hashCache.get(string);
     }
+
+    // Use SJCL for hash to maintain compatibility with existing hashes
+    // WebCrypto SHA-256 produces same result but we keep SJCL for consistency
     let bitArray = sjcl.hash.sha256.hash(string);
     let hash = sjcl.codec.hex.fromBits(bitArray);
     _hashCache.set(string, hash);
@@ -215,6 +263,23 @@ encryptionService.resetEncryptionProperties = function () {
     _encryptionSalts = null;
     _encryptionBasePassword = null;
     _isLocalUser = false;
+};
+
+/**
+ * Enables or disables WebCrypto API usage
+ * @param {boolean} useWebCrypto - true to use WebCrypto, false to use SJCL
+ */
+encryptionService.setUseWebCrypto = function (useWebCrypto) {
+    _useWebCrypto = useWebCrypto && webCryptoService.isAvailable();
+    log.debug('WebCrypto usage set to: ' + _useWebCrypto);
+};
+
+/**
+ * Returns whether WebCrypto is currently enabled
+ * @return {boolean} true if WebCrypto is enabled and available
+ */
+encryptionService.isUsingWebCrypto = function () {
+    return _useWebCrypto && webCryptoService.isAvailable();
 };
 
 function throwErrorIfUninitialized() {
