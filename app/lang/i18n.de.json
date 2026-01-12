@@ -1184,6 +1184,7 @@
   "testElementLabel": "Label des Test-Elements",
   "testElement": "Test-Element",
   "gridElement": "Grid-Element",
+  "grid": "Grid",
   "quickSettings": "Schnelleinstellungen",
   "setToDefaultSettings": "Standardeinstellungen setzen",
   "setToDefaultSettingsBgColored": "Auf farbigen Hintergrund setzen",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Matrix Messenger konfigurieren",
   "ifNoUserCreateMatrixAccount": "Wenn du keinen Matrix-Account hast, kannst du dich auf {link} registrieren.",
   "newMatrixConversation": "Neuer Matrix Messenger",
-  "newChildPlaceholder": "Neuer Platzhalter für Grids",
-  "childGrid": "Anderes Grid",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Matrix Messenger Aktion",
   "MATRIX_SEND_COLLECTED": "Gesammelte Phrase senden (Text + Bild)",
   "MATRIX_SEND_COLLECTED_TEXT": "Gesammelte Phrase senden (nur Text)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Ausgewählte Podcasts",
   "hideKeyboards": "Keyboards ausblenden",
   "automaticallyAddImages": "Bilder automatisch hinzufügen",
-  "showAllElements": "Alle Elemente anzeigen"
+  "showAllElements": "Alle Elemente anzeigen",
+  "firstRowHeightFactor": "Height factor for first row"
 }
