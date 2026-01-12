@@ -551,4 +551,17 @@ util.isOnlyEmojis = function(str) {
     return matches.join('') === str; // If the matched emojis fully cover the input string, return true
 }
 
+/**
+ * limits a value to the given bounds
+ * @param value
+ * @param min
+ * @param max
+ * @param defaultValue
+ * @returns {number}
+ */
+util.limitValue = function(value, min, max, defaultValue) {
+    value = Number.isFinite(value) ? value : defaultValue;
+    return Math.min(Math.max(value, min), max);
+}
+
 export { util };

@@ -20,6 +20,10 @@
                             <label for="gridCols" class="seven columns">{{ $t('minimumNumberOfColumns') }}</label>
                             <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" :max="gridLayoutUtil.MAX_GRID_SIZE"/>
                         </div>
+                        <div class="srow" v-if="metadata">
+                            <label for="metadataHeight" class="seven columns">{{ $t('firstRowHeightFactor') }}</label>
+                            <input id="metadataHeight" type="number" class="three columns" v-model.number="metadata.firstRowHeightFactor" min="0.1" max="2" step="0.1"/>
+                        </div>
                         <div v-if="!isGlobalGrid">
                             <h2>{{ $t('globalGrid') }}</h2>
                             <div class="srow">
@@ -107,11 +111,9 @@
             }
         },
         async mounted() {
-            if (this.isGlobalGrid) {
-                dataService.getMetadata().then(metadata => {
-                    this.metadata = JSON.parse(JSON.stringify(metadata));
-                });
-            }
+            dataService.getMetadata().then(metadata => {
+                this.metadata = JSON.parse(JSON.stringify(metadata));
+            });
             this.allGrids = (await dataService.getGrids(false))
                 .sort((a, b) => i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label)));
         }
