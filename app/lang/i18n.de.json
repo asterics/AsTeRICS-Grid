@@ -1307,8 +1307,8 @@
   "configureMatrixMessenger": "Matrix Messenger konfigurieren",
   "ifNoUserCreateMatrixAccount": "Wenn du keinen Matrix-Account hast, kannst du dich auf {link} registrieren.",
   "newMatrixConversation": "Neuer Matrix Messenger",
-  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
-  "dynamicGrid": "Dynamic Grid",
+  "newDynamicGridPlaceholder": "Neuer Platzhalter für dynamisches Grid",
+  "dynamicGrid": "Dynamisches Grid",
   "GridActionMatrix": "Matrix Messenger Aktion",
   "MATRIX_SEND_COLLECTED": "Gesammelte Phrase senden (Text + Bild)",
   "MATRIX_SEND_COLLECTED_TEXT": "Gesammelte Phrase senden (nur Text)",
@@ -1331,5 +1331,5 @@
   "hideKeyboards": "Keyboards ausblenden",
   "automaticallyAddImages": "Bilder automatisch hinzufügen",
   "showAllElements": "Alle Elemente anzeigen",
-  "firstRowHeightFactor": "Height factor for first row"
+  "firstRowHeightFactor": "Faktor für Höhe der ersten Zeile"
 }
