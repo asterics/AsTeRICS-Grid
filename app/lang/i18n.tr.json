@@ -1184,6 +1184,7 @@
   "testElementLabel": "Test öğesi etiketi",
   "testElement": "Test Öğesi",
   "gridElement": "Izgara öğesi",
+  "grid": "Grid",
   "quickSettings": "Hızlı ayarlar",
   "setToDefaultSettings": "Varsayılan ayarlara dön",
   "setToDefaultSettingsBgColored": "Arka plan renkli olarak ayarla",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Configure matrix messenger",
   "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password.",
   "newMatrixConversation": "New matrix messenger",
-  "newChildPlaceholder": "New child grid placeholder",
-  "childGrid": "Child Grid",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Matrix messenger action",
   "MATRIX_SEND_COLLECTED": "Send collected phrase (text + image)",
   "MATRIX_SEND_COLLECTED_TEXT": "Send collected phrase (text only)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
   "automaticallyAddImages": "Automatically add images",
-  "showAllElements": "show all elements"
+  "showAllElements": "show all elements",
+  "firstRowHeightFactor": "Height factor for first row"
 }
