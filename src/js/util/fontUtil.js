@@ -1,4 +1,5 @@
 import { MapCache } from './MapCache';
+import {constants} from './constants';
 
 var fontUtil = {};
 var lastSize = '20px';
@@ -167,7 +168,7 @@ fontUtil.getHighContrastColor = function(hexBackground, lightColor, darkColor) {
         return '';
     }
     lightColor = lightColor || constants.COLORS.WHITE;
-    darkColor = darkColor || constants.colors.BLACK;
+    darkColor = darkColor || constants.COLORS.BLACK;
     let rgb = hexToRgb(hexBackground);
     return fontUtil.getHighContrastColorRgb(rgb, lightColor, darkColor);
 };

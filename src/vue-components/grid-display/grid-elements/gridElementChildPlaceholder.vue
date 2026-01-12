@@ -1,6 +1,6 @@
 <template>
     <div class="child-placeholder">
-        <span>{{ $t('childGrid') }}</span>
+        <span>{{ $t('dynamicGrid') }}</span>
     </div>
 </template>
 
