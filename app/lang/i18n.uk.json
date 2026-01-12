@@ -1184,6 +1184,7 @@
   "testElementLabel": "Тестова мітка елемента",
   "testElement": "Тестовий елемент",
   "gridElement": "Елемент сітки",
+  "grid": "Grid",
   "quickSettings": "Швидкі налаштування",
   "setToDefaultSettings": "Встановити налаштування за замовчуванням",
   "setToDefaultSettingsBgColored": "Встановити у фоновий колір",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Налаштування Matrix мессенджера",
   "ifNoUserCreateMatrixAccount": "Якщо у вас немає облікового запису Matrix, ви можете зареєструватися за адресою {link}. Вам потрібно зареєструватися, використовуючи ім'я користувача та пароль.",
   "newMatrixConversation": "Новий месенджер Matrix",
-  "newChildPlaceholder": "New child grid placeholder",
-  "childGrid": "Child Grid",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Дія месенджера Matrix",
   "MATRIX_SEND_COLLECTED": "Надіслати зібрану фразу (текст + зображення)",
   "MATRIX_SEND_COLLECTED_TEXT": "Надіслати зібрану фразу (лише текст)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Вибрані подкасти",
   "hideKeyboards": "Приховати клавіатуру",
   "automaticallyAddImages": "Автоматично додавати зображення",
-  "showAllElements": "show all elements"
+  "showAllElements": "show all elements",
+  "firstRowHeightFactor": "Height factor for first row"
 }
