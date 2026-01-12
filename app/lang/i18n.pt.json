@@ -1184,6 +1184,7 @@
   "testElementLabel": "Texto da etiqueta",
   "testElement": "Texto da célula",
   "gridElement": "Célula",
+  "grid": "Grid",
   "quickSettings": "Definições rápidas",
   "setToDefaultSettings": "Definir como padrão",
   "setToDefaultSettingsBgColored": "Definir como cor de fundo",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Configurar o Matrix Messenger",
   "ifNoUserCreateMatrixAccount": "Se não tem uma conta matrix messenger, pode registar-se em {link}. Tem que registar-se com um nome de utilizador e uma senha.",
   "newMatrixConversation": "Novo matrix messenger",
-  "newChildPlaceholder": "Novo marcador de tabela filha",
-  "childGrid": "Tabela filha",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Ação matrix messenger",
   "MATRIX_SEND_COLLECTED": "Enviar a frase (texto + imagem)",
   "MATRIX_SEND_COLLECTED_TEXT": "Enviar a frase (apenas texto)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Podcasts selecionados",
   "hideKeyboards": "Ocultar teclados",
   "automaticallyAddImages": "Adicionar imagens automaticamente",
-  "showAllElements": "mostrar todas as células"
+  "showAllElements": "mostrar todas as células",
+  "firstRowHeightFactor": "Height factor for first row"
 }
