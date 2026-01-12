@@ -21,6 +21,10 @@ stateService.setCurrentGrid = function (gridData) {
     _currentGrid = gridData;
 };
 
+stateService.getCurrentGrid = function() {
+    return _currentGrid;
+};
+
 stateService.setGlobalGrid = function (gridData) {
     _currentGlobalGrid = gridData;
 };
