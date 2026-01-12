@@ -1,5 +1,5 @@
 <template>
-    <div role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
+    <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
          border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
@@ -64,6 +64,9 @@ export default {
             if (!this.metadata || !this.element) {
                 return '';
             }
+            if (this.element.type === GridElement.ELEMENT_TYPE_UI_FILLER) {
+                return constants.COLORS.TRANSPARENT;
+            }
             if (this.element.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER) {
                 return constants.COLORS.TRANSPARENT;
             }
@@ -98,6 +101,10 @@ export default {
         getBorderColor(element) {
             if (!this.metadata || !this.metadata.colorConfig) {
                 return constants.COLORS.GRAY;
+            }
+
+            if (this.element.type === GridElement.ELEMENT_TYPE_UI_FILLER) {
+                return constants.COLORS.TRANSPARENT;
             }
 
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {

@@ -313,17 +313,18 @@
                 this.unmarkAll();
             },
             async newElement(type, useInteractionPos) {
+                let interactionPosToUse = useInteractionPos && this.lastInteraction && this.lastInteraction.x !== undefined ? this.lastInteraction : null;
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
-                    this.newPosition = useInteractionPos && this.lastInteraction.x !== undefined ? this.lastInteraction : null;
+                    this.newPosition = interactionPosToUse;
                     this.showEditModal = true;
                 } else {
                     let showEdit = false;
                     let newPos = new GridData(this.gridData).getNewXYPos();
                     let baseProperties = {
                         type: type,
-                        x: newPos.x,
-                        y: newPos.y
+                        x: interactionPosToUse ? interactionPosToUse.x : newPos.x,
+                        y: interactionPosToUse ? interactionPosToUse.y : newPos.y
                     };
                     let newElement = new GridElement(baseProperties);
                     if (type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
@@ -343,10 +344,10 @@
                     } else if (type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
                         newElement = new GridElementMatrixConversation(baseProperties);
                     } else if (type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER) {
-                        newElement.x = 0;
-                        newElement.y = gridUtil.getHeightWithBounds(this.gridData);
-                        newElement.width = gridUtil.getWidthWithBounds(this.gridData);
-                        newElement.height = 5;
+                        newElement = gridLayoutUtil.increaseElement(this.gridData.gridElements, newElement, {
+                            gridWidth: this.gridData.minColumnCount,
+                            gridHeight: this.gridData.rowCount
+                        });
                     }
                     newElement = JSON.parse(JSON.stringify(newElement));
                     this.gridData.gridElements.push(newElement);
@@ -950,9 +951,10 @@
 
         function handleContextMenu(key, elementId, origin) {
             elementId = elementId || vueApp.markedElementIds[0];
+            let createdWithinGrid = origin !== ORIGIN_MORE_BTN;
             switch (key) {
                 case CONTEXT_NEW_SINGLE: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL, origin !== ORIGIN_MORE_BTN);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_MASS: {
@@ -960,27 +962,27 @@
                     break;
                 }
                 case CONTEXT_NEW_COLLECT: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_PREDICT: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_PREDICTION);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_PREDICTION, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_YT_PLAYER: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_LIVE: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_LIVE);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_LIVE, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_MATRIX_CONVERSATION: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_CHILD_PLACEHOLDER: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_COPY_ALL: {
