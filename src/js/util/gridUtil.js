@@ -570,12 +570,15 @@ gridUtil.adaptFirstRowHeight = function(grid, firstRowHeightFactor = 1) {
     let factorProp = util.limitValue(firstRowHeightFactor, 0.1, 2, 1);
     firstRowHeightFactor = Math.round(baseHeightFactor * factorProp);
     let firstRowElems = grid.gridElements.filter(e => e.y === 0);
-    let otherElems = grid.gridElements.filter(e => e.y !== 0);
+    let maxFirstRowHeight = firstRowElems.reduce((total, elem) => Math.max(total, elem.height), 0) || 1;
+    firstRowElems = grid.gridElements.filter(e => e.y + e.height <= maxFirstRowHeight);
+    let otherElems = grid.gridElements.filter(e => !firstRowElems.includes(e));
     if (firstRowElems.length > 0 && factorProp !== 1) {
         let maxFirstHeight = Math.max(...firstRowElems.map(e => e.height));
         let otherOffset = (firstRowHeightFactor - baseHeightFactor) * maxFirstHeight;
         for (let elem of firstRowElems) {
             elem.height *= firstRowHeightFactor;
+            elem.y *= firstRowHeightFactor;
         }
         for (let elem of otherElems) {
             elem.height *= baseHeightFactor;
