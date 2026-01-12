@@ -1184,6 +1184,7 @@
   "testElementLabel": "Text per a vista prèvia",
   "testElement": "Text prova",
   "gridElement": "Cel·la",
+  "grid": "Grid",
   "quickSettings": "Configuració ràpida",
   "setToDefaultSettings": "Ajustaments per defecte",
   "setToDefaultSettingsBgColored": "Color de fons personalitzat",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Configurar Matrix Messenger",
   "ifNoUserCreateMatrixAccount": "Si no tens un compte  a Matrix Messenger, pots registrar-te seguint aquest enllaç {link}. (IMPORTANT) Has de registrar-te utilitzant un nom d'usuari i una contrasenya. No utilitzar registre mitjançant botó de Google.",
   "newMatrixConversation": "Nou xat a Matrix Messenger",
-  "newChildPlaceholder": "New child grid placeholder",
-  "childGrid": "Child Grid",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Acció de Matrix Messenger",
   "MATRIX_SEND_COLLECTED": "Enviar frase acumulada (text + imatge)",
   "MATRIX_SEND_COLLECTED_TEXT": "Enviar frase acumulada (text + imatge)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Podcasts seleccionats",
   "hideKeyboards": "Amagar teclats",
   "automaticallyAddImages": "Afegir imatges automàticament",
-  "showAllElements": "Mostrar totes les cel·les"
+  "showAllElements": "Mostrar totes les cel·les",
+  "firstRowHeightFactor": "Height factor for first row"
 }
