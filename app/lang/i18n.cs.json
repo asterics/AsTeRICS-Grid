@@ -1184,6 +1184,7 @@
   "testElementLabel": "Popisek testovacího prvku",
   "testElement": "Testovací prvek",
   "gridElement": "Prvek tabulky",
+  "grid": "Grid",
   "quickSettings": "Rychlé nastavení",
   "setToDefaultSettings": "Nastavit na výchozí hodnoty",
   "setToDefaultSettingsBgColored": "Použít barevné pozadí",
@@ -1306,6 +1307,8 @@
   "configureMatrixMessenger": "Configure matrix messenger",
   "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password.",
   "newMatrixConversation": "New matrix messenger",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Matrix messenger action",
   "MATRIX_SEND_COLLECTED": "Odeslat shromážděné fráze (text + obrázek)",
   "MATRIX_SEND_COLLECTED_TEXT": "Odeslat shromážděné fráze (pouze text)",
@@ -1327,5 +1330,6 @@
   "selectedPodcasts": "Vybrané podcasty",
   "hideKeyboards": "Skrýt klávesnici",
   "automaticallyAddImages": "Automatically add images",
-  "showAllElements": "show all elements"
+  "showAllElements": "show all elements",
+  "firstRowHeightFactor": "Height factor for first row"
 }
