@@ -1184,6 +1184,7 @@
   "testElementLabel": "Texto para vista previa",
   "testElement": "Texto Prueba",
   "gridElement": "Celda",
+  "grid": "Grid",
   "quickSettings": "Ajustes rápidos",
   "setToDefaultSettings": "Ajustes por defecto",
   "setToDefaultSettingsBgColored": "Celda coloreada",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Configurar Matrix Messenger",
   "ifNoUserCreateMatrixAccount": "Si no tienes una cuenta en Matrix Messenger, puedes registrarte siguiendo este enlace {link}. (IMPORTANTE) Tienes que registrarte usando un nombre de usuario y una contraseña. No usar registro mediante botón de Google.",
   "newMatrixConversation": "Nuevo chat en Matrix Messenger",
-  "newChildPlaceholder": "Organizador de cuadrícula de niño",
-  "childGrid": "Cuadricula de niño",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Acción de Matrix Messenger",
   "MATRIX_SEND_COLLECTED": "Enviar frase acumulada (texto + imagen)",
   "MATRIX_SEND_COLLECTED_TEXT": "Enviar frase acumulada (sólo texto)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Podcasts seleccionados",
   "hideKeyboards": "Ocultar teclados",
   "automaticallyAddImages": "Añadir imágenes automáticamente",
-  "showAllElements": "mostrar todas las celdas"
+  "showAllElements": "mostrar todas las celdas",
+  "firstRowHeightFactor": "Height factor for first row"
 }
