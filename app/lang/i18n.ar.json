@@ -1184,6 +1184,7 @@
   "testElementLabel": "تحويل تسميات العناصر",
   "testElement": "عنصر جديد",
   "gridElement": "عنصر الشبكة",
+  "grid": "Grid",
   "quickSettings": "الإعدادات السريعة",
   "setToDefaultSettings": "تعيين إلى الإعدادات الافتراضية",
   "setToDefaultSettingsBgColored": "طباعة لون الخلفية",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Configure matrix messenger",
   "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password.",
   "newMatrixConversation": "New matrix messenger",
-  "newChildPlaceholder": "New child grid placeholder",
-  "childGrid": "Child Grid",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Matrix messenger action",
   "MATRIX_SEND_COLLECTED": "إرسال العبارة المجمعة (نص + صورة)",
   "MATRIX_SEND_COLLECTED_TEXT": "إرسال العبارة المجمعة (النص فقط)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
   "automaticallyAddImages": "أضف صور تِلْقائيًا",
-  "showAllElements": "show all elements"
+  "showAllElements": "show all elements",
+  "firstRowHeightFactor": "Height factor for first row"
 }
