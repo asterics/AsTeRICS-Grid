@@ -1184,6 +1184,7 @@
   "testElementLabel": "Метка тестового элемента",
   "testElement": "Тестовый элемент",
   "gridElement": "Элемент сетки",
+  "grid": "Grid",
   "quickSettings": "Быстрые настройки",
   "setToDefaultSettings": "Установить настройки по умолчанию",
   "setToDefaultSettingsBgColored": "Установить цвет фона",
@@ -1306,8 +1307,8 @@
   "configureMatrixMessenger": "Настроить Matrix мессенджер",
   "ifNoUserCreateMatrixAccount": "Если у вас нет учетной записи Matrix, вы можете зарегистрироваться по ссылке {link}. Вам необходимо зарегистрироваться, используя имя пользователя и пароль.",
   "newMatrixConversation": "Новый Matrix мессенджер",
-  "newChildPlaceholder": "New child grid placeholder",
-  "childGrid": "Child Grid",
+  "newDynamicGridPlaceholder": "New dynamic grid placeholder",
+  "dynamicGrid": "Dynamic Grid",
   "GridActionMatrix": "Действие мессенджера Matrix",
   "MATRIX_SEND_COLLECTED": "Отправить собранную фразу (текст + изображение)",
   "MATRIX_SEND_COLLECTED_TEXT": "Отправить собранную фразу (только текст)",
@@ -1329,5 +1330,6 @@
   "selectedPodcasts": "Выбранные подкасты",
   "hideKeyboards": "Скрыть клавиатуры",
   "automaticallyAddImages": "Автоматически добавлять изображения",
-  "showAllElements": "show all elements"
+  "showAllElements": "show all elements",
+  "firstRowHeightFactor": "Height factor for first row"
 }
