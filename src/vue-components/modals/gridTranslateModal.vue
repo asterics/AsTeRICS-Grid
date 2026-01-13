@@ -401,14 +401,4 @@
         margin-bottom: 0.5em;
     }
 
-    .input-button {
-        position: absolute;
-        right: 0;
-        height: 100%;
-        line-height: initial;
-        margin: 0;
-        padding: 0 1em;
-        box-shadow: none;
-        background-color: transparent;
-    }
 </style>
