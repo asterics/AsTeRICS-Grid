@@ -264,6 +264,8 @@ async function doAction(gridElement, action, options = {}) {
             await i18nService.setContentLanguage(language);
             let voiceConfig = localStorageService.getUserSettings().voiceConfig;
             voiceConfig.preferredVoice = action.voice;
+            voiceConfig.voicePitch = action.voicePitch || voiceConfig.voicePitch || 1;
+            voiceConfig.voiceRate = action.voiceRate || voiceConfig.voiceRate || 1;
             localStorageService.saveUserSettings({voiceConfig: voiceConfig});
             break;
         case 'GridActionVocabLevelToggle':
