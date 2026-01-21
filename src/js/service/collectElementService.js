@@ -617,12 +617,19 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         if (label && collectElementService.isCurrentGridKeyboard()) {
             if (convertToLowercaseIfKeyboard) {
                 label = label.toLowerCase();
+                setLabel(element, label);
             }
-            let lastElem = getLastElement();
-            if (lastElem && lastElem.onlyText) {
-                setLabel(lastElem, getLabel(lastElem) + label);
+            // Check if element has word forms - if so, keep as full element to preserve them
+            if (element.wordForms && element.wordForms.length > 0) {
+                collectedElements.push(element);
             } else {
-                addTextElem(label);
+                // No word forms, use simpler text-only approach for performance
+                let lastElem = getLastElement();
+                if (lastElem && lastElem.onlyText) {
+                    setLabel(lastElem, getLabel(lastElem) + label);
+                } else {
+                    addTextElem(label);
+                }
             }
         } else if (label || image || printText) {
             collectedElements.push(element);
