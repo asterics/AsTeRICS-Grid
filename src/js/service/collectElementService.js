@@ -478,6 +478,20 @@ function setLabel(element, newLabel) {
     if (!element || !element.label) {
         return;
     }
+
+    // Apply automatic capitalization when setting label
+    // Check if this is an append operation by comparing with current label
+    let currentLabel = getLabel(element);
+    if (currentLabel && newLabel && newLabel.startsWith(currentLabel)) {
+        // This is an append operation, apply capitalization to the appended part
+        let appendedText = newLabel.substring(currentLabel.length);
+        let capitalizedAppended = applyAutoCapitalization(appendedText, true);
+        newLabel = currentLabel + capitalizedAppended;
+    } else {
+        // This is a replacement, apply capitalization to the whole text
+        newLabel = applyAutoCapitalization(newLabel, false);
+    }
+
     element.label[i18nService.getContentLang()] = newLabel;
 }
 
@@ -559,7 +573,143 @@ function getPrintTextOfElement(element) {
     return textObject && textObject.text ? textObject.text : '';
 }
 
+/**
+ * Applies automatic capitalization rules to text based on the current state of collected elements
+ * @param {string} text - The text to potentially capitalize
+ * @param {boolean} isAppending - Whether this text is being appended to existing text
+ * @returns {string} - The text with appropriate capitalization applied
+ */
+function applyAutoCapitalization(text, isAppending = false) {
+    if (!text || typeof text !== 'string') {
+        return text;
+    }
+
+    // Get the current full text to determine context
+    let currentText = getPrintText({ trim: false });
+    // If this is the very first text (empty collect element), capitalize first letter
+    if (!currentText.trim() && !isAppending) {
+        return capitalizeFirstLetter(text);
+    }
+
+    // If appending to existing text, check if we need sentence capitalization
+    if (isAppending && currentText) {
+        return applySentenceCapitalization(currentText, text);
+    }
+
+    // For new text elements, check if previous text ends with sentence punctuation
+    if (!isAppending && currentText) {
+        let trimmedCurrent = currentText.trim();
+        if (trimmedCurrent && /[.!?]$/.test(trimmedCurrent)) {
+            return capitalizeFirstLetter(text);
+        }
+    }
+
+    return text;
+}
+
+/**
+ * Capitalizes the first alphabetic character in a string
+ * @param {string} text - The text to capitalize
+ * @returns {string} - The text with first letter capitalized
+ */
+function getLocaleForCapitalization() {
+    if (i18nService && typeof i18nService.getContentLang === 'function') {
+        let locale = i18nService.getContentLang();
+        return locale || undefined;
+    }
+    return undefined;
+}
+
+function isAlphabeticCharacter(char, locale) {
+    if (!char) {
+        return false;
+    }
+    let upper = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+    let lower = locale ? char.toLocaleLowerCase(locale) : char.toLocaleLowerCase();
+    return upper !== lower;
+}
+
+function capitalizeFirstLetter(text) {
+    if (!text) {
+        return text;
+    }
+
+    let locale = getLocaleForCapitalization();
+    for (let index = 0; index < text.length;) {
+        let codePoint = text.codePointAt(index);
+        let char = String.fromCodePoint(codePoint);
+        let charLength = char.length;
+
+        if (isAlphabeticCharacter(char, locale)) {
+            let upperChar = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+            return text.slice(0, index) + upperChar + text.slice(index + charLength);
+        }
+
+        index += charLength;
+    }
+    return text;
+}
+
+/**
+ * Applies sentence capitalization when appending text
+ * @param {string} currentText - The existing text in collect elements
+ * @param {string} newText - The text being appended
+ * @returns {string} - The new text with appropriate capitalization
+ */
+function applySentenceCapitalization(currentText, newText) {
+    if (!newText) {
+        return newText;
+    }
+
+    let locale = getLocaleForCapitalization();
+    let result = newText;
+
+    if (/[.!?](\s*)$/.test(currentText)) {
+        result = capitalizeFirstLetter(result);
+    }
+
+    let transformed = '';
+    let index = 0;
+    let punctuationPending = false;
+    let whitespaceSeen = false;
+
+    while (index < result.length) {
+        let codePoint = result.codePointAt(index);
+        let char = String.fromCodePoint(codePoint);
+        let charLength = char.length;
+
+        if (punctuationPending) {
+            if (/\s/.test(char)) {
+                whitespaceSeen = true;
+                transformed += char;
+            } else if (whitespaceSeen && isAlphabeticCharacter(char, locale)) {
+                let upperChar = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+                transformed += upperChar;
+                punctuationPending = false;
+                whitespaceSeen = false;
+            } else {
+                transformed += char;
+                punctuationPending = false;
+                whitespaceSeen = false;
+            }
+        } else {
+            transformed += char;
+            if (/[.!?]/.test(char)) {
+                punctuationPending = true;
+                whitespaceSeen = false;
+            }
+        }
+
+        index += charLength;
+    }
+
+    return transformed;
+}
+
 function addTextElem(text) {
+    // Apply automatic capitalization
+    text = applyAutoCapitalization(text, false);
+
     let newElem = new GridElement({
         label: i18nService.getTranslationObject(text)
     });
@@ -625,7 +775,18 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
                 addTextElem(label);
             }
         } else if (label || image || printText) {
-            collectedElements.push(element);
+            // For normal (symbol) elements, apply contextual capitalization non-destructively
+            // by setting a temporary fixedGrammarText used only in the collect bar rendering/speaking
+            let baseText = printText || label || '';
+            let capitalized = applyAutoCapitalization(baseText, false);
+            if (capitalized !== baseText) {
+                // Avoid mutating the original grid element: push a shallow JSON copy
+                let elementCopy = JSON.parse(JSON.stringify(element));
+                elementCopy.fixedGrammarText = capitalized;
+                collectedElements.push(elementCopy);
+            } else {
+                collectedElements.push(element);
+            }
         }
         triggerPredict();
     } else if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
