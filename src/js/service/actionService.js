@@ -182,9 +182,7 @@ async function doAction(gridElement, action, options = {}) {
                     stateService.addWordFormTags(action.tags, action.toggle);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
-                    stateService.resetWordFormIds(gridElement);
-                    stateService.addWordFormTags(action.tags, action.toggle);
-                    collectElementService.addWordFormTagsToLast(action.tags, action.toggle, gridElement.dontCollect ? null : gridElement.id);
+                    collectElementService.addWordFormTagsToLast(action.tags, action.toggle, gridElement.id);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
                     stateService.resetWordFormIds(gridElement);
