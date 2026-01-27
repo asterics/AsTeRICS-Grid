@@ -99,6 +99,8 @@ constants.PODCAST_LAST_VOLUME_KEY = 'PODCAST_LAST_VOLUME_KEY';
 constants.GRIDSET_FOLDER = 'app/gridsets/';
 constants.BOARDS_REPO_BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
 
+constants.KNOWN_CORS_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
+
 constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
