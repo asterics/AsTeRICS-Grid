@@ -119,7 +119,7 @@ jobs:
           host: ${{ secrets.IONOS_SSH_HOST }}
           username: ${{ secrets.IONOS_SSH_USER }}
           password: ${{ secrets.IONOS_SSH_PASS }}
-          source: "app/,serviceWorker.js,unsupported.html,index.html"
+          source: "app/,serviceWorker.js,serviceWorkerCachePaths.js,unsupported.html,index.html"
           target: "${{ steps.prepare_path.outputs.remote_path }}"
           
       # Step 8: Log the deployment URL.
