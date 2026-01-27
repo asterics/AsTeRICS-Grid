@@ -8,6 +8,7 @@ constants.SW_EVENT_REQ_CACHE = 'SW_EVENT_REQ_CACHE';
 constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
+constants.KNOWN_CORS_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
 
 if (!workbox) {
     console.log("Workbox in service worker failed to load!");
@@ -16,6 +17,54 @@ self.__WB_DISABLE_DEV_LOGS = true;
 /*workbox.setConfig({
     debug: true
 });*/
+
+const strategyNormalCacheFirst = new workbox.strategies.CacheFirst();
+
+const strategyImageCacheFirstCors = new workbox.strategies.CacheFirst({
+    cacheName: 'image-cache',
+    fetchOptions: {
+        mode: 'cors'
+    }
+});
+
+const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
+    cacheName: 'image-cache',
+    fetchOptions: {
+        mode: 'no-cors'
+    }
+});
+
+workbox.routing.registerRoute(({ url, request, event }) => {
+    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
+    return shouldCacheNormal(url, request);
+}, strategyNormalCacheFirst);
+
+workbox.routing.registerRoute(({ url, request, event }) => {
+    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
+    return shouldCacheStaleWhileRevalidate(url, request);
+}, new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'stale-while-revalidate-cache'
+}));
+
+workbox.routing.registerRoute(({ url, request, event }) => {
+    //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
+    const shouldCache = shouldCacheImage(url, request);
+    const isCors = isCORSImage(url);
+
+    if (shouldCache && isCors) {
+        // This console log is your best friend right now.
+        // If you don't see this while offline during a screenshot, the SW isn't helping.
+        console.log(`[SW] Intercepting CORS image: ${url.pathname} | Destination: ${request.destination}`);
+        return true;
+    }
+    console.log(`[SW] NOT Intercepting CORS image: ${url.pathname} | Destination: ${request.destination}`);
+    return false;
+}, strategyImageCacheFirstCors);
+
+workbox.routing.registerRoute(({ url, request, event }) => {
+    //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
+    return shouldCacheImage(url, request) && !isCORSImage(url);
+}, strategyImageCacheFirstNoCors);
 
 self.addEventListener('install', (event) => {
     console.log('installing service worker ...');
@@ -44,68 +93,38 @@ self.addEventListener('activate', event => {
     console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
 });
 
-self.addEventListener('message', (event) => {
+self.addEventListener('message', async (event) => {
     let msg = event.data;
-    if(!msg || msg.type !== constants.SW_EVENT_REQ_CACHE || !msg.url) {
+    if (!msg || msg.type !== constants.SW_EVENT_REQ_CACHE || !msg.url) {
         return;
     }
-    let cacheName = msg.cacheType === constants.SW_CACHE_TYPE_IMG ? 'image-cache' : workbox.core.cacheNames.runtime;
 
-    caches.open(cacheName).then(async (cache) => {
-        let responseCode = await getResponseCode(cache, msg.url);
-        let response = null;
-        if (responseCode !== 200) {
-            //console.debug(`adding ${msg.url} to cache "${cacheName}".`);
-            response = await tryFetchImage(msg.url);
-            if (!response) {
-                console.log('error fetching image, trying with no-cors');
-                response = await tryFetchImage(msg.url, 'no-cors');
-            }
-            if (!response) {
-                // probably real network error - both normal fetch and cors-fetch didn't succeed at all
-                responseCode = -1;
-            } else {
-                // if opaque response existing - assuming it succeeded (200) - cannot really check
-                // otherwise use real response status
-                responseCode = response.type === 'opaque' ? 200 : response.status;
-            }
-        }
-        if (response && responseCode === 200) {
-            await cache.put(msg.url, response);
-        }
-        sendToClients({type: constants.SW_EVENT_URL_CACHED, url: msg.url, success: responseCode === 200, responseCode: responseCode});
-    });
-});
-
-workbox.routing.registerRoute(({url, request, event}) => {
-    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
-    return shouldCacheNormal(url, request);
-}, new workbox.strategies.CacheFirst());
-
-workbox.routing.registerRoute(({url, request, event}) => {
-    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
-    return shouldCacheStaleWhileRevalidate(url, request);
-}, new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'stale-while-revalidate-cache'
-}));
-
-workbox.routing.registerRoute(({url, request, event}) => {
-    //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
-    return shouldCacheImage(url, request);
-}, new workbox.strategies.CacheFirst({
-    cacheName: 'image-cache',
-    fetchOptions: {
-        mode: 'cors',
-        credentials: 'omit'
+    let strategy = strategyNormalCacheFirst;
+    let corsMode = 'cors';
+    if (msg.cacheType === constants.SW_CACHE_TYPE_IMG) {
+        let isCors = isCORSImage(msg.url);
+        strategy = isCors ? strategyImageCacheFirstCors : strategyImageCacheFirstNoCors;
+        corsMode = isCors ? 'cors' : 'no-cors';
     }
-}));
 
-async function tryFetchImage(url, fetchMode = undefined) {
-    let response = null;
     try {
-        response = await fetch(url, { mode: fetchMode });
+        const request = new Request(msg.url, { mode: corsMode });
+        let response = await strategy.handle({ request });
+
+        console.warn('SW: cached', !!response, msg.url);
+        sendToClients({
+            type: constants.SW_EVENT_URL_CACHED,
+            url: msg.url,
+            success: !!response
+        });
+
     } catch (e) {
-        console.log('error fetching image', e.message);
+        console.warn('SW: exception in cache', e);
+        sendToClients({
+            type: constants.SW_EVENT_URL_CACHED,
+            url: msg.url,
+            success: false
+        });
     }
 });
 
@@ -132,11 +151,6 @@ function shouldCacheStaleWhileRevalidate(url, request) {
 function shouldCacheNormal(url, request) {
     let isOwnHost = url.hostname === 'grid.asterics.eu';
     return isOwnHost && !shouldCacheImage(url, request) && !shouldCacheStaleWhileRevalidate(url);
-}
-
-async function getResponseCode(cache, url) {
-    let response = await cache.match(url);
-    return response ? response.status : -1;
 }
 
 function sendToClients(msg) {
