@@ -107,13 +107,22 @@ async function tryFetchImage(url, fetchMode = undefined) {
     } catch (e) {
         console.log('error fetching image', e.message);
     }
-    return response;
+});
+
+function isCORSImage(url) {
+    url = url.href ? url.href : url; // use full URL
+    return constants.KNOWN_CORS_IMAGE_APIS.some(apiUrl => url.startsWith(apiUrl));
 }
 
 function shouldCacheImage(url, request) {
-    let isOwnHost = url.hostname === 'grid.asterics.eu';
-    let isImageRequest = request.destination === 'image';
-    return !isOwnHost && isImageRequest && !shouldCacheStaleWhileRevalidate(url);
+    const isOwnHost = url.hostname === 'grid.asterics.eu';
+    const isImageExtension = /\.(png|jpg|jpeg|gif|webp|svg|bmp)(\?.*)?$/i.test(url.href);
+    const isImageDestination = request.destination === 'image';
+    const isCorsApi = isCORSImage(url);
+
+    return !isOwnHost &&
+        (isImageExtension || isImageDestination || isCorsApi) &&
+        !shouldCacheStaleWhileRevalidate(url);
 }
 
 function shouldCacheStaleWhileRevalidate(url, request) {
