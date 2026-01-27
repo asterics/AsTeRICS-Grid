@@ -6,11 +6,13 @@ import { util } from '../util/util';
 
 let serviceWorkerService = {};
 let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
+const MAX_CACHE_RETRIES = 5;
 
 let shouldCacheElements = localStorageService.getJSON(KEY_SHOULD_CACHE_ELEMS) || [];
 let isCaching = false;
-let _retryCount = 0;
+let _retryCounts = {};
 let _messageEventListeners = [];
+let _saveCacheElementsSavedAnyTime = false;
 
 serviceWorkerService.cacheUrl = function (url) {
     addCacheElem(url, constants.SW_CACHE_TYPE_GENERIC);
@@ -54,26 +56,28 @@ function init() {
             let msg = evt.data;
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
                 isCaching = false;
-                if (msg.success || msg.responseCode === 404 || msg.responseCode === 403) { // assuming 404 and 403 is permanently, so also remove
-                    if (!msg.success) {
-                        log.warn('failed to cache url with status: ', msg.responseCode, msg.url, ', not trying again.');
-                    }
-                    _retryCount = 0;
+                if (msg.success) {
+                    delete _retryCounts[msg.url];
+                    log.warn("remove", msg.url);
                     removeCacheUrl(msg.url);
-                    cacheNext();
-                } else { // assuming temporary network error, so retry
-                    let waitTimeSeconds = Math.min(5 + (2 * _retryCount * _retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
-                    waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
-                    log.warn("failed to cache url: ", msg.url, msg.responseCode, ", next try in seconds: ", waitTimeSeconds);
-                    _retryCount++;
-                    util.shuffleArray(shouldCacheElements); // prevent trying permanently failing element over and over again
-                    setTimeout(() => {
-                        cacheNext();
-                    }, waitTimeSeconds * 1000);
+                } else { // caching failed
+                    _retryCounts[msg.url] = (_retryCounts[msg.url] || 0) + 1;
+                    if (_retryCounts[msg.url] <= MAX_CACHE_RETRIES) {
+                        log.warn('failed to cache url: ', msg.url);
+                        // move failed back in queue
+                        let removed = removeCacheUrl(msg.url);
+                        if (removed) {
+                            addCacheElem(removed.url, removed.type);
+                        }
+                    } else { // give up
+                        delete _retryCounts[msg.url];
+                        log.warn('failed to cache url: ', msg.url, ', not trying again.');
+                        removeCacheUrl(msg.url);
+                    }
                 }
+                cacheNext();
             }
         });
-
         cacheNext();
     }
 }
@@ -88,15 +92,28 @@ function cacheNext() {
         return;
     }
     isCaching = true;
-    shouldCacheElements = shouldCacheElements.filter((e) => !!e.url);
-    if (shouldCacheElements[0].type === constants.SW_CACHE_TYPE_IMG) {
-        $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
+
+    let nextElem = shouldCacheElements[0];
+    let waitTimeSeconds = 0;
+    let retryCount = _retryCounts[nextElem.url] || 0;
+    if (retryCount) {
+        waitTimeSeconds = Math.min(5 + (2 * retryCount * retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
+        waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
+        log.info(`waiting ${waitTimeSeconds}s before caching next element, because it failed before`, nextElem.url);
     }
-    postMessageInternal({
-        type: constants.SW_EVENT_REQ_CACHE,
-        cacheType: shouldCacheElements[0].type,
-        url: shouldCacheElements[0].url
-    });
+
+    setTimeout(() => {
+        log.warn("caching", nextElem.url, "remaining", shouldCacheElements.length);
+        if (nextElem.type === constants.SW_CACHE_TYPE_IMG) {
+            $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
+        }
+
+        postMessageInternal({
+            type: constants.SW_EVENT_REQ_CACHE,
+            cacheType: nextElem.type,
+            url: nextElem.url
+        });
+    }, waitTimeSeconds * 1000);
 }
 
 function postMessageInternal(msg) {
@@ -125,21 +142,37 @@ function getController() {
     });
 }
 
-function addCacheElem(url, type) {
-    let existingUrls = shouldCacheElements.map((e) => e.url);
-    if (existingUrls.includes(url)) {
+function addCacheElem(url = '', type) {
+    url = url.trim();
+    if (!url) {
+        return;
+    }
+    if (shouldCacheElements.find(e => e.url === url)) {
         return;
     }
     shouldCacheElements.push({
         type: type,
         url: url
     });
-    localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
+    saveCacheElements();
 }
 
-function removeCacheUrl(url) {
+function removeCacheUrl(url = '', save = true) {
+    let removedElem = shouldCacheElements.find(e => e.url === url);
     shouldCacheElements = shouldCacheElements.filter((e) => e.url !== url);
-    localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
+    saveCacheElements();
+    return removedElem;
+}
+
+function saveCacheElements() {
+    let timeout = 5000;
+    if (!_saveCacheElementsSavedAnyTime) {
+        _saveCacheElementsSavedAnyTime = true;
+        timeout = 0;
+    }
+    util.debounce(() => {
+        localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
+    }, timeout, 'SAVE_IMAGE_CACHE_ELEMENTS');
 }
 
 init();
