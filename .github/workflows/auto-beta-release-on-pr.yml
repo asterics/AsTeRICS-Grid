@@ -57,6 +57,13 @@ jobs:
           sed -i -e "s/#ASTERICS_GRID_ENV#/BETA/g" src/js/util/constants.js
           sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" src/vue-components/views/aboutView.vue
           sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" serviceWorker.js
+          
+          # Check for "serviceworker" label
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'serviceworker') }}" == "true" ]]; then
+             echo "Label 'serviceworker' found in PR! Updating constants.js..."
+             # replace "false" with "true" in the "FORCE_USE_SW" line
+             sed -i -E "s/(FORCE_USE_SW\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
+          fi
 
       # Step 4: Build the web application. This command creates the production-ready
       # files, typically in a 'build' or 'dist' directory.

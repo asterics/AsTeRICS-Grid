@@ -86,7 +86,7 @@ async function init() {
 init();
 
 function initServiceWorker() {
-    if (!constants.IS_ENVIRONMENT_PROD) {
+    if (!constants.IS_ENVIRONMENT_PROD && !constants.FORCE_USE_SW) {
         log.warn('Not installing Service Worker because on development environment.');
         return;
     }
