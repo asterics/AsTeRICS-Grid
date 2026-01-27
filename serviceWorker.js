@@ -11,7 +11,7 @@ constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
 constants.KNOWN_CORS_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
 
 if (!workbox) {
-    console.log("Workbox in service worker failed to load!");
+    console.log('Workbox in service worker failed to load!');
 }
 self.__WB_DISABLE_DEV_LOGS = true;
 /*workbox.setConfig({
@@ -74,8 +74,8 @@ self.addEventListener('install', (event) => {
         return caches.open(cacheName);
     }).then((cache) => {
         return Promise.all(
-            urls.map(function (url) {
-                return cache.add(url).catch(function (reason) {
+            urls.map(function(url) {
+                return cache.add(url).catch(function(reason) {
                     console.warn(`failed to fetch "${url}" in Service Worker.`);
                     console.warn(reason);
                     return Promise.resolve();
@@ -89,7 +89,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', event => {
     clients.claim();
-    sendToClients({type: constants.SW_EVENT_ACTIVATED, activated: true});
+    sendToClients({ type: constants.SW_EVENT_ACTIVATED, activated: true });
     console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
 });
 
