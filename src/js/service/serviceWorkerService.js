@@ -97,7 +97,7 @@ function cacheNext() {
         return;
     }
     if (!navigator.onLine) {
-        setTimeout(() => {
+        return setTimeout(() => {
             log.info('caching images: not online, so waiting 15s...');
             cacheNext();
         }, 15 * 1000);
