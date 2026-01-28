@@ -4,6 +4,7 @@ import { localStorageService } from './data/localStorageService.js';
 import $ from "../externals/jquery.js";
 import { util } from '../util/util';
 import { MainVue } from '../vue/mainVue';
+import { i18nService } from './i18nService';
 
 let serviceWorkerService = {};
 let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
@@ -140,7 +141,7 @@ function cacheNext() {
 function notifyCachingProgress() {
     _countTodo = _countTodo || shouldCacheElements.length;
     let percent = Math.min(100, Math.ceil((_countDone / _countTodo) * 100));
-    let text = `Downloading images ... ${percent}%`;
+    let text = i18nService.t("downloadingImagesWithPercent", percent);
     if (!_tooltipInfos) {
         _tooltipInfos = MainVue.setTooltip(text, {
             closeOnNavigate: false,
