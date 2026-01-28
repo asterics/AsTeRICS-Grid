@@ -6,7 +6,7 @@ const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/transl
 let startDir = path.resolve(__dirname, '../app');
 const basePath = path.resolve(__dirname, '..');   // one level above your script
 const outputFile = path.resolve(__dirname, '../serviceWorkerCachePaths.js');
-let printPaths = ['/', '/latest/', 'index.html'];
+let printPaths = ['./', '/latest/', 'index.html'];
 
 
 function traverseDir(dir) {
