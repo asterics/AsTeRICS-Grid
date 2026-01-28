@@ -54,7 +54,12 @@ function init() {
             for (let listener of _messageEventListeners) {
                 listener(evt);
             }
-            let msg = evt.data;
+            let msg = evt.data || {};
+            if (msg.type === constants.SW_EVENT_ACTIVATED && msg.activated) {
+                isCaching = false; // if one cache process from the old SW is stuck because of switching to new SW
+                cacheNext();
+                return;
+            }
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
                 isCaching = false;
                 if (msg.success) {
