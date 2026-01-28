@@ -8,7 +8,7 @@ constants.SW_EVENT_REQ_CACHE = 'SW_EVENT_REQ_CACHE';
 constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
-constants.KNOWN_CORS_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
+constants.KNOWN_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
 
 if (!workbox) {
     console.log('Workbox in service worker failed to load!');
@@ -34,6 +34,20 @@ const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
     }
 });
 
+const dynamicImageHandler = async ({ url, request, event }) => {
+    try {
+        // First Attempt: Try CORS
+        // use the CORS strategy. If the server doesn't support CORS, this throws.
+        return await strategyImageCacheFirstCors.handle({ url, request, event });
+    } catch (error) {
+        // Second Attempt: Fallback to No-CORS
+        // This creates an "opaque" response (you can't read the pixels in JS,
+        // but the <img> tag can still display it).
+        console.info(`CORS fetch failed for ${url.href}, falling back to no-cors.`);
+        return await strategyImageCacheFirstNoCors.handle({ url, request, event });
+    }
+};
+
 workbox.routing.registerRoute(({ url, request, event }) => {
     return shouldCacheNormal(url, request);
 }, strategyNormalCacheFirst);
@@ -45,18 +59,8 @@ workbox.routing.registerRoute(({ url, request, event }) => {
 }));
 
 workbox.routing.registerRoute(({ url, request, event }) => {
-    const shouldCache = shouldCacheImage(url, request);
-    const isCors = isCORSImage(url);
-
-    if (shouldCache && isCors) {
-        return true;
-    }
-    return false;
-}, strategyImageCacheFirstCors);
-
-workbox.routing.registerRoute(({ url, request, event }) => {
-    return shouldCacheImage(url, request) && !isCORSImage(url);
-}, strategyImageCacheFirstNoCors);
+    return shouldCacheImage(url, request);
+}, dynamicImageHandler);
 
 self.addEventListener('install', (event) => {
     console.log('installing service worker ...');
@@ -96,18 +100,18 @@ self.addEventListener('message', async (event) => {
     if (!msg || msg.type !== constants.SW_EVENT_REQ_CACHE || !msg.url) {
         return;
     }
-
-    let strategy = strategyNormalCacheFirst;
-    let corsMode = 'cors';
-    if (msg.cacheType === constants.SW_CACHE_TYPE_IMG) {
-        let isCors = isCORSImage(msg.url);
-        strategy = isCors ? strategyImageCacheFirstCors : strategyImageCacheFirstNoCors;
-        corsMode = isCors ? 'cors' : 'no-cors';
-    }
-
+    
     try {
-        const request = new Request(msg.url, { mode: corsMode });
-        let response = await strategy.handle({ request });
+        let response;
+        if (msg.cacheType === constants.SW_CACHE_TYPE_IMG) {
+            try {
+                response = await strategyImageCacheFirstCors.handle({ request: new Request(msg.url, { mode: 'cors' }) });
+            } catch (e) {
+                response = await strategyImageCacheFirstNoCors.handle({ request: new Request(msg.url, { mode: 'no-cors' }) });
+            }
+        } else {
+            response = await strategyNormalCacheFirst.handle({ request: new Request(msg.url) });
+        }
 
         sendToClients({
             type: constants.SW_EVENT_URL_CACHED,
@@ -124,19 +128,19 @@ self.addEventListener('message', async (event) => {
     }
 });
 
-function isCORSImage(url) {
+function isKnownImageAPI(url) {
     url = url.href ? url.href : url; // use full URL
-    return constants.KNOWN_CORS_IMAGE_APIS.some(apiUrl => url.startsWith(apiUrl));
+    return constants.KNOWN_IMAGE_APIS.some(apiUrl => url.startsWith(apiUrl));
 }
 
 function shouldCacheImage(url, request) {
     const isOwnHost = url.hostname === self.location.hostname;
     const isImageExtension = /\.(png|jpg|jpeg|gif|webp|svg|bmp)(\?.*)?$/i.test(url.href);
     const isImageDestination = request.destination === 'image';
-    const isCorsApi = isCORSImage(url);
+    const isKnownAPI = isKnownImageAPI(url);
 
     return !isOwnHost &&
-        (isImageExtension || isImageDestination || isCorsApi) &&
+        (isImageExtension || isImageDestination || isKnownAPI) &&
         !shouldCacheStaleWhileRevalidate(url);
 }
 
