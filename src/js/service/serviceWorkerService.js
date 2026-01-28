@@ -68,8 +68,10 @@ function init() {
                 isCaching = false;
                 if (msg.success) {
                     delete _retryCounts[msg.url];
-                    _countDone++;
-                    removeCacheUrl(msg.url);
+                    let removed = removeCacheUrl(msg.url);
+                    if (removed) {
+                        _countDone++;
+                    }
                 } else { // caching failed
                     _retryCounts[msg.url] = (_retryCounts[msg.url] || 0) + 1;
                     if (_retryCounts[msg.url] <= MAX_CACHE_RETRIES) {
@@ -137,7 +139,7 @@ function cacheNext() {
 
 function notifyCachingProgress() {
     _countTodo = _countTodo || shouldCacheElements.length;
-    let percent = Math.round((_countDone / _countTodo) * 100);
+    let percent = Math.min(100, Math.ceil((_countDone / _countTodo) * 100));
     let text = `Downloading images ... ${percent}%`;
     if (!_tooltipInfos) {
         _tooltipInfos = MainVue.setTooltip(text, {
