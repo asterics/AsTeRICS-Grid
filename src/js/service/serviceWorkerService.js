@@ -198,14 +198,9 @@ function removeCacheUrl(url = '', save = true) {
 }
 
 function saveCacheElements() {
-    let timeout = 5000;
-    if (!_saveCacheElementsSavedAnyTime) {
-        _saveCacheElementsSavedAnyTime = true;
-        timeout = 0;
-    }
-    util.debounce(() => {
+    util.throttle(() => {
         localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
-    }, timeout, 'SAVE_IMAGE_CACHE_ELEMENTS');
+    }, null, 2000, 'SAVE_IMAGE_CACHE_ELEMENTS');
 }
 
 init();
