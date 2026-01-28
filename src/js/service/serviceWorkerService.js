@@ -49,6 +49,7 @@ window.serviceWorkerService = serviceWorkerService;
 
 function init() {
     if (navigator.serviceWorker) {
+        cacheNext();
         navigator.serviceWorker.addEventListener('message', (evt) => {
             for (let listener of _messageEventListeners) {
                 listener(evt);
@@ -78,7 +79,6 @@ function init() {
                 cacheNext();
             }
         });
-        cacheNext();
     }
 }
 
@@ -134,7 +134,7 @@ function getController() {
             resolve(navigator.serviceWorker.controller);
         } else {
             navigator.serviceWorker.addEventListener('message', (evt) => {
-                if (evt.data && evt.data.activated) {
+                if (evt.data && evt.data.type === constants.SW_EVENT_ACTIVATED && evt.data.activated) {
                     resolve(navigator.serviceWorker.controller);
                 }
             });
