@@ -131,21 +131,11 @@ function postMessageInternal(msg) {
     });
 }
 
-function getController() {
-    if (!navigator.serviceWorker) {
-        return Promise.resolve(null);
-    }
-    return new Promise((resolve) => {
-        if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === 'activated') {
-            resolve(navigator.serviceWorker.controller);
-        } else {
-            navigator.serviceWorker.addEventListener('message', (evt) => {
-                if (evt.data && evt.data.type === constants.SW_EVENT_ACTIVATED && evt.data.activated) {
-                    resolve(navigator.serviceWorker.controller);
-                }
-            });
-        }
-    });
+async function getController() {
+    if (!navigator.serviceWorker) return null;
+
+    const registration = await navigator.serviceWorker.ready;
+    return navigator.serviceWorker.controller || registration.active;
 }
 
 function addCacheElem(url = '', type) {
