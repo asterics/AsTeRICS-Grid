@@ -3,6 +3,7 @@ import { constants } from '../util/constants.js';
 import { localStorageService } from './data/localStorageService.js';
 import $ from "../externals/jquery.js";
 import { util } from '../util/util';
+import { MainVue } from '../vue/mainVue';
 
 let serviceWorkerService = {};
 let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
@@ -12,7 +13,9 @@ let shouldCacheElements = localStorageService.getJSON(KEY_SHOULD_CACHE_ELEMS) ||
 let isCaching = false;
 let _retryCounts = {};
 let _messageEventListeners = [];
-let _saveCacheElementsSavedAnyTime = false;
+let _tooltipInfos = null;
+let _countTodo = 0;
+let _countDone = 0;
 
 serviceWorkerService.cacheUrl = function (url) {
     addCacheElem(url, constants.SW_CACHE_TYPE_GENERIC);
@@ -35,6 +38,7 @@ serviceWorkerService.cacheImagesOfGrids = function (array) {
         }
     }
     log.info('caching', shouldCacheElements.length, 'grid images...');
+    resetNotifyTooltip();
     cacheNext();
 };
 
@@ -64,6 +68,7 @@ function init() {
                 isCaching = false;
                 if (msg.success) {
                     delete _retryCounts[msg.url];
+                    _countDone++;
                     log.warn("remove", msg.url);
                     removeCacheUrl(msg.url);
                 } else { // caching failed
@@ -91,6 +96,9 @@ function cacheNext() {
     if (shouldCacheElements.length === 0) {
         log.info('caching files via service worker finished.');
         $(document).trigger(constants.EVENT_GRID_IMAGES_CACHED);
+        setTimeout(() => {
+            resetNotifyTooltip();
+        }, 1000);
         return;
     }
     if (isCaching) {
@@ -117,6 +125,7 @@ function cacheNext() {
         log.warn("caching", nextElem.url, "remaining", shouldCacheElements.length);
         if (nextElem.type === constants.SW_CACHE_TYPE_IMG) {
             $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
+            notifyCachingProgress();
         }
 
         postMessageInternal({
@@ -125,6 +134,29 @@ function cacheNext() {
             url: nextElem.url
         });
     }, waitTimeSeconds * 1000);
+}
+
+function notifyCachingProgress() {
+    _countTodo = _countTodo || shouldCacheElements.length;
+    let percent = Math.round((_countDone / _countTodo) * 100);
+    let text = `Downloading images ... ${percent}%`;
+    if (!_tooltipInfos) {
+        _tooltipInfos = MainVue.setTooltip(text, {
+            closeOnNavigate: false,
+            msgType: "info"
+        });
+    } else {
+        _tooltipInfos.htmlUpdateFn(_tooltipInfos.id, text);
+    }
+}
+
+function resetNotifyTooltip() {
+    if (_tooltipInfos) {
+        MainVue.clearTooltip(_tooltipInfos.id);
+    }
+    _tooltipInfos = null;
+    _countDone = 0;
+    _countTodo = 0;
 }
 
 function postMessageInternal(msg) {
