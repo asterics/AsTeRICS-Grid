@@ -38,6 +38,7 @@ serviceWorkerService.cacheImagesOfGrids = function (array) {
         }
     }
     log.info('caching', shouldCacheElements.length, 'grid images...');
+    saveCacheElements(true);
     resetNotifyTooltip();
     cacheNext();
 };
@@ -191,17 +192,18 @@ function addCacheElem(url = '', type) {
     saveCacheElements();
 }
 
-function removeCacheUrl(url = '', save = true) {
+function removeCacheUrl(url = '') {
     let removedElem = shouldCacheElements.find(e => e.url === url);
     shouldCacheElements = shouldCacheElements.filter((e) => e.url !== url);
     saveCacheElements();
     return removedElem;
 }
 
-function saveCacheElements() {
+function saveCacheElements(forceSave = false) {
+    let minPause = forceSave ? 0 : 2000;
     util.throttle(() => {
         localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
-    }, null, 2000, 'SAVE_IMAGE_CACHE_ELEMENTS');
+    }, null, minPause, 'SAVE_IMAGE_CACHE_ELEMENTS');
 }
 
 init();
