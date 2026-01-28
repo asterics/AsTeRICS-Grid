@@ -69,7 +69,6 @@ function init() {
                 if (msg.success) {
                     delete _retryCounts[msg.url];
                     _countDone++;
-                    log.warn("remove", msg.url);
                     removeCacheUrl(msg.url);
                 } else { // caching failed
                     _retryCounts[msg.url] = (_retryCounts[msg.url] || 0) + 1;

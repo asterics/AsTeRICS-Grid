@@ -35,34 +35,26 @@ const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
 });
 
 workbox.routing.registerRoute(({ url, request, event }) => {
-    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
     return shouldCacheNormal(url, request);
 }, strategyNormalCacheFirst);
 
 workbox.routing.registerRoute(({ url, request, event }) => {
-    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
     return shouldCacheStaleWhileRevalidate(url, request);
 }, new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'stale-while-revalidate-cache'
 }));
 
 workbox.routing.registerRoute(({ url, request, event }) => {
-    //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
     const shouldCache = shouldCacheImage(url, request);
     const isCors = isCORSImage(url);
 
     if (shouldCache && isCors) {
-        // This console log is your best friend right now.
-        // If you don't see this while offline during a screenshot, the SW isn't helping.
-        console.log(`[SW] Intercepting CORS image: ${url.pathname} | Destination: ${request.destination}`);
         return true;
     }
-    console.log(`[SW] NOT Intercepting CORS image: ${url.pathname} | Destination: ${request.destination}`);
     return false;
 }, strategyImageCacheFirstCors);
 
 workbox.routing.registerRoute(({ url, request, event }) => {
-    //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
     return shouldCacheImage(url, request) && !isCORSImage(url);
 }, strategyImageCacheFirstNoCors);
 
@@ -117,7 +109,6 @@ self.addEventListener('message', async (event) => {
         const request = new Request(msg.url, { mode: corsMode });
         let response = await strategy.handle({ request });
 
-        console.warn('SW: cached', !!response, msg.url);
         sendToClients({
             type: constants.SW_EVENT_URL_CACHED,
             url: msg.url,
@@ -125,7 +116,6 @@ self.addEventListener('message', async (event) => {
         });
 
     } catch (e) {
-        console.warn('SW: exception in cache', e);
         sendToClients({
             type: constants.SW_EVENT_URL_CACHED,
             url: msg.url,
