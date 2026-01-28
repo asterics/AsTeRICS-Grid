@@ -140,7 +140,7 @@ function isCORSImage(url) {
 }
 
 function shouldCacheImage(url, request) {
-    const isOwnHost = url.hostname === 'grid.asterics.eu';
+    const isOwnHost = url.hostname === self.location.hostname;
     const isImageExtension = /\.(png|jpg|jpeg|gif|webp|svg|bmp)(\?.*)?$/i.test(url.href);
     const isImageDestination = request.destination === 'image';
     const isCorsApi = isCORSImage(url);
@@ -155,7 +155,7 @@ function shouldCacheStaleWhileRevalidate(url, request) {
 }
 
 function shouldCacheNormal(url, request) {
-    let isOwnHost = url.hostname === 'grid.asterics.eu';
+    let isOwnHost = url.hostname === self.location.hostname;
     return isOwnHost && !shouldCacheImage(url, request) && !shouldCacheStaleWhileRevalidate(url);
 }
 
