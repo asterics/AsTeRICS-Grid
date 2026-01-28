@@ -124,7 +124,6 @@ function cacheNext() {
     }
 
     setTimeout(() => {
-        log.warn("caching", nextElem.url, "remaining", shouldCacheElements.length);
         if (nextElem.type === constants.SW_CACHE_TYPE_IMG) {
             $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
             notifyCachingProgress();
