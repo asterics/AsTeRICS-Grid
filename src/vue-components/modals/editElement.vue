@@ -130,7 +130,10 @@
                 var thiz = this;
                 if (!thiz.editElementId) return;
 
-                thiz.saveInternal().then(() => {
+                thiz.saveInternal().then((savedSomething) => {
+                    if (savedSomething) {
+                        this.$emit('reload', this.gridData);
+                    }
                     thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection, thiz.gridElement.type);
                     thiz.initInternal();
                     $('#inputLabel').focus();
