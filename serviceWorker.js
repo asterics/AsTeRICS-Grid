@@ -80,7 +80,7 @@ self.addEventListener('install', (event) => {
     // LEGACY SUPPORT: Trigger the "Old UI" update notification
     // We send the 'activated' message even though we are just 'installed'
     // so the old UI code shows the tooltip.
-    self.skipWaiting(); // Temporary: keep this for ONE release to force the swap
+    // self.skipWaiting(); // Temporary: keep this for ONE release to force the swap
 });
 
 self.addEventListener('activate', event => {
