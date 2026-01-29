@@ -68,6 +68,7 @@
     import EditElementWordForms from "./editElementWordForms.vue";
     import EditElementLive from './editElementLive.vue';
     import EditElementMatrix from './editElementMatrix.vue';
+    import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_IMAGE = 'TAB_IMAGE';
@@ -122,6 +123,7 @@
             addNext() {
                 var thiz = this;
                 thiz.saveInternal().then(() => {
+                    this.$emit('reload', this.gridData);
                     thiz.initInternal();
                     $('#inputLabel').focus();
                 });
@@ -172,6 +174,7 @@
                         thiz.gridElement.label = util.isString(thiz.gridElement.label) ? {} : thiz.gridElement.label;
                     } else {
                         let newXYPos = this.newPosition && this.newPosition.x !== undefined ? this.newPosition : gridData.getNewXYPos();
+                        newXYPos = gridLayoutUtil.getNextFreePosition(this.gridData, newXYPos);
                         log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
                         thiz.gridElement = JSON.parse(JSON.stringify(new GridElement({
                             x: newXYPos.x,
