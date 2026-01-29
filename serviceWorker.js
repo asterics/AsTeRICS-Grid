@@ -5,6 +5,7 @@ let constants = {};
 constants.SW_EVENT_ACTIVATED = 'SW_EVENT_ACTIVATED';
 constants.SW_EVENT_URL_CACHED = 'SW_EVENT_URL_CACHED';
 constants.SW_EVENT_REQ_CACHE = 'SW_EVENT_REQ_CACHE';
+constants.SW_EVENT_SKIP_WAITING = 'SW_EVENT_SKIP_WAITING';
 constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
@@ -17,6 +18,17 @@ self.__WB_DISABLE_DEV_LOGS = true;
 /*workbox.setConfig({
     debug: true
 });*/
+
+if (self.URLS_TO_CACHE && self.URLS_TO_CACHE.length > 0) {
+    // map the strings to the format Workbox expects: { url: '...', revision: '...' }
+    // Since we don't have a build tool generating hashes use the version constant
+    const precacheManifest = self.URLS_TO_CACHE.map(url => ({
+        url: url,
+        revision: '#ASTERICS_GRID_VERSION#'
+    }));
+
+    workbox.precaching.precacheAndRoute(precacheManifest);
+}
 
 const strategyNormalCacheFirst = new workbox.strategies.CacheFirst();
 
@@ -64,23 +76,11 @@ workbox.routing.registerRoute(({ url, request, event }) => {
 
 self.addEventListener('install', (event) => {
     console.log('installing service worker ...');
-    let urls = self.URLS_TO_CACHE;
-    const cacheName = workbox.core.cacheNames.runtime;
-    let promise = caches.delete(cacheName).then(() => {
-        return caches.open(cacheName);
-    }).then((cache) => {
-        return Promise.all(
-            urls.map(function(url) {
-                return cache.add(url).catch(function(reason) {
-                    console.warn(`failed to fetch "${url}" in Service Worker.`);
-                    console.warn(reason);
-                    return Promise.resolve();
-                });
-            })
-        );
-    });
-    event.waitUntil(promise);
-    self.skipWaiting();
+
+    // LEGACY SUPPORT: Trigger the "Old UI" update notification
+    // We send the 'activated' message even though we are just 'installed'
+    // so the old UI code shows the tooltip.
+    self.skipWaiting(); // Temporary: keep this for ONE release to force the swap
 });
 
 self.addEventListener('activate', event => {
@@ -96,35 +96,38 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('message', async (event) => {
-    let msg = event.data;
-    if (!msg || msg.type !== constants.SW_EVENT_REQ_CACHE || !msg.url) {
+    let msg = event.data || {};
+    if (!msg.type) {
         return;
     }
-    
-    try {
-        let response;
-        if (msg.cacheType === constants.SW_CACHE_TYPE_IMG) {
-            try {
-                response = await strategyImageCacheFirstCors.handle({ request: new Request(msg.url, { mode: 'cors' }) });
-            } catch (e) {
-                response = await strategyImageCacheFirstNoCors.handle({ request: new Request(msg.url, { mode: 'no-cors' }) });
+    if (msg.type === constants.SW_EVENT_SKIP_WAITING) {
+        self.skipWaiting();
+    } else if (msg.type === constants.SW_EVENT_REQ_CACHE && msg.url) {
+        try {
+            let response;
+            if (msg.cacheType === constants.SW_CACHE_TYPE_IMG) {
+                try {
+                    response = await strategyImageCacheFirstCors.handle({ request: new Request(msg.url, { mode: 'cors' }) });
+                } catch (e) {
+                    response = await strategyImageCacheFirstNoCors.handle({ request: new Request(msg.url, { mode: 'no-cors' }) });
+                }
+            } else {
+                response = await strategyNormalCacheFirst.handle({ request: new Request(msg.url) });
             }
-        } else {
-            response = await strategyNormalCacheFirst.handle({ request: new Request(msg.url) });
+
+            sendToClients({
+                type: constants.SW_EVENT_URL_CACHED,
+                url: msg.url,
+                success: !!response
+            });
+
+        } catch (e) {
+            sendToClients({
+                type: constants.SW_EVENT_URL_CACHED,
+                url: msg.url,
+                success: false
+            });
         }
-
-        sendToClients({
-            type: constants.SW_EVENT_URL_CACHED,
-            url: msg.url,
-            success: !!response
-        });
-
-    } catch (e) {
-        sendToClients({
-            type: constants.SW_EVENT_URL_CACHED,
-            url: msg.url,
-            success: false
-        });
     }
 });
 
@@ -136,7 +139,7 @@ function isKnownImageAPI(url) {
 function shouldCacheImage(url, request) {
     const isOwnHost = url.hostname === self.location.hostname;
     const isImageExtension = /\.(png|jpg|jpeg|gif|webp|svg|bmp)(\?.*)?$/i.test(url.href);
-    const isImageDestination = request.destination === 'image';
+    const isImageDestination = request && request.destination === 'image';
     const isKnownAPI = isKnownImageAPI(url);
 
     return !isOwnHost &&
