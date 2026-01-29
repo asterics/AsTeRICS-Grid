@@ -1,5 +1,5 @@
 <template>
-    <div id="notificationBar" v-if="tooltipHTML" style="display: flex">
+    <div id="notificationBar" v-if="showTooltip && tooltipHTML" style="display: flex">
         <img id="notificationBarImg" v-show="tooltipImageUrl" :src="tooltipImageUrl" alt="">
         <i v-if="tooltipOptions.faIcon" :class="tooltipOptions.faIcon"></i>
         <div style="padding-left: 0.5em">
@@ -10,7 +10,7 @@
                 <a class="d-block" v-if="tooltipOptions.actionLinkUrl" :href="tooltipOptions.actionLinkUrl" target="_blank" style="color: #44a8f1">{{actionLink | translate}}</a>
             </div>
         </div>
-        <button @click="tooltipHTML = ''" style="position: absolute; top: 0; right: 10px; padding: 0 10px" :label="$t('close')">X</button>
+        <button @click="clearTooltip()" style="position: absolute; top: 0; right: 10px; padding: 0 10px" :label="$t('close')">X</button>
     </div>
 </template>
 
@@ -39,7 +39,8 @@
                 lastTooltipHTML: null,
                 tooltipTimeoutHandler: null,
                 tooltipOptions: _defaultTooltipsOptions,
-                currentToolTipID: null
+                currentToolTipID: null,
+                showTooltip: false
             }
         },
         methods: {
@@ -71,13 +72,22 @@
                 this.tooltipImageUrl = thiz.tooltipOptions.imageUrl;
                 this.actionLink = thiz.tooltipOptions.actionLink;
                 this.currentToolTipID = new Date().getTime();
-                return this.currentToolTipID;
+                this.showTooltip = true;
+                return {
+                    id: this.currentToolTipID,
+                    htmlUpdateFn: (id, html) => {
+                        if (this.currentToolTipID === id) {
+                            this.tooltipHTML = html;
+                        }
+                    }
+                };
             },
             clearTooltip: function (id) {
                 if (id && id !== this.currentToolTipID) {
                     return;
                 }
                 let thiz = this;
+                this.showTooltip = false;
                 if (thiz.tooltipOptions.revertOnClose && this.tooltipHTML) {
                     thiz.setTooltip(thiz.lastTooltipHTML, thiz.lastTooltipOptions);
                 } else {

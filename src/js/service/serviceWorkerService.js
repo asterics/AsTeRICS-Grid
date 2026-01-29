@@ -3,14 +3,20 @@ import { constants } from '../util/constants.js';
 import { localStorageService } from './data/localStorageService.js';
 import $ from "../externals/jquery.js";
 import { util } from '../util/util';
+import { MainVue } from '../vue/mainVue';
+import { i18nService } from './i18nService';
 
 let serviceWorkerService = {};
 let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
+const MAX_CACHE_RETRIES = 5;
 
 let shouldCacheElements = localStorageService.getJSON(KEY_SHOULD_CACHE_ELEMS) || [];
 let isCaching = false;
-let _retryCount = 0;
+let _retryCounts = {};
 let _messageEventListeners = [];
+let _tooltipInfos = null;
+let _countTodo = 0;
+let _countDone = 0;
 
 serviceWorkerService.cacheUrl = function (url) {
     addCacheElem(url, constants.SW_CACHE_TYPE_GENERIC);
@@ -33,6 +39,8 @@ serviceWorkerService.cacheImagesOfGrids = function (array) {
         }
     }
     log.info('caching', shouldCacheElements.length, 'grid images...');
+    saveCacheElements(true);
+    resetNotifyTooltip();
     cacheNext();
 };
 
@@ -47,34 +55,43 @@ window.serviceWorkerService = serviceWorkerService;
 
 function init() {
     if (navigator.serviceWorker) {
+        cacheNext();
         navigator.serviceWorker.addEventListener('message', (evt) => {
             for (let listener of _messageEventListeners) {
                 listener(evt);
             }
-            let msg = evt.data;
+            let msg = evt.data || {};
+            if (msg.type === constants.SW_EVENT_ACTIVATED && msg.activated) {
+                isCaching = false; // if one cache process from the old SW is stuck because of switching to new SW
+                cacheNext();
+                return;
+            }
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
                 isCaching = false;
-                if (msg.success || msg.responseCode === 404 || msg.responseCode === 403) { // assuming 404 and 403 is permanently, so also remove
-                    if (!msg.success) {
-                        log.warn('failed to cache url with status: ', msg.responseCode, msg.url, ', not trying again.');
+                if (msg.success) {
+                    delete _retryCounts[msg.url];
+                    let removed = removeCacheUrl(msg.url);
+                    if (removed) {
+                        _countDone++;
                     }
-                    _retryCount = 0;
-                    removeCacheUrl(msg.url);
-                    cacheNext();
-                } else { // assuming temporary network error, so retry
-                    let waitTimeSeconds = Math.min(5 + (2 * _retryCount * _retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
-                    waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
-                    log.warn("failed to cache url: ", msg.url, msg.responseCode, ", next try in seconds: ", waitTimeSeconds);
-                    _retryCount++;
-                    util.shuffleArray(shouldCacheElements); // prevent trying permanently failing element over and over again
-                    setTimeout(() => {
-                        cacheNext();
-                    }, waitTimeSeconds * 1000);
+                } else { // caching failed
+                    _retryCounts[msg.url] = (_retryCounts[msg.url] || 0) + 1;
+                    if (_retryCounts[msg.url] <= MAX_CACHE_RETRIES) {
+                        log.warn('failed to cache url: ', msg.url);
+                        // move failed back in queue
+                        let removed = removeCacheUrl(msg.url);
+                        if (removed) {
+                            addCacheElem(removed.url, removed.type);
+                        }
+                    } else { // give up
+                        delete _retryCounts[msg.url];
+                        log.warn('failed to cache url: ', msg.url, ', not trying again.');
+                        removeCacheUrl(msg.url);
+                    }
                 }
+                cacheNext();
             }
         });
-
-        cacheNext();
     }
 }
 
@@ -82,21 +99,66 @@ function cacheNext() {
     if (shouldCacheElements.length === 0) {
         log.info('caching files via service worker finished.');
         $(document).trigger(constants.EVENT_GRID_IMAGES_CACHED);
+        setTimeout(() => {
+            resetNotifyTooltip();
+        }, 1000);
         return;
     }
     if (isCaching) {
         return;
     }
-    isCaching = true;
-    shouldCacheElements = shouldCacheElements.filter((e) => !!e.url);
-    if (shouldCacheElements[0].type === constants.SW_CACHE_TYPE_IMG) {
-        $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
+    if (!navigator.onLine) {
+        log.info('caching images: not online, so waiting 15s...');
+        return setTimeout(() => {
+            cacheNext();
+        }, 15 * 1000);
     }
-    postMessageInternal({
-        type: constants.SW_EVENT_REQ_CACHE,
-        cacheType: shouldCacheElements[0].type,
-        url: shouldCacheElements[0].url
-    });
+    isCaching = true;
+
+    let nextElem = shouldCacheElements[0];
+    let waitTimeSeconds = 0;
+    let retryCount = _retryCounts[nextElem.url] || 0;
+    if (retryCount) {
+        waitTimeSeconds = Math.min(5 + (2 * retryCount * retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
+        waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
+        log.info(`waiting ${waitTimeSeconds}s before caching next element, because it failed before`, nextElem.url);
+    }
+
+    setTimeout(() => {
+        if (nextElem.type === constants.SW_CACHE_TYPE_IMG) {
+            $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
+            notifyCachingProgress();
+        }
+
+        postMessageInternal({
+            type: constants.SW_EVENT_REQ_CACHE,
+            cacheType: nextElem.type,
+            url: nextElem.url
+        });
+    }, waitTimeSeconds * 1000);
+}
+
+function notifyCachingProgress() {
+    _countTodo = _countTodo || shouldCacheElements.length;
+    let percent = Math.min(100, Math.ceil((_countDone / _countTodo) * 100));
+    let text = i18nService.t("downloadingImagesWithPercent", percent);
+    if (!_tooltipInfos) {
+        _tooltipInfos = MainVue.setTooltip(text, {
+            closeOnNavigate: false,
+            msgType: "info"
+        });
+    } else {
+        _tooltipInfos.htmlUpdateFn(_tooltipInfos.id, text);
+    }
+}
+
+function resetNotifyTooltip() {
+    if (_tooltipInfos) {
+        MainVue.clearTooltip(_tooltipInfos.id);
+    }
+    _tooltipInfos = null;
+    _countDone = 0;
+    _countTodo = 0;
 }
 
 function postMessageInternal(msg) {
@@ -108,38 +170,40 @@ function postMessageInternal(msg) {
     });
 }
 
-function getController() {
-    if (!navigator.serviceWorker) {
-        return Promise.resolve(null);
-    }
-    return new Promise((resolve) => {
-        if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === 'activated') {
-            resolve(navigator.serviceWorker.controller);
-        } else {
-            navigator.serviceWorker.addEventListener('message', (evt) => {
-                if (evt.data && evt.data.activated) {
-                    resolve(navigator.serviceWorker.controller);
-                }
-            });
-        }
-    });
+async function getController() {
+    if (!navigator.serviceWorker) return null;
+
+    const registration = await navigator.serviceWorker.ready;
+    return navigator.serviceWorker.controller || registration.active;
 }
 
-function addCacheElem(url, type) {
-    let existingUrls = shouldCacheElements.map((e) => e.url);
-    if (existingUrls.includes(url)) {
+function addCacheElem(url = '', type) {
+    url = url.trim();
+    if (!url) {
+        return;
+    }
+    if (shouldCacheElements.find(e => e.url === url)) {
         return;
     }
     shouldCacheElements.push({
         type: type,
         url: url
     });
-    localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
+    saveCacheElements();
 }
 
-function removeCacheUrl(url) {
+function removeCacheUrl(url = '') {
+    let removedElem = shouldCacheElements.find(e => e.url === url);
     shouldCacheElements = shouldCacheElements.filter((e) => e.url !== url);
-    localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
+    saveCacheElements();
+    return removedElem;
+}
+
+function saveCacheElements(forceSave = false) {
+    let minPause = forceSave ? 0 : 2000;
+    util.throttle(() => {
+        localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
+    }, null, minPause, 'SAVE_IMAGE_CACHE_ELEMENTS');
 }
 
 init();
