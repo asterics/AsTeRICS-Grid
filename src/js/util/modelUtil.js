@@ -1,4 +1,5 @@
 import { constants } from './constants';
+import { localStorageService } from '../service/data/localStorageService';
 
 var modelUtil = {};
 var idCounter = 100;
@@ -117,6 +118,21 @@ modelUtil.getMajorVersion = function(savedObject = {}) {
 modelUtil.getLatestModelVersion = function () {
     return _currentModelVersion;
 };
+
+/**
+ * returns true if the given user has a valid data model version matching the version of the app.
+ * exception: transition to version 7 is treated okay if app has version 6 - change in encryption, see https://github.com/asterics/AsTeRICS-Grid/issues/748
+ * @param user
+ */
+modelUtil.hasValidMajorModelVersion = function(user) {
+    let appMajor = modelUtil.getLatestModelVersion().major;
+    let dataMajor = localStorageService.getUserMajorModelVersion(user);
+    if (appMajor === constants.MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT - 1 && dataMajor === constants.MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT) {
+        // just switched from V6 to V7
+        return true;
+    }
+    return dataMajor <= appMajor;
+}
 
 /**
  * returns the latest/current model version for local objects

@@ -5,8 +5,8 @@ import { log } from '../../util/log.js';
 import { MapCache } from '../../util/MapCache';
 import { localStorageService } from './localStorageService';
 import { modelUtil } from '../../util/modelUtil';
+import { constants } from '../../util/constants';
 
-const MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT = 7;
 let STATIC_USER_PW_SALT = 'STATIC_USER_PW_SALT';
 
 let encryptionService = {};
@@ -75,7 +75,7 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
             let decryptedString = null;
             let decryptedObject = null;
             let salts = _encryptionSalts;
-            if (modelUtil.getMajorVersion(encryptedObject) >= MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT) {
+            if (modelUtil.getMajorVersion(encryptedObject) >= constants.MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT) {
                 let username = localStorageService.getAutologinOrActiveUser();
                 salts = [username].concat(_encryptionSalts);
             }
