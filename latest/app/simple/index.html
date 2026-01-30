@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <!-- disable caching --->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- libs -->
+    <script type="application/javascript" src="loadScripts.js"></script>
+    <script type="application/javascript" src="i18n.js"></script>
+    <script type="application/javascript" src="areCommunicatorLight.js"></script>
+    <script type="application/javascript" src="utils.js"></script>
+
+    <title>AsTeRICS Grid - Simple</title>
+</head>
+
+<body>
+<div id="astericsApp">
+    <div id="container">
+        <div id="content" class="container-fluid">
+            <div class="row">
+                <div class="col-md-4 col-sm-5 col-lg-3">
+                    <h1 id="heading" style="font-size: 1.4em">AsTeRICS Grid</h1>
+                </div>
+            </div>
+            <div id="loading">
+                loading ...
+            </div>
+            <div id="controls">
+                <!-- buttons will be inserted here -->
+            </div>
+        </div>
+        <div id="spacer" style="padding-top: 50px;"/>
+        <div id="footer">
+            <span class="footer-text">AsTeRICS Grid, </span>
+            <span class="footer-text">www.asterics-foundation.org</span>
+        </div>
+    </div>
+    <a id="end"/>
+</div>
+
+<!-- main script -->
+<script type="application/javascript">
+    //get and check data
+    getData('webapps/simple/examples/default.grd', gotDataCallback);
+
+    function gotDataCallback(data) {
+        data = parseJson(data);
+        data = data.grids;
+        removeElement('loading');
+
+        //create headings and buttons
+        for (var i = 0; i < data.length; i++) { //grids
+            var grid = data[i];
+            var gridLabel = grid.label;
+            var elements = grid.gridElements;
+            var first = true;
+            for (var j = 0; j < elements.length; j++) { //elements
+                var element = elements[j];
+                var actions = element.actions;
+                if(actions && actions.length > 0) {
+                    for (var k = 0; k < actions.length; k++) { //elements
+                        var action = actions[k];
+                        if(action.modelName == "GridActionARE") {
+                            if(first) {
+                                first = false;
+                                var titleElem = createTitle(gridLabel, 'row col-xs-12');
+                                appendElement(titleElem);
+                            }
+                            var button = createButton(element.label, "", "sendDataToInputPort('" + action.componentId + "', '" + action.dataPortId + "', '" + action.dataPortSendData + "')");
+                            appendElement(button);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function appendElement(element) {
+        document.getElementById("controls").appendChild(element);
+    }
+
+    function log(string) {
+        if(!MODE_COMPATIBILITY) {
+            console.log(string);
+        }
+    }
+
+    if(!MODE_COMPATIBILITY) {
+        i18n.translatePage();
+        window.onkeydown = function(e) {
+            var key = e.keyCode ? e.keyCode : e.which;
+            if(e.ctrlKey && e.altKey && key >= 49 && key <= 57) { //Ctrl + Alt + [1-9]
+                var num = key - 48;
+                var button = document.getElementsByClassName('action-button')[num-1];
+                if(button) {
+                    button.click();
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>

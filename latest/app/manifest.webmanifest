@@ -1,0 +1,48 @@
+{
+  "name": "AsTeRICS Grid",
+  "short_name": "Grid",
+  "start_url": "../",
+  "id": "/",
+  "display": "standalone",
+  "background_color" : "#fff" ,
+  "description": "Free and simple to use app for augmentative and alternative communication (AAC) with offline support, flexible input methods and media access",
+  "icons": [{
+    "src": "img/app-icons/Icon-48.png",
+    "sizes": "48x48",
+    "type": "image/png"
+  }, {
+    "src": "img/app-icons/Icon-72.png",
+    "sizes": "72x72",
+    "type": "image/png"
+  }, {
+    "src": "img/app-icons/Icon-96.png",
+    "sizes": "96x96",
+    "type": "image/png"
+  }, {
+    "src": "img/app-icons/Icon-144.png",
+    "sizes": "144x144",
+    "type": "image/png"
+  }, {
+    "src": "img/app-icons/Icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }, {
+    "src": "img/app-icons/Icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "screenshots": [{
+    "src": "img/screenshots/wide.jpg",
+    "sizes": "1920x1080",
+    "type": "image/jpeg",
+    "form_factor": "wide",
+    "label": "AsTeRICS Grid on desktop"
+  },
+  {
+    "src": "img/screenshots/narrow.png",
+    "sizes": "776x1120",
+    "type": "image/png",
+    "form_factor": "narrow",
+    "label": "AsTeRICS Grid on mobile"
+  }]
+}

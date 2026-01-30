@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AsTeRICS Grid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="app/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="app/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="app/css/bootstrap-grid.css">
+    <style>
+        body {
+            font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        li {
+            margin-bottom: 0.5em;
+        }
+    </style>
+    <script src="app/lib/dom-i18n.min.js"></script>
+</head>
+<body>
+<div>
+    <div class="container mx-0 mt-5 p-0">
+        <div class="px-2 px-md-4">
+            <h1 class="mb-4">
+                <a tabindex="22" aria-hidden="true" href="." class="show-mobile">
+                    <img id="astericsIcon" src="app/img/asterics-grid-icon.png" alt="AsTeRICS Grid" style="margin: 0; max-width: 80vw;" width="200"/>
+                </a>
+            </h1>
+            <div class="row">
+                <h2 data-i18n="">Browser incompatible // Browser inkompatibel // Navegador incompatible</h2>
+                <div>
+                    <span data-i18n="">
+                        <span>Your browser can't run AsTeRICS Grid. Please use one of these browsers and don't use private or incognito mode</span>
+                        <span>Ihr Browser kann AsTeRICS Grid nicht ausführen. Bitte verwenden Sie einen der folgenden Browser und vermeiden Sie den privaten Modus</span>
+                        <span>El navegador que estás utilizando no es compatible con AsTeRICS Grid. Para poder utilizarlo debes usar o instalar en tu dispositivo uno de estos navegadores y asegurarte de no hacerlo en modo privado o de incógnito</span>
+                    </span>:
+                </div>
+                <div class="row">
+                    <ul class="ms-3 ms-md-4 mt-3">
+                        <li><a href="https://www.google.com/intl/en_us/chrome/" target="_blank">Google Chrome</a></li>
+                        <li><a href="https://www.mozilla.org/en-US/firefox/browsers/" target="_blank">Mozilla Firefox</a></li>
+                        <li><a href="https://www.apple.com/safari/" target="_blank">Apple Safari</a></li>
+                        <li><a href="https://www.microsoft.com/edge" target="_blank">Microsoft Edge</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var langs = ['en', 'de', 'es'];
+    var browserLang = window.navigator.language.substring(0,2);
+    window.i18n = domI18n({
+        selector: '[data-i18n]',
+        separator: ' // ',
+        languages: langs,
+        defaultLanguage: 'en',
+        currentLanguage: 'en'
+    });
+    if (langs.indexOf(browserLang) > -1) {
+        i18n.changeLanguage(browserLang);
+        document.getElementsByTagName('html')[0].lang = browserLang;
+    }
+</script>
+</body>
+</html>

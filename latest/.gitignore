@@ -1,0 +1,11 @@
+.env
+.gradle/
+*.iml
+*.log
+node_modules/
+stats.json
+yarn-error.log
+backup/
+.idea/
+
+.env
