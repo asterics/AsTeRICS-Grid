@@ -105,6 +105,11 @@ modelUtil.getModelVersionObject = function (modelVersionString) {
     return json.major ? json : _emptyVersionObject;
 };
 
+modelUtil.getMajorVersion = function(savedObject = {}) {
+    let versionObject = modelUtil.getModelVersionObject(savedObject.modelVersion);
+    return versionObject.major;
+}
+
 /**
  * returns the latest/current model version for database objects
  * @return {*}

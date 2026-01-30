@@ -264,6 +264,14 @@ localStorageService.getAutologinUser = function () {
 };
 
 /**
+ * returns autologin user or last active user
+ * @return {*}
+ */
+localStorageService.getAutologinOrActiveUser = function() {
+    return localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+}
+
+/**
  * saves a name of the database that should be marked as "completely synced"
  * @param databaseName the name of the database to save
  * @return {*}
