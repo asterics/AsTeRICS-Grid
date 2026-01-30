@@ -1,7 +1,7 @@
 let constants = {};
 
 constants.ELEMENT_EVENT_ID = 'ELEMENT_EVENT_ID';
-constants.MODEL_VERSION = '{"major": 6, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION = '{"major": 7, "minor": 0, "patch": 0}';
 constants.MODEL_VERSION_LOCAL = '{"major": 1, "minor": 0, "patch": 0}';
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
