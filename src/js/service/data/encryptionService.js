@@ -43,9 +43,10 @@ encryptionService.encryptObject = function (object) {
     let jsonString = JSON.stringify(object);
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     let shortVersionDifferent = jsonString !== shortJsonString;
-    encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, _encryptionSalts[0]);
+    let salt = localStorageService.getAutologinOrActiveUser();
+    encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, salt);
     encryptedObject.encryptedDataBase64Short = shortVersionDifferent
-        ? encryptionService.encryptString(shortJsonString, _encryptionSalts[0])
+        ? encryptionService.encryptString(shortJsonString, salt)
         : null;
     return encryptedObject;
 };
