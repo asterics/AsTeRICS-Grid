@@ -398,6 +398,34 @@ gridLayoutUtil.normalizePositions = function(elements = []) {
 };
 
 /**
+ * returns the next close free position from a given position. If the position is already free it's returned as-is.
+ *
+ * @param gridData
+ * @param givenPosition
+ * @return a position with properties x and y like {x: 0, y: 0}
+ */
+gridLayoutUtil.getNextFreePosition = function(gridData, givenPosition = {}) {
+    let position = JSON.parse(JSON.stringify(givenPosition));
+    position.x = position.x || 0;
+    position.y = position.y || 0;
+    let matrix = getOccupiedMatrix(gridData.gridElements);
+    let width = gridLayoutUtil.getWidth(gridData.gridElements, gridData.minColumnCount);
+    let notFree = isOccupied(matrix, position.x, position.y);
+    if (notFree) {
+        for (let y = position.y; y < 200; y++) {
+            for (let x = position.x; x < width; x++) {
+                if (!isOccupied(matrix, x, position.y)) {
+                    position.x = x;
+                    return position;
+                }
+            }
+            position.y++;
+        }
+    }
+    return position;
+};
+
+/**
  * returns a 2-dimensional array where array[x][y] indicates how often this space is occupied. Zero (0) means the space is free.
  * within the given gridElements
  * @param gridElements
