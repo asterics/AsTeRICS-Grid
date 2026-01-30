@@ -48,6 +48,7 @@ encryptionService.encryptObject = function (object) {
     encryptedObject.encryptedDataBase64Short = shortVersionDifferent
         ? encryptionService.encryptString(shortJsonString, salt)
         : null;
+    log.warn("encrypted data with version", encryptedObject.modelVersion);
     return encryptedObject;
 };
 
@@ -76,6 +77,7 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
             let decryptedString = null;
             let decryptedObject = null;
             let salts = _encryptionSalts;
+            log.warn("decrypt version", encryptedObject.modelVersion);
             if (modelUtil.getMajorVersion(encryptedObject) >= constants.MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT) {
                 let username = localStorageService.getAutologinOrActiveUser();
                 salts = [username].concat(_encryptionSalts);
