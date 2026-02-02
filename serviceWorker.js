@@ -4,7 +4,7 @@ importScripts('serviceWorkerCachePaths.js');
 let constants = {};
 constants.SW_EVENT_ACTIVATED = 'SW_EVENT_ACTIVATED';
 constants.SW_EVENT_URL_CACHED = 'SW_EVENT_URL_CACHED';
-constants.SW_EVENT_REQ_CACHE = 'SW_EVENT_REQ_CACHE';
+constants.SW_EVENT_REQ_CACHE_BATCH = 'SW_EVENT_REQ_CACHE_BATCH';
 constants.SW_EVENT_SKIP_WAITING = 'SW_EVENT_SKIP_WAITING';
 constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
@@ -102,34 +102,40 @@ self.addEventListener('message', async (event) => {
     }
     if (msg.type === constants.SW_EVENT_SKIP_WAITING) {
         self.skipWaiting();
-    } else if (msg.type === constants.SW_EVENT_REQ_CACHE && msg.url) {
-        try {
-            let response;
-            if (msg.cacheType === constants.SW_CACHE_TYPE_IMG) {
-                try {
-                    response = await strategyImageCacheFirstCors.handle({ request: new Request(msg.url, { mode: 'cors' }) });
-                } catch (e) {
-                    response = await strategyImageCacheFirstNoCors.handle({ request: new Request(msg.url, { mode: 'no-cors' }) });
-                }
-            } else {
-                response = await strategyNormalCacheFirst.handle({ request: new Request(msg.url) });
-            }
-
-            sendToClients({
-                type: constants.SW_EVENT_URL_CACHED,
-                url: msg.url,
-                success: !!response
-            });
-
-        } catch (e) {
-            sendToClients({
-                type: constants.SW_EVENT_URL_CACHED,
-                url: msg.url,
-                success: false
-            });
+    } else if (msg.type === constants.SW_EVENT_REQ_CACHE_BATCH && msg.items && msg.items.length) {
+        for (let item of msg.items) {
+            cacheOneItem(item);
         }
     }
 });
+
+async function cacheOneItem(item) {
+    try {
+        let response;
+        if (item.type === constants.SW_CACHE_TYPE_IMG) {
+            try {
+                response = await strategyImageCacheFirstCors.handle({ request: new Request(item.url, { mode: 'cors' }) });
+            } catch (e) {
+                response = await strategyImageCacheFirstNoCors.handle({ request: new Request(item.url, { mode: 'no-cors' }) });
+            }
+        } else {
+            response = await strategyNormalCacheFirst.handle({ request: new Request(item.url) });
+        }
+
+        sendToClients({
+            type: constants.SW_EVENT_URL_CACHED,
+            url: item.url,
+            success: !!response
+        });
+
+    } catch (e) {
+        sendToClients({
+            type: constants.SW_EVENT_URL_CACHED,
+            url: item.url,
+            success: false
+        });
+    }
+}
 
 function isKnownImageAPI(url) {
     url = url.href ? url.href : url; // use full URL

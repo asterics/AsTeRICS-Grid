@@ -9,14 +9,16 @@ import { i18nService } from './i18nService';
 let serviceWorkerService = {};
 let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
 const MAX_CACHE_RETRIES = 5;
+const MAX_CONCURRENT_REQUESTS = 10;
 
 let shouldCacheElements = localStorageService.getJSON(KEY_SHOULD_CACHE_ELEMS) || [];
-let isCaching = false;
 let _retryCounts = {};
 let _messageEventListeners = [];
 let _tooltipInfos = null;
 let _countTodo = 0;
 let _countDone = 0;
+let _processingUrls = new Set(); // urls that are currently processed
+let _hasCachedImages = false;
 
 serviceWorkerService.cacheUrl = function (url) {
     addCacheElem(url, constants.SW_CACHE_TYPE_GENERIC);
@@ -62,12 +64,12 @@ function init() {
             }
             let msg = evt.data || {};
             if (msg.type === constants.SW_EVENT_ACTIVATED && msg.activated) {
-                isCaching = false; // if one cache process from the old SW is stuck because of switching to new SW
                 cacheNext();
                 return;
             }
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
-                isCaching = false;
+                _processingUrls.delete(msg.url);
+
                 if (msg.success) {
                     delete _retryCounts[msg.url];
                     let removed = removeCacheUrl(msg.url);
@@ -96,15 +98,16 @@ function init() {
 }
 
 function cacheNext() {
-    if (shouldCacheElements.length === 0) {
+    if (shouldCacheElements.length === 0 && _processingUrls.size === 0) {
         log.info('caching files via service worker finished.');
-        $(document).trigger(constants.EVENT_GRID_IMAGES_CACHED);
-        setTimeout(() => {
-            resetNotifyTooltip();
-        }, 1000);
-        return;
-    }
-    if (isCaching) {
+        if (_hasCachedImages) {
+            _notifyCachingImageProgress();
+            $(document).trigger(constants.EVENT_GRID_IMAGES_CACHED);
+            setTimeout(() => {
+                resetNotifyTooltip();
+            }, 1000);
+        }
+        _hasCachedImages = false;
         return;
     }
     if (!navigator.onLine) {
@@ -113,39 +116,48 @@ function cacheNext() {
             cacheNext();
         }, 15 * 1000);
     }
-    isCaching = true;
 
-    let nextElem = shouldCacheElements[0];
+    const batch = shouldCacheElements
+        .filter(elem => !_processingUrls.has(elem.url))
+        .slice(0, MAX_CONCURRENT_REQUESTS - _processingUrls.size);
+
+    if (batch.length === 0) return;
+    batch.forEach(item => _processingUrls.add(item.url));
+    let retryCountNumbers = batch.map(item => _retryCounts[item.url] || 0);
+    let maxRetryCount = Math.max(0, ...retryCountNumbers);
+
     let waitTimeSeconds = 0;
-    let retryCount = _retryCounts[nextElem.url] || 0;
-    if (retryCount) {
-        waitTimeSeconds = Math.min(5 + (2 * retryCount * retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
+    if (maxRetryCount) {
+        waitTimeSeconds = Math.min(5 + (2 * maxRetryCount * maxRetryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
         waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
-        log.info(`waiting ${waitTimeSeconds}s before caching next element, because it failed before`, nextElem.url);
+        log.info(`waiting ${waitTimeSeconds}s before caching next element, because some failed before`);
     }
 
     setTimeout(() => {
-        if (nextElem.type === constants.SW_CACHE_TYPE_IMG) {
+        if (batch.some(item => item.type === constants.SW_CACHE_TYPE_IMG)) {
+            _hasCachedImages = true;
             $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
-            notifyCachingProgress();
+            _notifyCachingImageProgress();
         }
 
         postMessageInternal({
-            type: constants.SW_EVENT_REQ_CACHE,
-            cacheType: nextElem.type,
-            url: nextElem.url
+            type: constants.SW_EVENT_REQ_CACHE_BATCH,
+            items: batch
         });
     }, waitTimeSeconds * 1000);
 }
 
-function notifyCachingProgress() {
+function _notifyCachingImageProgress() {
+    if (!_hasCachedImages) {
+        return;
+    }
     _countTodo = _countTodo || shouldCacheElements.length;
     let percent = Math.min(100, Math.ceil((_countDone / _countTodo) * 100));
-    let text = i18nService.t("downloadingImagesWithPercent", percent);
+    let text = i18nService.t('downloadingImagesWithPercent', percent);
     if (!_tooltipInfos) {
         _tooltipInfos = MainVue.setTooltip(text, {
             closeOnNavigate: false,
-            msgType: "info"
+            msgType: 'info'
         });
     } else {
         _tooltipInfos.htmlUpdateFn(_tooltipInfos.id, text);
