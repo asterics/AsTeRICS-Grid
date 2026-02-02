@@ -8,6 +8,7 @@ import { convertServiceDb } from './convertServiceDb';
 import { localStorageService } from './localStorageService';
 import { util } from '../../util/util';
 import { constants } from '../../util/constants';
+import { metadataStore } from './store/metadataStore';
 
 let databaseService = {};
 
@@ -204,7 +205,8 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
         if (userAlreadyOpened) {
             return Promise.resolve();
         } else {
-            return initInternal(hashedUserPassword, username, isLocalUser);
+            _initPromise = initInternal(hashedUserPassword, username, isLocalUser);
+            return _initPromise;
         }
     });
 };
@@ -227,7 +229,8 @@ databaseService.registerForUser = function (username, hashedUserPassword, userDa
         return Promise.resolve();
     }
     return pouchDbService.createDatabase(username, userDatabaseURL, onlyRemote).then(() => {
-        return initInternal(hashedUserPassword, username, isLocalUser);
+        _initPromise = initInternal(hashedUserPassword, username, isLocalUser, true);
+        return _initPromise;
     });
 };
 
@@ -260,57 +263,32 @@ databaseService.getCurrentUsedDatabase = function () {
     return pouchDbService.getOpenedDatabaseName();
 };
 
-function initInternal(hashedUserPassword, username, isLocalUser) {
-    _initPromise = Promise.resolve()
-        .then(() => {
-            //reset DB if specified by URL
-            let promises = [];
-            if (urlParamService.shouldResetDatabase()) {
-                promises.push(pouchDbService.resetDatabase(username));
-            }
-            return Promise.all(promises);
-        })
-        .then(() => {
-            return pouchDbService.allArray(MetaData.getIdPrefix());
-        })
-        .then((metadataObjects) => {
-            //create metadata object if not exisiting, update datamodel version, if outdated
-            let promises = [];
-            if (metadataObjects.length === 0) {
-                let metadata = new MetaData();
-                metadataObjects = [metadata];
-                encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
-                promises.push(applyFiltersAndSave(MetaData.getIdPrefix(), metadata));
-            }
-            metadataObjects.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
-            let metadataIds = metadataObjects.map((o) => o.id);
-            encryptionService.setEncryptionProperties(hashedUserPassword, metadataIds, isLocalUser);
+async function initInternal(hashedUserPassword, username, isLocalUser, isNewRegistration = false) {
+    if (urlParamService.shouldResetDatabase()) {
+        await pouchDbService.resetDatabase(username);
+    }
+    let metadataObjects = await pouchDbService.allArray(MetaData.getIdPrefix());
+    if (isNewRegistration && metadataObjects.length === 0) {
+        let metadata = new MetaData();
+        metadataObjects = [metadata];
+        await applyFiltersAndSave(MetaData.getIdPrefix(), metadata);
+    }
+    metadataObjects.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
+    let metadataIds = metadataObjects.map((o) => o.id);
+    encryptionService.setEncryptionProperties(hashedUserPassword, metadataIds, isLocalUser);
 
-            if (metadataObjects.length && metadataObjects.length > 1) {
-                log.warn('found duplicated metadata!');
-            }
-            return Promise.all(promises);
-        });
-    _initPromise.then(() => {
-        _lastDataModelVersion = null;
-        $(document).trigger(constants.EVENT_USER_CHANGED);
-    });
-    return _initPromise;
+    if (metadataObjects.length && metadataObjects.length > 1) {
+        log.warn('found duplicated metadata!');
+    }
+    _lastDataModelVersion = null;
+    $(document).trigger(constants.EVENT_USER_CHANGED);
+    metadataStore.initMetadata(metadataObjects[0]);
 }
 
-function applyFiltersAndSave(idPrefix, data) {
-    return new Promise((resolve, reject) => {
-        let convertedData = convertServiceDb.convertLiveToDatabaseObjects(data);
-        pouchDbService
-            .save(idPrefix, convertedData)
-            .then(() => {
-                log.debug('saved ' + idPrefix + ', id: ' + data.id);
-                resolve();
-            })
-            .catch(function (err) {
-                reject(err);
-            });
-    });
+async function applyFiltersAndSave(idPrefix, data) {
+    let convertedData = convertServiceDb.convertLiveToDatabaseObjects(data);
+    await pouchDbService.save(idPrefix, convertedData);
+    log.debug('saved ' + idPrefix + ', id: ' + data.id);
 }
 
 function getModelVersion(dataOrArray) {
