@@ -6577,6 +6577,11 @@ word-wrap@~1.2.3:
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.4.tgz#cb4b50ec9aca570abd1f52f33cd45b6c61739a9f"
   integrity sha512-2V81OA4ugVo5pRo46hAoD2ivUJx8jXmWXfUkY4KFNw0hEptvN0QfH3K4nHiwzGeKl5rFKedV48QVoqYavy4YpA==
 
+worldalphabets@0.0.23:
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/worldalphabets/-/worldalphabets-0.0.23.tgz#b475409b6200c2dba3594dd7423b89e0c79e7aa3"
+  integrity sha512-ElEptPYe2Ia1zuiLidk7rxPGHu3wISG2YLeygTtXdUNU2HdPRBSGCXE0Q39IxxHkEBWi7aKIJvoXEQVSA6jWgA==
+
 wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
