@@ -58,7 +58,7 @@ async function init() {
         }
     }
 
-    if (localStorageService.getUserMajorModelVersion(autologinUser) > modelUtil.getLatestModelVersion().major) {
+    if (!modelUtil.hasValidMajorModelVersion(autologinUser)) {
         log.info(
             `data model version of user "${autologinUser}" is newer than version of running AsTeRICS Grid -> prevent autologin.`
         );

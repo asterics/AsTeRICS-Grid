@@ -3,6 +3,7 @@ let constants = {};
 constants.ELEMENT_EVENT_ID = 'ELEMENT_EVENT_ID';
 constants.MODEL_VERSION = '{"major": 6, "minor": 0, "patch": 0}';
 constants.MODEL_VERSION_LOCAL = '{"major": 1, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT = 7;
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
@@ -82,6 +83,7 @@ constants.IS_ENVIRONMENT_DEV = constants.ENVIRONMENT === '#ASTERICS_' + 'GRID_EN
 constants.IS_ENVIRONMENT_BETA = constants.ENVIRONMENT === 'BETA';
 constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV && !constants.IS_ENVIRONMENT_BETA;
 constants.FORCE_USE_SW = false;
+constants.FORCE_CONNECT_DB = false;
 constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
 constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);

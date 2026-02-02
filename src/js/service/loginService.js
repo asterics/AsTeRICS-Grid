@@ -26,7 +26,7 @@ let _loginInProgress = false;
 
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
-let _serverUrl = constants.IS_ENVIRONMENT_PROD
+let _serverUrl = (constants.IS_ENVIRONMENT_PROD || constants.FORCE_CONNECT_DB)
     ? 'https://login1.couchdb.asterics-foundation.org'
     : `http://${location.hostname}:3000`;
 loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
