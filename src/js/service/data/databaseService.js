@@ -78,7 +78,7 @@ databaseService.getSingleObject = function (objectType, id, onlyShortVersion) {
  *        with the same ID exists.
  * @return {Promise} promise that resolves if operation finished, rejects on a failure
  */
-databaseService.saveObject = function (objectType, data, onlyUpdate) {
+databaseService.saveObject = function (objectType, data, onlyUpdate = false) {
     return _initPromise
         .then(() => {
             if (!data || !objectType || !objectType.getModelName) {
