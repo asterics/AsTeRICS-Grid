@@ -2,7 +2,6 @@ import $ from '../../externals/jquery.js';
 import FileSaver from 'file-saver';
 
 import { GridData } from '../../model/GridData.js';
-import { MetaData } from '../../model/MetaData';
 import { modelUtil } from '../../util/modelUtil';
 import { databaseService } from './databaseService';
 import { dataUtil } from '../../util/dataUtil';
@@ -235,41 +234,6 @@ dataService.addGridElements = function (gridId, newGridElements) {
 };
 
 /**
- * Saves metadata to database. Metadata is always stored with the same ID, so only one metadata object can exist in
- * the database.
- * @see{MetaData}
- *
- * @param newMetadata new or updated metadata object
- * @return {Promise} resolves after operation finished successful
- */
-dataService.saveMetadata = async function(newMetadata) {
-    newMetadata = JSON.parse(JSON.stringify(newMetadata));
-    let updated = false;
-    let existingMetadata = await dataService.getMetadata();
-    if (existingMetadata) {
-        //new metadata is stored with ID of existing metadata -> there should only be one metadata object
-        let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
-        newMetadata.id = id;
-    }
-    if (!existingMetadata.isEqual(newMetadata)) {
-        localStorageService.saveUserSettings({ metadata: newMetadata });
-        updated = true;
-    }
-    if (!localStorageService.getAppSettings().syncNavigation) {
-        newMetadata.locked = existingMetadata.locked;
-        newMetadata.fullscreen = existingMetadata.fullscreen;
-        newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
-    }
-    if (!existingMetadata.isEqual(newMetadata)) {
-        await databaseService.saveObject(MetaData, newMetadata);
-        updated = true;
-    }
-    if (updated) {
-        $(document).trigger(constants.EVENT_METADATA_UPDATED, newMetadata);
-    }
-};
-
-/**
  * set "lastBackup" time in metadata.notificationConfig to current time in order to
  * indicate that no additional backup is needed.
  *
@@ -279,37 +243,6 @@ dataService.markCurrentConfigAsBackedUp = async function () {
     let metadata = await dataService.getMetadata();
     metadata.notificationConfig.lastBackup = new Date().getTime();
     await dataService.saveMetadata(metadata);
-};
-
-/**
- * Retrieves the metadata object.
- * @see{MetaData}
- *
- * @return {Promise} resolving with the metadata object as parameter
- */
-dataService.getMetadata = function () {
-    return new Promise((resolve) => {
-        databaseService.getObject(MetaData).then((result) => {
-            let returnValue = null;
-            if (!result) {
-                returnValue = new MetaData();
-            } else if (Array.isArray(result)) {
-                result.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
-                returnValue = result[0];
-            } else {
-                returnValue = result;
-            }
-            if (!localStorageService.getAppSettings().syncNavigation) {
-                let localMetadata = localStorageService.getUserSettings().metadata;
-                if (localMetadata) {
-                    returnValue.locked = localMetadata.locked;
-                    returnValue.fullscreen = localMetadata.fullscreen;
-                    returnValue.lastOpenedGridId = localMetadata.lastOpenedGridId;
-                }
-            }
-            resolve(new MetaData(returnValue));
-        });
-    });
 };
 
 /**

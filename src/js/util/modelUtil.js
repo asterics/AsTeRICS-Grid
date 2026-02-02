@@ -173,4 +173,20 @@ modelUtil.convertObjects = function (objects, getConversionFunctionsFunction, co
     return passedArray ? objects : objects[0];
 }
 
+modelUtil.isEqual = function(objA, objB) {
+    if (!objA && !objB) {
+        return objA === objB;
+    }
+    if (!objA && objB || objA && !objB) {
+        return false;
+    }
+    let comp1 = JSON.parse(JSON.stringify(objA));
+    let comp2 = JSON.parse(JSON.stringify(objB));
+    delete comp1._rev;
+    delete comp2._rev;
+    delete comp1._id;
+    delete comp2._id;
+    return JSON.stringify(comp1) === JSON.stringify(comp2);
+};
+
 export { modelUtil };
