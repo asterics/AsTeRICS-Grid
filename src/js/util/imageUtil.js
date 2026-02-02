@@ -209,6 +209,7 @@ imageUtil.getScreenshot = async function (selector, options = {}) {
         pixelRatio: options.scale || 0.2,
         cacheBust: false,
         includeQueryParams: true,
+        skipFonts: true,
         filter: (node) => {
             if (options.ignoreSVG) {
                 // Ignore SVG <img> tags
