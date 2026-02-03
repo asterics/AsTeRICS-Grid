@@ -26,6 +26,20 @@
         <div class="srow" v-if="metadata">
             <accordion :acc-label="$t('advancedOptions')">
                 <div class="row">
+                    <label class="col-sm-2" for="inputPronunciation">{{ $t('pronunciation') }}</label>
+                    <div class="col-sm-7" style="position: relative">
+                        <input type="text"
+                               class="col-12"
+                               id="inputPronunciation"
+                               v-if="gridElement"
+                               v-model="gridElement.pronunciation[currentLang]"
+                               :placeholder="getPronunciationPlaceholder()"/>
+                        <button @click="speak()" class="input-button" :title="$t('testPronunciation')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
                     <label class="col-sm-2" for="vocabularyLevel">{{ $t('vocabularyLevel') }}</label>
                     <div class="col-sm-7">
                         <select class="col-12" id="vocabularyLevel" v-model.number="gridElement.vocabularyLevel">
@@ -77,6 +91,7 @@
     import {constants} from "../../js/util/constants.js";
     import {dataService} from "../../js/service/data/dataService.js";
     import {MetaData} from "../../js/model/MetaData.js";
+    import {speechService} from "../../js/service/speechService";
     import Accordion from '../components/accordion.vue';
     import SliderInput from './input/sliderInput.vue';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
@@ -107,9 +122,28 @@
                 this.testGridData = new GridData({
                     gridElements: [element]
                 });
+            },
+            getPronunciationPlaceholder() {
+                let label = this.gridElement.label[this.currentLang] || "";
+                return i18nService.t('pronunciationOf', label);
+            },
+            speak() {
+                let speakText = this.gridElement.pronunciation[this.currentLang] || this.gridElement.label[this.currentLang];
+                if (!speakText) {
+                    return;
+                }
+                speechService.speak(speakText, {
+                    lang: this.currentLang,
+                    voiceLangIsTextLang: true
+                });
             }
         },
         mounted() {
+            // Ensure pronunciation is initialized
+            if (!this.gridElement.pronunciation) {
+                this.$set(this.gridElement, 'pronunciation', {});
+            }
+
             this.resetTestGrid();
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             dataService.getMetadata().then(metadata => {
@@ -129,5 +163,20 @@
 <style scoped>
     .row, .srow {
         margin-top: 1em;
+    }
+
+    .input-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        line-height: initial;
+        margin: 0;
+        padding: 0 1em;
+        box-shadow: none;
+        background-color: transparent;
+        cursor: pointer;
+        z-index: 1;
+        pointer-events: auto;
     }
 </style>
