@@ -215,7 +215,7 @@ function removeCacheUrl(url = '') {
 }
 
 function saveCacheElements(forceSave = false) {
-    let minPause = forceSave ? 0 : 2000;
+    let minPause = forceSave || shouldCacheElements.length === 0 ? 0 : 2000;
     util.throttle(() => {
         localStorageService.saveJSON(KEY_SHOULD_CACHE_ELEMS, shouldCacheElements);
     }, null, minPause, 'SAVE_IMAGE_CACHE_ELEMENTS');
