@@ -122,6 +122,7 @@
     import {constants} from "../../js/util/constants.js";
     import {dataService} from "../../js/service/data/dataService.js";
     import {MetaData} from "../../js/model/MetaData.js";
+    import {gridUtil} from "../../js/util/gridUtil.js";
     import {speechService} from "../../js/service/speechService";
     import Accordion from '../components/accordion.vue';
     import SliderInput from './input/sliderInput.vue';
@@ -132,7 +133,7 @@
 
     export default {
         components: { AppGridDisplay, SliderInput, Accordion },
-        props: ['gridElement'],
+        props: ['gridElement', 'gridData'],
         data: function () {
             return {
                 metadata: null,
@@ -169,23 +170,19 @@
                 });
             },
             getLabelPlaceholder(locale) {
-                let langName = this.getLocaleTranslation(locale);
-                return `${i18nService.t('text')} (${langName})`;
-            },
-            getPronunciationPlaceholder(locale) {
-                let label = this.gridElement.label[locale] || '';
-                return i18nService.t('pronunciationOf', label);
+                if (this.gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                    return i18nService.t('canIncludePlaceholderLike', '{0}');
+                }
+                let langName = i18nService.te(`lang.${locale}`) ? i18nService.t(`lang.${locale}`) : locale;
+                return `${i18nService.t('textHeading')} (${langName})`;
             },
             getPronunciationPlaceholderWithLang(locale) {
                 let label = this.gridElement.label[locale] || '';
-                let langName = this.getLocaleTranslation(locale);
+                let langName = i18nService.te(`lang.${locale}`) ? i18nService.t(`lang.${locale}`) : locale;
                 if (label) {
-                    return `${langName} pronunciation of "${label}"`;
+                    return `${i18nService.t('pronunciationOf', label)} (${langName})`;
                 }
-                return `${langName} pronunciation`;
-            },
-            getLocaleTranslation(locale) {
-                return i18nService.getTranslationAppLang(this.allLanguages.filter((lang) => lang.code === locale)[0]);
+                return `${i18nService.t('pronunciation')} (${langName})`;
             },
             speak(locale) {
                 let speakText = this.gridElement.pronunciation[locale] || this.gridElement.label[locale];
@@ -198,34 +195,21 @@
                 });
             },
             findUsedLocales() {
-                this.gridLanguages = [];
-                dataService.getGrids(true).then((grids) => {
-                    for (let grid of grids) {
-                        for (let element of grid.gridElements) {
-                            for (let lang of Object.keys(element.label)) {
-                                if (!this.gridLanguages.includes(lang) && !!element.label[lang]) {
-                                    this.gridLanguages.push(lang);
-                                }
-                            }
-                        }
-                    }
+                this.gridLanguages = gridUtil.getUsedLocales(this.gridData);
 
-                    if (this.gridLanguages.length > 1) {
-                        // Has multiple used languages: default to first used language, uncheck "show all"
-                        let firstOtherLang = this.gridLanguages.find(lang => lang !== this.currentLang);
-                        if (firstOtherLang) {
-                            this.chosenLocale = firstOtherLang;
-                        }
-                        this.selectAllLanguages = false;
-                    } else {
-                        // Only one or no used languages: default to first available language, check "show all"
-                        let firstAvailableLang = this.allLanguages.find(lang => lang.code !== this.currentLang);
-                        if (firstAvailableLang) {
-                            this.chosenLocale = firstAvailableLang.code;
-                        }
-                        this.selectAllLanguages = true;
+                if (this.gridLanguages.length > 1) {
+                    let firstOtherLang = this.gridLanguages.find(lang => lang !== this.currentLang);
+                    if (firstOtherLang) {
+                        this.chosenLocale = firstOtherLang;
                     }
-                });
+                    this.selectAllLanguages = false;
+                } else {
+                    let firstAvailableLang = this.allLanguages.find(lang => lang.code !== this.currentLang);
+                    if (firstAvailableLang) {
+                        this.chosenLocale = firstAvailableLang.code;
+                    }
+                    this.selectAllLanguages = true;
+                }
             }
         },
         mounted() {
@@ -262,5 +246,9 @@
         display: flex;
         align-items: center;
         gap: 0.5em;
+    }
+
+    .input-button {
+        right: 8px;
     }
 </style>
