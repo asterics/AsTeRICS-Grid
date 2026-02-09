@@ -98,6 +98,9 @@ function init() {
 }
 
 function cacheNext() {
+    if (!constants.IS_ENVIRONMENT_PROD && !constants.FORCE_USE_SW) {
+        return;
+    }
     if (shouldCacheElements.length === 0 && _processingUrls.size === 0) {
         log.info('caching files via service worker finished.');
         if (_hasCachedImages) {
