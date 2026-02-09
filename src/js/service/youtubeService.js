@@ -154,18 +154,14 @@ youtubeService.play = function (action, videoTimeParam) {
                         videoEmbeddable: true
                     }).then((response) => {
                         let videoIds = response.result.items.map((item) => item.id.videoId).filter((id) => !!id);
+                        player.stopVideo();
                         player.loadPlaylist(videoIds, userSettings.ytState.lastPlaylistIndexes[action.data]);
-                        setTimeout(() => {
-                            if (!player) return;
-                            if (!youtubeService.isPlaying()) {
-                                player.loadPlaylist(videoIds, userSettings.ytState.lastPlaylistIndexes[action.data]);
-                            }
-                        }, 500);
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
                     let playlistId = youtubeService.getPlaylistId(action.data);
                     waitForBuffering = true;
+                    player.stopVideo();
                     player.loadPlaylist({
                         list: playlistId,
                         listType: 'playlist',
@@ -176,6 +172,7 @@ youtubeService.play = function (action, videoTimeParam) {
                     let channel = youtubeService.getChannelId(action.data);
                     let channelPlaylist = youtubeService.getChannelPlaylist(channel);
                     waitForBuffering = true;
+                    player.stopVideo();
                     player.loadPlaylist({
                         list: channelPlaylist,
                         listType: 'playlist',
@@ -397,25 +394,24 @@ youtubeService.getPlaylistId = function (videoLink) {
     return listParam ? listParam : videoLink;
 };
 
-youtubeService.getChannelId = function (link) {
-    if (!link) {
+youtubeService.getChannelId = function(link = '') {
+    link = link.trim();
+    let channelId = null;
+
+    const match = link.match(/\/channel\/(UC[0-9A-Za-z_-]{22})/);
+    if (match) {
+        channelId = match[1];
+    } else if (/^UC[0-9A-Za-z_-]{22}$/.test(link)) {
+        channelId = link;
+    } else {
+        log.warn('Invalid youtube channel ID or URL:', link);
         return null;
     }
-    let channelPrefixes = ['channel/'];
-    for (let i = 0; i < channelPrefixes.length; i++) {
-        if (link.indexOf(channelPrefixes[i]) !== -1) {
-            let start = link.indexOf(channelPrefixes[i]) + channelPrefixes[i].length;
-            let channel = link.substring(start);
-            channel = channel.indexOf('/') === -1 ? channel : channel.substring(0, channel.indexOf('/'));
-            if (channel) {
-                return channel;
-            }
-        }
-    }
-    return link;
+
+    return channelId;
 };
 
-youtubeService.getChannelPlaylist = function (channelId) {
+youtubeService.getChannelPlaylist = function (channelId = '') {
     if (channelId.indexOf('UC') === 0) {
         channelId = channelId.replace('UC', 'UU');
     }

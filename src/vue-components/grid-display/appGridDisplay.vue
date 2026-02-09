@@ -2,11 +2,11 @@
     <div ref="mainContainer" :style="`flex: 1 1 auto; max-width: 100%; min-height: 0; cursor: ${cursorType}`">
         <grid-layout ref="gridLayout" v-if="gridData && oneElementSize" :key="gridData.id + gridData.gridElements.length + gridData.rowCount + gridData.minColumnCount"
                      :elements="gridData.gridElements" :render-component="AppGridElement"
-                     :background-color="metadata.colorConfig.gridBackgroundColor"
+                     :background-color="gridData.backgroundColor || metadata.colorConfig.gridBackgroundColor"
                      :rows="gridData.rowCount" :columns="gridData.minColumnCount"
                      :metadata="metadata" :one-element-size="oneElementSize" v-on="$listeners" v-bind="$attrs"
                      :show-resize-handle="editable" :editable="editable" :background-lines="editable"
-                     :key-function="getKey">
+                     :key-function="getKey" :elem-css-fn="elemCssFn">
         </grid-layout>
     </div>
 </template>
@@ -21,7 +21,7 @@ import { util } from '../../js/util/util';
 
 export default {
     components: { GridElement, GridLayout, AppGridElement },
-    props: ["gridData", "metadata", "editable"],
+    props: ["gridData", "metadata", "editable", "elemCssFn"],
     data() {
         return {
             AppGridElement: AppGridElement,

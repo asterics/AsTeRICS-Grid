@@ -6,6 +6,7 @@ import { audioUtil } from '../util/audioUtil.js';
 import { speechServiceExternal } from './speechServiceExternal.js';
 import { localStorageService } from './data/localStorageService.js';
 import { i18nService } from './i18nService';
+import voiceUtil from '../util/voiceUtil';
 
 let speechService = {};
 
@@ -419,7 +420,7 @@ function addVoice(voiceId, voiceName, voiceLang, voiceType, localVoice, original
         langFull: voiceLang.toLowerCase(),
         type: voiceType,
         ref: originalReference,
-        local: localVoice
+        local: voiceUtil.isVoiceOffline(voiceId, voiceName, localVoice)
     });
 }
 

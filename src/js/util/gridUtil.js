@@ -11,6 +11,7 @@ import { GridActionARE } from '../model/GridActionARE';
 import { encryptionService } from '../service/data/encryptionService';
 import { gridLayoutUtil } from '../../vue-components/grid-layout/utils/gridLayoutUtil';
 import { localStorageService } from '../service/data/localStorageService';
+import { util } from './util';
 
 let gridUtil = {};
 
@@ -136,10 +137,17 @@ gridUtil.generateGlobalGrid = function (locale, options) {
         }),
         actions: [new GridActionCollectElement({ action: GridActionCollectElement.COLLECT_ACTION_CLEAR })]
     });
+    let elementPlaceholder = new GridElement({
+        type: GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER,
+        width: 15,
+        height: 5,
+        x: 0,
+        y: 1
+    });
     return new GridData({
         label: i18nService.getTranslationObject(i18nService.t('globalGrid'), locale),
-        gridElements: [elementHome, elementBack, elementCollect, elementSpeak, elementBackspace, elementClear],
-        rowCount: 3
+        gridElements: [elementHome, elementBack, elementCollect, elementSpeak, elementBackspace, elementClear, elementPlaceholder],
+        rowCount: 6
     });
 };
 
@@ -216,10 +224,25 @@ gridUtil.getFreeCoordinates = function (gridData) {
     });
 };
 
-gridUtil.getFillElements = function (gridData) {
+gridUtil.getFillElements = function (gridData, elementType = GridElement.ELEMENT_TYPE_NORMAL) {
     let freeCoordinates = gridUtil.getFreeCoordinates(gridData);
-    return freeCoordinates.map((xy) => new GridElement({ x: xy.x, y: xy.y }));
+    return freeCoordinates.map((xy) => new GridElement({ x: xy.x, y: xy.y, type: elementType }));
 };
+
+/**
+ * fills the given grid data with new elements of the given type, so no empty spaces afterwards
+ * @param gridData
+ * @param elementType
+ * @returns {*|null}
+ */
+gridUtil.fillFreeSpaces = function(gridData, elementType = GridElement.ELEMENT_TYPE_NORMAL) {
+    if (!gridData) {
+        return null;
+    }
+    let fillElements = gridUtil.getFillElements(gridData, elementType);
+    gridData.gridElements = gridData.gridElements.concat(JSON.parse(JSON.stringify(fillElements)));
+    return gridData;
+}
 
 gridUtil.updateOrAddGridElement = function (gridData, updatedGridElement) {
     updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));
@@ -472,42 +495,100 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     if (grid && globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
         globalGrid = JSON.parse(JSON.stringify(globalGrid));
         grid = options.noDeepCopy ? grid : JSON.parse(JSON.stringify(grid));
-        let autowidth = true;
-        let heightPercentage = options.globalGridHeightPercentage
-            ? options.globalGridHeightPercentage / 100
-            : 0.15;
-        let heightFactorNormal = 1;
-        let heightFactorGlobal = 1;
-        if (gridUtil.getHeight(globalGrid) === 1) {
-            let height = gridUtil.getHeightWithBounds(grid);
-            heightFactorGlobal = (heightPercentage * height) / (1 - heightPercentage);
-            heightFactorNormal = 1 / (height * heightPercentage) - 1 / height;
-            heightFactorGlobal = Math.round(heightPercentage * 100);
-            heightFactorNormal = Math.round(((1 - heightPercentage) / height) * 100);
-        }
-        let offset = gridUtil.getOffset(globalGrid);
-        let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
-        let factorGlobal = autowidth ? gridUtil.getWidthWithBounds(grid) : 1;
-        globalGrid.gridElements.forEach((gridElement) => {
-            gridElement.width *= factorGlobal;
-            gridElement.x *= factorGlobal;
-            if (gridElement.y === 0) {
-                gridElement.height *= heightFactorGlobal;
+        let placeholderElem = globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
+        if (placeholderElem) {
+            globalGrid.gridElements = globalGrid.gridElements.filter(e => e.type !== GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
+            let placeholderW = placeholderElem.width;
+            let placeholderH = placeholderElem.height;
+            let gridW = gridUtil.getWidthWithBounds(grid);
+            let gridH = gridUtil.getHeightWithBounds(grid);
+            for (let globalElem of globalGrid.gridElements) {
+                globalElem.width *= gridW;
+                globalElem.x *= gridW;
+                globalElem.height *= gridH;
+                globalElem.y *= gridH;
             }
-        });
-        grid.gridElements.forEach((gridElement) => {
-            gridElement.width *= factorGrid;
-            gridElement.x *= factorGrid;
-            gridElement.x += offset.x * factorGlobal;
-            gridElement.y = offset.y * heightFactorGlobal + gridElement.y * heightFactorNormal;
-            gridElement.height *= heightFactorNormal;
-        });
-        grid.rowCount *= heightFactorNormal;
-        grid.rowCount += offset.y * heightFactorGlobal;
+            globalGrid.minColumnCount *= gridW;
+            globalGrid.rowCount *= gridH;
+            let offsetX = placeholderElem.x * gridW;
+            let offsetY = placeholderElem.y * gridH;
+            for (let gridElem of grid.gridElements) {
+                gridElem.width *= placeholderW;
+                gridElem.x = gridElem.x * placeholderW + offsetX;
+                gridElem.height *= placeholderH;
+                gridElem.y = gridElem.y * placeholderH + offsetY;
+            }
+            grid.minColumnCount *= placeholderW;
+            grid.rowCount *= placeholderH;
+            grid.rowCount = Math.max(grid.rowCount + offsetY, globalGrid.rowCount);
+            grid.minColumnCount = Math.max(grid.minColumnCount + offsetX, globalGrid.minColumnCount);
+        } else {
+            let autowidth = true;
+            let heightPercentage = options.globalGridHeightPercentage
+                ? options.globalGridHeightPercentage / 100
+                : 0.15;
+            let heightFactorNormal = 1;
+            let heightFactorGlobal = 1;
+            if (gridUtil.getHeight(globalGrid) === 1) {
+                let height = gridUtil.getHeightWithBounds(grid);
+                heightFactorGlobal = (heightPercentage * height) / (1 - heightPercentage);
+                heightFactorNormal = 1 / (height * heightPercentage) - 1 / height;
+                heightFactorGlobal = Math.round(heightPercentage * 100);
+                heightFactorNormal = Math.round(((1 - heightPercentage) / height) * 100);
+            }
+            let offset = gridUtil.getOffset(globalGrid);
+            let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
+            let factorGlobal = autowidth ? gridUtil.getWidthWithBounds(grid) : 1;
+            globalGrid.gridElements.forEach((gridElement) => {
+                gridElement.width *= factorGlobal;
+                gridElement.x *= factorGlobal;
+                if (gridElement.y === 0) {
+                    gridElement.height *= heightFactorGlobal;
+                }
+            });
+            grid.gridElements.forEach((gridElement) => {
+                gridElement.width *= factorGrid;
+                gridElement.x *= factorGrid;
+                gridElement.x += offset.x * factorGlobal;
+                gridElement.y = offset.y * heightFactorGlobal + gridElement.y * heightFactorNormal;
+                gridElement.height *= heightFactorNormal;
+            });
+            grid.rowCount *= heightFactorNormal;
+            grid.rowCount += offset.y * heightFactorGlobal;
+        }
         grid.gridElements = globalGrid.gridElements.concat(grid.gridElements);
     }
     return grid;
 }
+
+/**
+ * @param grid
+ * @param firstRowHeightFactor factor to increase/decrease height of first row
+ * @returns {*} the adapted grid
+ */
+gridUtil.adaptFirstRowHeight = function(grid, firstRowHeightFactor = 1) {
+    let baseHeightFactor = 10;
+    let factorProp = util.limitValue(firstRowHeightFactor, 0.1, 2, 1);
+    firstRowHeightFactor = Math.round(baseHeightFactor * factorProp);
+    let firstRowElems = grid.gridElements.filter(e => e.y === 0);
+    let maxFirstRowHeight = firstRowElems.reduce((total, elem) => Math.max(total, elem.height), 0) || 1;
+    firstRowElems = grid.gridElements.filter(e => e.y + e.height <= maxFirstRowHeight);
+    let otherElems = grid.gridElements.filter(e => !firstRowElems.includes(e));
+    if (firstRowElems.length > 0 && factorProp !== 1) {
+        let maxFirstHeight = Math.max(...firstRowElems.map(e => e.height));
+        let otherOffset = (firstRowHeightFactor - baseHeightFactor) * maxFirstHeight;
+        for (let elem of firstRowElems) {
+            elem.height *= firstRowHeightFactor;
+            elem.y *= firstRowHeightFactor;
+        }
+        for (let elem of otherElems) {
+            elem.height *= baseHeightFactor;
+            elem.y *= baseHeightFactor;
+            elem.y += otherOffset;
+        }
+    }
+    return grid;
+};
 
 gridUtil.getAREFirstAction = function(gridData) {
     let allActions = [];
@@ -713,6 +794,64 @@ gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
         return defaultCursorType;
     }
     return 'none';
+};
+
+/**
+ * returns CSS needed for element background, depending on in from where the element comes (global or normal grid)
+ * @param elem
+ * @param dynamicGrid
+ * @param globalGrid
+ * @param defaultBackground
+ * @returns {string|string}
+ */
+gridUtil.getElemBackgroundCss = function(elem, childGrid = {}, globalGrid, defaultBackground = '') {
+    let fromGlobal = globalGrid && !!globalGrid.gridElements.find(e => e.id === elem.id);
+    let backgroundColor = fromGlobal ? globalGrid.backgroundColor : childGrid.backgroundColor;
+    backgroundColor = backgroundColor || defaultBackground || constants.DEFAULT_GRID_BACKGROUND_COLOR;
+    return backgroundColor ? `background-color: ${backgroundColor};` : '';
+};
+
+gridUtil.getFirstWordForm = function(element, lang = null) {
+    let object = gridUtil.getFirstWordFormObject(element, lang);
+    return object ? object.value : null;
+};
+
+gridUtil.getFirstWordFormObject = function(element, lang) {
+    let forms = gridUtil.getWordFormsForLang(element, lang);
+    return forms.length > 0 ? forms[0] : null;
+};
+
+/**
+ * returns a list of all word forms for the given language
+ * If word forms for exact given language (localized, e.g. "en-us") are not existing,
+ * word forms for base language (e.g. "en") or other localized languages (e.g. "en-gb") are returned.
+ * Word forms without language are returned always.
+ *
+ * @param element
+ * @param lang
+ * @returns {T[]}
+ */
+gridUtil.getWordFormsForLang = function(element, lang = '') {
+    lang = lang || i18nService.getContentLang();
+    let formsLang = element.wordForms.filter((form) => !form.lang || form.lang === lang);
+    let formsBaseLang = element.wordForms.filter((form) => !form.lang || i18nService.getBaseLang(form.lang) === i18nService.getBaseLang(lang));
+    return formsLang.length > 0 ? formsLang : formsBaseLang;
+};
+
+/**
+ * returns the label to display for a given element, also  taking word forms into account
+ * @param element
+ * @returns {string|*}
+ */
+gridUtil.getDisplayLabel = function(element) {
+    return gridUtil.getFirstWordForm(element) || i18nService.getTranslation(element.label);
+}
+
+gridUtil.hasDynamicGridPlaceholder = function(globalGrid) {
+    if (!globalGrid) {
+        return false;
+    }
+    return !!globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
 };
 
 function getAllChildrenRecursive(gridGraphList, gridId) {

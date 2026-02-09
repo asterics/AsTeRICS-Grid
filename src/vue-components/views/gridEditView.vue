@@ -30,7 +30,7 @@
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :undo-service="undoService" @reload="reload" @close="showMultipleModal = false"/>
         </div>
         <div>
-            <grid-settings-modal v-if="showGridSettingsModal" :grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @reload="reload" @close="showGridSettingsModal = false;" :undo-service="undoService"/>
+            <grid-settings-modal v-if="showGridSettingsModal" :grid-data-param="gridData" :is-global-grid="isEditingGlobalGrid" @reload="reload" @close="showGridSettingsModal = false;" :undo-service="undoService"/>
         </div>
         <div>
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
@@ -124,6 +124,14 @@
             SetNavigationModal,
             GridTranslateModal,
             GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
+        },
+        computed: {
+            isEditingGlobalGrid() {
+                if (!this.metadata || !this.gridData || !this.metadata.globalGridId) {
+                    return false;
+                }
+                return this.metadata.globalGridId === this.gridData.id;
+            }
         },
         methods: {
             configPropTransfer(id) {
@@ -221,10 +229,21 @@
                 liveElementService.updateOnce({ elements: this.gridData.gridElements, forceUpdate: true });
             },
             back() {
-                if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
+                if (this.isEditingGlobalGrid) {
                     Router.toMain();
                 } else {
                     Router.toGrid(this.gridData.id);
+                }
+            },
+            toEditGlobal() {
+                let globalId = this.gridData.globalGridId || this.metadata.globalGridId;
+                if (globalId) {
+                    Router.toEditGrid(globalId);
+                }
+            },
+            toEditChild() {
+                if (this.isEditingGlobalGrid) {
+                    Router.toEditGrid(this.metadata.lastOpenedGridId);
                 }
             },
             editElement(elementId = null) {
@@ -294,17 +313,18 @@
                 this.unmarkAll();
             },
             async newElement(type, useInteractionPos) {
+                let interactionPosToUse = useInteractionPos && this.lastInteraction && this.lastInteraction.x !== undefined ? this.lastInteraction : null;
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
-                    this.newPosition = useInteractionPos && this.lastInteraction.x !== undefined ? this.lastInteraction : null;
+                    this.newPosition = interactionPosToUse;
                     this.showEditModal = true;
                 } else {
                     let showEdit = false;
                     let newPos = new GridData(this.gridData).getNewXYPos();
                     let baseProperties = {
                         type: type,
-                        x: newPos.x,
-                        y: newPos.y
+                        x: interactionPosToUse ? interactionPosToUse.x : newPos.x,
+                        y: interactionPosToUse ? interactionPosToUse.y : newPos.y
                     };
                     let newElement = new GridElement(baseProperties);
                     if (type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
@@ -323,7 +343,13 @@
                         showEdit = true;
                     } else if (type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
                         newElement = new GridElementMatrixConversation(baseProperties);
+                    } else if (type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER) {
+                        newElement = gridLayoutUtil.increaseElement(this.gridData.gridElements, newElement, {
+                            gridWidth: this.gridData.minColumnCount,
+                            gridHeight: this.gridData.rowCount
+                        });
                     }
+                    newElement = JSON.parse(JSON.stringify(newElement));
                     this.gridData.gridElements.push(newElement);
                     await this.updateGridWithUndo();
                     if (showEdit) {
@@ -600,6 +626,15 @@
                             this.newElements();
                             return;
                         }
+                        if (event.shiftKey && event.code === 'KeyG') {
+                            event.preventDefault();
+                            if (this.isEditingGlobalGrid) {
+                                this.toEditChild();
+                            } else {
+                                this.toEditGlobal();
+                            }
+                            return;
+                        }
                         if (event.code === 'KeyI') {
                             event.preventDefault();
                             this.newElement(GridElement.ELEMENT_TYPE_NORMAL);
@@ -682,12 +717,11 @@
 
             let savedMetadata = await dataService.getMetadata();
             thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
-            if (thiz.metadata.globalGridId !== thiz.gridData.id) {
+            if (!thiz.isEditingGlobalGrid) {
                 thiz.metadata.lastOpenedGridId = thiz.gridData.id;
                 await dataService.saveMetadata(thiz.metadata);
             }
 
-            initContextmenu();
             thiz.showGrid = true;
             thiz.highlightElement();
             this.$nextTick(() => {
@@ -700,6 +734,7 @@
                 container.addEventListener("contextmenu", this.onContextMenu);
                 collectElementService.initWithGrid(this.gridData);
                 liveElementService.updateOnce({ elements: this.gridData.gridElements });
+                initContextmenu();
             });
         },
         beforeDestroy() {
@@ -745,6 +780,7 @@
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
         var CONTEXT_NEW_LIVE = "CONTEXT_NEW_LIVE";
         var CONTEXT_NEW_MATRIX_CONVERSATION = "CONTEXT_NEW_MATRIX_CONVERSATION";
+        var CONTEXT_NEW_CHILD_PLACEHOLDER = "CONTEXT_NEW_CHILD_PLACEHOLDER";
 
         var CONTEXT_LAYOUT_ALL_UP = "CONTEXT_LAYOUT_ALL_UP";
         var CONTEXT_LAYOUT_ALL_RIGHT = "CONTEXT_LAYOUT_ALL_RIGHT";
@@ -763,10 +799,17 @@
         let CONTEXT_PROPERTY_TRANSFER_APPEARANCE = "CONTEXT_PROPERTY_TRANSFER_APPEARANCE";
         let CONTEXT_PROPERTY_TRANSFER_ALL = "CONTEXT_PROPERTY_TRANSFER_ALL";
 
+        let childPlaceholderDisabledFn = () => !!vueApp.gridData.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
         let contextMenuNewGroup = {
             name: i18nService.t('new'), icon: "fas fa-plus-circle", items: {
                 'CONTEXT_NEW_SINGLE': {name: i18nService.t('newElement'), icon: "fas fa-plus"},
                 'CONTEXT_NEW_MASS': {name: i18nService.t('manyNewElements'), icon: "fas fa-clone"},
+                'CONTEXT_NEW_CHILD_PLACEHOLDER': {
+                    name: i18nService.t('newDynamicGridPlaceholder'),
+                    icon: "fas fa-th",
+                    visible: vueApp.isEditingGlobalGrid,
+                    disabled: childPlaceholderDisabledFn
+                },
                 'CONTEXT_NEW_COLLECT': {
                     name: i18nService.t('newCollectElement'),
                     icon: "fas fa-ellipsis-h"
@@ -798,6 +841,7 @@
         };
         itemsGlobal[CONTEXT_NEW_GROUP_REDUCED].items[CONTEXT_NEW_SINGLE].visible = false;
         itemsGlobal[CONTEXT_NEW_GROUP_REDUCED].items[CONTEXT_NEW_MASS].visible = false;
+        itemsGlobal[CONTEXT_NEW_GROUP_REDUCED].items[CONTEXT_NEW_CHILD_PLACEHOLDER].disabled = childPlaceholderDisabledFn;
         itemsGlobal[CONTEXT_NEW_GROUP_REDUCED].name = i18nService.t('newSpecialElement');
 
         let itemsTransferProps = {
@@ -855,13 +899,25 @@
                 name: i18nService.t('translateGrid'),
                 icon: "fas fa-language"
             },
-            'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
-            'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
+            'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !vueApp.isEditingGlobalGrid},
+            'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.isEditingGlobalGrid},
             SEP2: "---------",
             'CONTEXT_SEARCH': {name: i18nService.t('searchBtnTitle'), icon: "fas fa-search"},
         };
 
         let ORIGIN_MORE_BTN = "ORIGIN_MORE_BTN";
+
+        $.contextMenu({
+            selector: '.child-placeholder',
+            callback: function (key, options) {
+                let elementId = $(this).attr('id');
+                handleContextMenu(key, elementId);
+            },
+            items: {
+                CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"}
+            },
+            zIndex: 100
+        });
 
         $.contextMenu({
             selector: '.element-container',
@@ -894,9 +950,11 @@
         });
 
         function handleContextMenu(key, elementId, origin) {
+            elementId = elementId || vueApp.markedElementIds[0];
+            let createdWithinGrid = origin !== ORIGIN_MORE_BTN;
             switch (key) {
                 case CONTEXT_NEW_SINGLE: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL, origin !== ORIGIN_MORE_BTN);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_MASS: {
@@ -904,23 +962,27 @@
                     break;
                 }
                 case CONTEXT_NEW_COLLECT: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_PREDICT: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_PREDICTION);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_PREDICTION, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_YT_PLAYER: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_LIVE: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_LIVE);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_LIVE, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_NEW_MATRIX_CONVERSATION: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION, createdWithinGrid);
+                    break;
+                }
+                case CONTEXT_NEW_CHILD_PLACEHOLDER: {
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER, createdWithinGrid);
                     break;
                 }
                 case CONTEXT_COPY_ALL: {
@@ -1007,10 +1069,10 @@
                     vueApp.unmarkAll();
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
-                    Router.toEditGrid(vueApp.gridData.globalGridId || vueApp.metadata.globalGridId);
+                    vueApp.toEditGlobal();
                     break;
                 case CONTEXT_END_EDIT_GLOBAL_GRID:
-                    Router.toEditGrid(vueApp.metadata.lastOpenedGridId);
+                    vueApp.toEditChild();
                     break;
                 case CONTEXT_SEARCH:
                     MainVue.showSearchModal();

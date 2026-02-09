@@ -3,6 +3,7 @@ let constants = {};
 constants.ELEMENT_EVENT_ID = 'ELEMENT_EVENT_ID';
 constants.MODEL_VERSION = '{"major": 6, "minor": 0, "patch": 0}';
 constants.MODEL_VERSION_LOCAL = '{"major": 1, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION_CHANGED_TO_USERNAME_AS_SALT = 7;
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
@@ -14,6 +15,17 @@ constants.VALIDATION_ERROR_REGEX = 'VALIDATION_ERROR_REGEX';
 constants.VALIDATION_ERROR_EXISTING = 'VALIDATION_ERROR_EXISTING';
 constants.VALIDATION_ERROR_FAILED = 'VALIDATION_ERROR_FAILED';
 constants.VALIDATION_VALID = 'VALIDATION_VALID';
+
+// MessageBox modal types
+constants.MODAL_TYPE_SUCCESS = 'success';
+constants.MODAL_TYPE_QUESTION = 'question';
+constants.MODAL_TYPE_WARNING = 'warning';
+constants.MODAL_TYPE_INFO = 'info';
+
+// MessageBox button presets
+constants.BUTTONS_OK = 'ok';
+constants.BUTTONS_YES_NO = 'yesno';
+constants.BUTTONS_OK_CANCEL = 'okcancel';
 
 constants.EVENT_DB_CONNECTION_LOST = 'EVENT_DB_CONNECTION_LOST';
 constants.EVENT_DB_PULL_UPDATED = 'EVENT_DB_PULL_UPDATED';
@@ -69,6 +81,8 @@ constants.ENVIRONMENT = '#ASTERICS_GRID_ENV#';
 constants.IS_ENVIRONMENT_DEV = constants.ENVIRONMENT === '#ASTERICS_' + 'GRID_ENV#';
 constants.IS_ENVIRONMENT_BETA = constants.ENVIRONMENT === 'BETA';
 constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV && !constants.IS_ENVIRONMENT_BETA;
+constants.FORCE_USE_SW = false;
+constants.FORCE_CONNECT_DB = false;
 constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
 constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -98,7 +112,8 @@ constants.COLORS = {
     GRAY: '#808080',
     BLACK: '#000000',
     PREDICT_BACKGROUND: '#FFE4B2',
-    LIVE_BACKGROUND: '#C6ECFD'
+    LIVE_BACKGROUND: '#C6ECFD',
+    TRANSPARENT: 'transparent',
 }
 
 constants.PROP_TRANSFER_DONT_CHANGE = "PROP_TRANSFER_DONT_CHANGE";

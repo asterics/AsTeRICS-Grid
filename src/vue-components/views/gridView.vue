@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="srow content d-flex" v-if="renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
-            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata"/>
+            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
     </div>
 </template>
@@ -125,7 +125,8 @@
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
-                systemActionService: systemActionService
+                systemActionService: systemActionService,
+                gridUtil: gridUtil
             }
         },
         components: {
@@ -403,6 +404,10 @@
                 // attention: gridData also changes because of "noDeepCopy: true"
                 // just using this.renderGridData for clarity
                 let globalGrid = null;
+                gridData = gridUtil.fillFreeSpaces(gridData, GridElement.ELEMENT_TYPE_UI_FILLER);
+                if (gridUtil.hasDynamicGridPlaceholder(this.globalGridData)) {
+                    this.globalGridData = gridUtil.fillFreeSpaces(this.globalGridData, GridElement.ELEMENT_TYPE_UI_FILLER);
+                }
                 if (gridData.showGlobalGrid) {
                     globalGrid = this.globalGridData;
                     if (gridData.globalGridId) { // custom global grid
@@ -415,6 +420,7 @@
                 } else {
                     this.renderGridData = gridData;
                 }
+                this.renderGridData = gridUtil.adaptFirstRowHeight(this.renderGridData, this.metadata.firstRowHeightFactor);
                 this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);

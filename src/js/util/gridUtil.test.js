@@ -2,6 +2,7 @@ import { gridUtil } from './gridUtil.js';
 import {GridActionNavigate} from "../model/GridActionNavigate.js";
 
 jest.mock('../service/i18nService', () => jest.fn());
+jest.mock('../service/data/localStorageService');
 jest.mock('../externals/objectmodel');
 jest.mock('../model/GridActionNavigate');
 jest.mock('../model/GridElement');

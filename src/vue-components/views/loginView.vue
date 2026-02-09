@@ -279,7 +279,7 @@
                 this.savedLocalUsers = localStorageService.getSavedLocalUsers();
             },
             hasValidMajorModelVersion(user) {
-                return localStorageService.getUserMajorModelVersion(user) <= modelUtil.getLatestModelVersion().major;
+                return modelUtil.hasValidMajorModelVersion(user);
             }
         },
         mounted() {

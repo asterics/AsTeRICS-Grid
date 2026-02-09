@@ -7,6 +7,7 @@ class GridElementLive extends GridElement.extend({
     dateTimeFormat: [String],
     dateTimeLocale: [String],
     dateTimeFormatCustom: [String],
+    dateTimeOffsetHours: [Number],
     state: [String],
     appState: [String],
     extractMode: [String],

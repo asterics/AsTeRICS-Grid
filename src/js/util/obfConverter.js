@@ -13,6 +13,7 @@ import { MetaData } from '../model/MetaData';
 import { imageUtil } from './imageUtil';
 import { util } from './util';
 import { dataService } from '../service/data/dataService';
+import { gridUtil } from './gridUtil';
 
 let obfConverter = {};
 let OBF_FORMAT_VERSION = 'open-board-0.1';
@@ -22,7 +23,8 @@ let OBF_BOARD_POSTFIX = '.obf';
 let OBF_MANIFEST_FILENAME = 'manifest.json';
 
 obfConverter.gridDataToOBF = function(gridData, manifest) {
-    let columns = new GridData(gridData).getWidthWithBounds();
+    let columns = gridUtil.getWidthWithBounds(gridData);
+    let rows = gridUtil.getHeightWithBounds(gridData);
     let obfGrid = {
         format: OBF_FORMAT_VERSION,
         id: gridData.id,
@@ -30,9 +32,9 @@ obfConverter.gridDataToOBF = function(gridData, manifest) {
         locale: i18nService.getContentLang(),
         buttons: [],
         grid: {
-            rows: gridData.rowCount,
+            rows: rows,
             columns: columns,
-            order: new Array(gridData.rowCount).fill(null)
+            order: new Array(rows).fill(null)
         },
         images: []
     };
@@ -93,7 +95,7 @@ obfConverter.backupDataToOBZ = async function(backupData, options = {}) {
 function gridElementToObfButton(gridElement, obfGrid) {
     let obfButton = {
         id: gridElement.id,
-        label: i18nService.getTranslation(gridElement.label),
+        label: gridUtil.getDisplayLabel(gridElement),
         background_color: gridElement.backgroundColor
     };
     let obfImage = gridImageToObfImage(gridElement.image);
@@ -141,10 +143,7 @@ obfConverter.OBFToGridData = function(obfObject, obfObjects) {
         return Promise.resolve(null);
     }
     let promises = [];
-    let locale = obfObject.locale ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
-    let baseLocale = i18nService.getBaseLang(locale);
-    locale = i18nService.getAllLangCodes().includes(locale) ? locale :
-        (i18nService.getAllLangCodes().includes(baseLocale) ? baseLocale : i18nService.getContentLang());
+    let locale = getLocale(obfObject);
     obfObject.grid = obfObject.grid || { rows: 1, columns: 1, order: [] };
     let gridData = new GridData({
         obfId: obfObject.id,
@@ -250,13 +249,14 @@ obfConverter.OBZToImportData = async function(obzFileMap) {
  *         of the actual gridId therefore postprocessing is needed, also see documentation of obfConverter.OBFToGridData()
  */
 function addActions(gridElement, obfButton, obfObject, obfObjects) {
+    let locale = getLocale(obfObject);
     if (obfButton.vocalization) {
         gridElement.actions = gridElement.actions.filter(
             (action) => action.modelName !== GridActionSpeak.getModelName()
         );
         gridElement.actions.push(
             new GridActionSpeakCustom({
-                speakText: obfButton.vocalization,
+                speakText: i18nService.getTranslationObject(obfButton.vocalization, locale),
                 speakLanguage: obfObject.locale
             })
         );
@@ -352,6 +352,14 @@ function getGridImage(imageId, obfObject, obfObjects) {
         return Promise.resolve(gridImage);
     }
     return Promise.resolve(null);
+}
+
+function getLocale(obfObject = {}) {
+    let locale = obfObject.locale ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
+    let baseLocale = i18nService.getBaseLang(locale);
+    locale = i18nService.getAllLangCodes().includes(locale) ? locale :
+        (i18nService.getAllLangCodes().includes(baseLocale) ? baseLocale : i18nService.getContentLang());
+    return locale;
 }
 
 export { obfConverter };

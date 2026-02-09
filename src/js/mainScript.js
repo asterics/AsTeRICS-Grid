@@ -58,7 +58,7 @@ async function init() {
         }
     }
 
-    if (localStorageService.getUserMajorModelVersion(autologinUser) > modelUtil.getLatestModelVersion().major) {
+    if (!modelUtil.hasValidMajorModelVersion(autologinUser)) {
         log.info(
             `data model version of user "${autologinUser}" is newer than version of running AsTeRICS Grid -> prevent autologin.`
         );
@@ -86,7 +86,7 @@ async function init() {
 init();
 
 function initServiceWorker() {
-    if (!constants.IS_ENVIRONMENT_PROD) {
+    if (!constants.IS_ENVIRONMENT_PROD && !constants.FORCE_USE_SW) {
         log.warn('Not installing Service Worker because on development environment.');
         return;
     }

@@ -103,6 +103,8 @@ Other people and organizations we want to thank:
 * Thanks to the makers of the API from [opensymbols.org](https://www.opensymbols.org/) which makes it possible to search for open AAC symbols within AsTeRICS Grid
 * Thanks to ResponsiveVoice for providing an free non-commercial version, <a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a>
 * Thanks to [open-meteo.com](https://open-meteo.com/), which provides free weather data, which can be displayed within AsTeRICS Grid
+* Thanks to Titus Nemeth and Martin Tiefenthaler, who developed the [Prima school font](https://prima.wien/) (CC BY-NC-SA 4.0) on behalf of the [Wiener Bildungsserver](https://bildungsserver.wien/). The font is used in the app.
+* Thanks to Titus Nemeth and Martin Tiefenthaler, who created the [Prima font for schools](https://prima.wien/) (CC BY-NC-SA 4.0) which is used in the app
 * Thanks to all the developers of these projects, which are all used by AsTeRICS Grid in production:
     * [couch-auth](https://github.com/perfood/couch-auth)
     * [file-saver](https://www.npmjs.com/package/file-saver)
