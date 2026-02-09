@@ -688,6 +688,8 @@ dataService.importData = async function (data, options) {
         importData.metadata.lastOpenedGridId = regenerateIdsReturn.idMapping[importData.metadata.lastOpenedGridId];
         importData.metadata.globalGridId = regenerateIdsReturn.idMapping[importData.metadata.globalGridId];
         importData.metadata.homeGridId = regenerateIdsReturn.idMapping[importData.metadata.homeGridId] || null;
+        importData.metadata.gridsWithValidThumbnail = importData.metadata.gridsWithValidThumbnail || [];
+        importData.metadata.gridsWithValidThumbnail = importData.metadata.gridsWithValidThumbnail.map(id => regenerateIdsReturn.idMapping[id]);
     }
     importData.grids.forEach((grid) => {
         let label = i18nService.getTranslation(grid.label);
