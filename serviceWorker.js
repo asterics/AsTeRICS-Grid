@@ -47,6 +47,25 @@ const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
 });
 
 const dynamicImageHandler = async ({ url, request, event }) => {
+    // Try to find the image in the CORS cache first,
+    // even if the current request doesn't have the crossorigin attribute.
+    const cache = await caches.open('image-cache');
+    const cachedResponse = await cache.match(request.url, {
+        ignoreSearch: true, // Optional: matches even if query strings differ
+        ignoreVary: true // ignore mismatch of headers
+    });
+
+    if (cachedResponse) {
+        // Even if the URL matches, we check the 'type'.
+        // If the client needs CORS but the cache is a 'black box' (opaque),
+        // we MUST ignore the cache and try a fresh fetch.
+        if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
+            console.debug('Cached version is opaque but CORS is required. Fetching fresh...');
+        } else {
+            return cachedResponse;
+        }
+    }
+
     try {
         // First Attempt: Try CORS
         // use the CORS strategy. If the server doesn't support CORS, this throws.
@@ -113,11 +132,10 @@ async function cacheOneItem(item) {
     try {
         let response;
         if (item.type === constants.SW_CACHE_TYPE_IMG) {
-            try {
-                response = await strategyImageCacheFirstCors.handle({ request: new Request(item.url, { mode: 'cors' }) });
-            } catch (e) {
-                response = await strategyImageCacheFirstNoCors.handle({ request: new Request(item.url, { mode: 'no-cors' }) });
-            }
+            response = await dynamicImageHandler({
+                url: new URL(item.url),
+                request: new Request(item.url)
+            });
         } else {
             response = await strategyNormalCacheFirst.handle({ request: new Request(item.url) });
         }
