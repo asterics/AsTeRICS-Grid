@@ -292,25 +292,23 @@
                         areService.uploadAndStartModel(areModel.dataBase64, gridUtil.getAREURL(gridData), areModel.fileName);
                     }
 
-                    // these two lines before recalculateRenderGrid since it changes gridData!
-                    let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
-                    let newHash = updateThumbnail ? gridUtil.getHash(gridData) : null;
+                    // these two lines before recalculateRenderGrid since the recalculateRenderGrid method changes gridData!
+                    let updateThumbnail = !this.skipThumbnailCheck && !this.metadata.gridsWithValidThumbnail.includes(gridData.id);
 
                     await this.recalculateRenderGrid(gridData);
                     Router.addToGridHistory(this.renderGridData.id);
 
                     if (updateThumbnail) {
+                        this.metadata.gridsWithValidThumbnail.push(gridData.id);
                         imageUtil.allImagesLoaded().then(async () => {
                             let screenshot = await imageUtil.getScreenshot("#grid-container");
                             let thumbnail = {
-                                data: screenshot,
-                                hash: newHash
+                                data: screenshot
                             };
                             dataService.saveThumbnail(this.renderGridData.id, thumbnail);
                         })
                     }
-
-                    if (this.metadata.lastOpenedGridId !== gridData.id) {
+                    if (this.metadata.lastOpenedGridId !== gridData.id || updateThumbnail) {
                         this.metadata.lastOpenedGridId = gridData.id;
                         await dataService.saveMetadata(this.metadata);
                     }
