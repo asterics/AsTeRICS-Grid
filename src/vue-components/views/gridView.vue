@@ -42,7 +42,7 @@
                 </i18n>
             </div>
         </div>
-        <div class="srow content d-flex" v-if="renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
+        <div class="srow content d-flex" v-if="showGrid && renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
             <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
     </div>
@@ -109,6 +109,7 @@
             return {
                 globalGridData: null,
                 renderGridData: null,
+                showGrid: false,
                 metadata: null,
                 updatedMetadataDoc: null,
                 scanner: null,
@@ -401,6 +402,7 @@
             async recalculateRenderGrid(gridData) {
                 // attention: gridData also changes because of "noDeepCopy: true"
                 // just using this.renderGridData for clarity
+                this.showGrid = false;
                 let globalGrid = null;
                 gridData = gridUtil.fillFreeSpaces(gridData, GridElement.ELEMENT_TYPE_UI_FILLER);
                 if (gridUtil.hasDynamicGridPlaceholder(this.globalGridData)) {
@@ -444,6 +446,7 @@
                         }
                     });
                 }
+                this.showGrid = true;
                 stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {
