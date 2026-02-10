@@ -246,6 +246,13 @@ function getModelConversionFunctions(objectModelVersion) {
                 object.modelVersion = modelUtil.getModelVersionString();
                 return object;
             });
+        case 6:
+            filterFns.push(function (object, filterOptions) {
+                // fn from V6 to V7
+                // now using username as encryption salt instead of metadata.id
+                object.modelVersion = modelUtil.getModelVersionString();
+                return object;
+            });
     }
     return filterFns;
 }
