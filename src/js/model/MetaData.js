@@ -27,8 +27,7 @@ class MetaData extends Model({
     notificationConfig: [NotificationConfig],
     activateARASAACGrammarAPI: [Boolean],
     vocabularyLevel: [Number, null],
-    integrations: [Object], // IntegrationConfigSync
-    gridsWithValidThumbnail: [Array] // Array of grid IDs which have a valid thumbnail
+    integrations: [Object] // IntegrationConfigSync
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
@@ -40,7 +39,6 @@ class MetaData extends Model({
         this.homeGridId = properties.homeGridId || null;
         this.integrations = Object.assign(new IntegrationConfigSync(), this.integrations);
         this.firstRowHeightFactor = properties.firstRowHeightFactor || 1;
-        this.gridsWithValidThumbnail = properties.gridsWithValidThumbnail || [];
     }
 
     isEqual(otherMetadata) {
@@ -105,8 +103,7 @@ MetaData.defaults({
     globalGridHeightPercentage: 17,
     firstRowHeightFactor: 1,
     vocabularyLevel: null,
-    integrations: new IntegrationConfigSync(),
-    gridsWithValidThumbnail: []
+    integrations: new IntegrationConfigSync()
 });
 
 export { MetaData };

@@ -27,19 +27,7 @@ function UndoService() {
      * @param newGridData
      * @return {Promise} resolves to true if grid was updated, to false if not (if last state is equal to current state)
      */
-    thiz.updateGrid = async function (newGridData = {}) {
-        if (!newGridData.id) {
-            return;
-        }
-        let metadata = await dataService.getMetadata();
-        if (metadata.globalGridActive && metadata.globalGridId === newGridData.id) {
-            metadata.gridsWithValidThumbnail = [];
-            await dataService.saveMetadata(metadata);
-        }
-        if (metadata.gridsWithValidThumbnail.includes(newGridData.id)) {
-            metadata.gridsWithValidThumbnail = metadata.gridsWithValidThumbnail.filter(id => id !== newGridData.id);
-            await dataService.saveMetadata(metadata);
-        }
+    thiz.updateGrid = function (newGridData) {
         return new Promise((resolve) => {
             dataService.getGrid(newGridData.id).then((savedGrid) => {
                 if (!savedGrid.isEqual(newGridData)) {

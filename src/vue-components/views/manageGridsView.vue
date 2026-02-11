@@ -445,10 +445,8 @@
                 if (!confirm(i18nService.t('updateGridThumbnailsConfirm'))) {
                     return;
                 }
-                let thiz = this;
                 let totalSize = 0;
                 let cancelled = false;
-                let updatedThumbIds = [];
                 dataService.getGrids(false, true).then(async grids => {
                     let index = 0;
                     MainVue.showProgressBar(0, {
@@ -467,13 +465,11 @@
                         let loadPromise = new Promise(resolve => {
                             $(document).on(constants.EVENT_GRID_LOADED, resolve);
                         });
-                        Router.toGrid(gridShort.id, { skipThumbnailCheck: true });
+                        Router.toGrid(gridShort.id, {skipThumbnailCheck: true});
                         await loadPromise;
                         await util.sleep(100);
                         await updateScreenshot(gridShort.id);
-                        updatedThumbIds.push(gridShort.id);
                         if (cancelled) {
-                            await finallyAfterUpdateThumbs(updatedThumbIds);
                             Router.toManageGrids();
                             return;
                         }
@@ -487,19 +483,13 @@
                             }
                         });
                     }
-                    await finallyAfterUpdateThumbs(updatedThumbIds);
+                    urlParamService.removeParam("skipThumbnailCheck");
                     log.info(`saved all thumbnails with total size of ${totalSize / 1024}kB`);
                     Router.toManageGrids();
                     setTimeout(() => {
                         MainVue.setTooltip(i18nService.t("updatedAllThumbnails"), {timeout: 20000, msgType: "success"});
                     }, 500);
                 });
-
-                async function finallyAfterUpdateThumbs(updatedIds) {
-                    urlParamService.removeParam("skipThumbnailCheck");
-                    thiz.metadata.gridsWithValidThumbnail = util.deduplicateArray(thiz.metadata.gridsWithValidThumbnail.concat(updatedIds));
-                    return dataService.saveMetadata(thiz.metadata);
-                }
 
                 async function updateScreenshot(gridId) {
                     let grid = await dataService.getGrid(gridId);
@@ -508,7 +498,8 @@
                     log.info(`save screenshot for: ${i18nService.getTranslation(grid.label)}, size: ${screenshot.length / 1024}kB`);
                     totalSize += screenshot.length;
                     let thumbnail = {
-                        data: screenshot
+                        data: screenshot,
+                        hash: gridUtil.getHash(grid)
                     };
                     grid.thumbnail = thumbnail;
                     await dataService.updateGrid(grid.id, {

@@ -616,7 +616,7 @@ gridUtil.hasAREModel = function(gridData) {
 };
 
 gridUtil.hasOutdatedThumbnail = function(gridData) {
-    return !gridData.thumbnail || !gridData.thumbnail.data;
+    return !gridData.thumbnail || !gridData.thumbnail.data || gridData.thumbnail.hash !== gridUtil.getHash(gridData);
 };
 
 gridUtil.getHash = function(gridData) {
