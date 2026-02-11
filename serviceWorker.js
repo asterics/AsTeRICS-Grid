@@ -47,25 +47,6 @@ const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
 });
 
 const dynamicImageHandler = async ({ url, request, event }) => {
-    // Try to find the image in the CORS cache first,
-    // even if the current request doesn't have the crossorigin attribute.
-    const cache = await caches.open('image-cache');
-    const cachedResponse = await cache.match(request.url, {
-        ignoreSearch: true, // Optional: matches even if query strings differ
-        ignoreVary: true // ignore mismatch of headers
-    });
-
-    if (cachedResponse) {
-        // Even if the URL matches, we check the 'type'.
-        // If the client needs CORS but the cache is a 'black box' (opaque),
-        // we MUST ignore the cache and try a fresh fetch.
-        if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
-            console.debug('Cached version is opaque but CORS is required. Fetching fresh...');
-        } else {
-            return cachedResponse;
-        }
-    }
-
     try {
         // First Attempt: Try CORS
         // use the CORS strategy. If the server doesn't support CORS, this throws.
@@ -75,7 +56,26 @@ const dynamicImageHandler = async ({ url, request, event }) => {
         // This creates an "opaque" response (you can't read the pixels in JS,
         // but the <img> tag can still display it).
         console.info(`CORS fetch failed for ${url.href}, falling back to no-cors.`);
-        return await strategyImageCacheFirstNoCors.handle({ url, request, event });
+        try {
+            return await strategyImageCacheFirstNoCors.handle({ url, request, event });
+        } catch {
+            // Third attempt: try to get result event if headers or search are not matching
+            const cache = await caches.open('image-cache');
+            const cachedResponse = await cache.match(request.url, {
+                ignoreSearch: true, // matches even if query strings differ
+                ignoreVary: true // ignore mismatch of headers
+            });
+            if (cachedResponse) {
+                // Even if the URL matches, we check the 'type'.
+                // If the client needs CORS but the cache is a 'black box' (opaque),
+                // we MUST ignore the cache and try a fresh fetch.
+                if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
+                    console.debug('Cached version is opaque but CORS is required. Fetching fresh...');
+                } else {
+                    return cachedResponse;
+                }
+            }
+        }
     }
 };
 
