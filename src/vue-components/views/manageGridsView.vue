@@ -470,6 +470,7 @@
                         await util.sleep(100);
                         await updateScreenshot(gridShort.id);
                         if (cancelled) {
+                            urlParamService.removeParam("skipThumbnailCheck");
                             Router.toManageGrids();
                             return;
                         }

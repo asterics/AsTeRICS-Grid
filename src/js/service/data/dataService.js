@@ -113,10 +113,16 @@ dataService.getLastGridUpdateTime = async function () {
  * @see{GridData}
  *
  * @param gridData the GridData to save/update
+ * @param options
+ * @param options.clearThumbnail if true the thumbnail is cleared (after saving something that changed the visual appearance, for regenerating it somewhen)
  * @return {Promise} resolves after operation finished successful
  */
-dataService.saveGrid = function (gridData) {
+dataService.saveGrid = function (gridData, options = {}) {
     gridData = JSON.parse(JSON.stringify(gridData));
+    if (options.clearThumbnail) {
+        gridData.thumbnail = gridData.thumbnail || {};
+        gridData.thumbnail.data = null;
+    }
     gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
     gridData.lastUpdateTime = new Date().getTime();
     return databaseService.saveObject(GridData, gridData);

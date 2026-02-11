@@ -293,9 +293,8 @@
                         areService.uploadAndStartModel(areModel.dataBase64, gridUtil.getAREURL(gridData), areModel.fileName);
                     }
 
-                    // these two lines before recalculateRenderGrid since it changes gridData!
+                    // this line before recalculateRenderGrid since it changes gridData!
                     let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
-                    let newHash = updateThumbnail ? gridUtil.getHash(gridData) : null;
 
                     await this.recalculateRenderGrid(gridData);
                     Router.addToGridHistory(this.renderGridData.id);
@@ -304,8 +303,7 @@
                         imageUtil.allImagesLoaded().then(async () => {
                             let screenshot = await imageUtil.getScreenshot("#grid-container");
                             let thumbnail = {
-                                data: screenshot,
-                                hash: newHash
+                                data: screenshot
                             };
                             dataService.saveThumbnail(this.renderGridData.id, thumbnail);
                         })
