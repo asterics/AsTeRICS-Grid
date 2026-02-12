@@ -5,6 +5,9 @@ importScripts(
     'app/lib/workbox/workbox-v7.4.0/workbox-precaching.prod.js',
     'app/lib/workbox/workbox-v7.4.0/workbox-cacheable-response.prod.js'
 );
+/*importScripts(
+    'https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js'
+);*/
 importScripts('serviceWorkerCachePaths.js');
 
 let constants = {};
