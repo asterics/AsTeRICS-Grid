@@ -1,4 +1,4 @@
-importScripts('app/lib/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.4.0/workbox-sw.js');
 importScripts('serviceWorkerCachePaths.js');
 
 let constants = {};
@@ -30,20 +30,34 @@ if (self.URLS_TO_CACHE && self.URLS_TO_CACHE.length > 0) {
     workbox.precaching.precacheAndRoute(precacheManifest);
 }
 
-const strategyNormalCacheFirst = new workbox.strategies.CacheFirst();
+// cache normal 200 and 304 not modified (if something is already in browser cache)
+const cacheablePlugin = new workbox.cacheableResponse.CacheableResponsePlugin({
+    statuses: [200, 304]
+});
+
+const strategyNormalCacheFirst = new workbox.strategies.CacheFirst({
+    cacheName: 'app-cache',
+    plugins: [cacheablePlugin]
+});
 
 const strategyImageCacheFirstCors = new workbox.strategies.CacheFirst({
     cacheName: 'image-cache',
     fetchOptions: {
         mode: 'cors'
-    }
+    },
+    plugins: [cacheablePlugin]
 });
 
 const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
     cacheName: 'image-cache',
     fetchOptions: {
         mode: 'no-cors'
-    }
+    },
+    plugins: [
+        new workbox.cacheableResponse.CacheableResponsePlugin({
+            statuses: [0, 200] // Explicitly allow Status 0 (Opaque) and 200
+        })
+    ]
 });
 
 const dynamicImageHandler = async ({ url, request, event }) => {
@@ -86,7 +100,8 @@ workbox.routing.registerRoute(({ url, request, event }) => {
 workbox.routing.registerRoute(({ url, request, event }) => {
     return shouldCacheStaleWhileRevalidate(url, request);
 }, new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'stale-while-revalidate-cache'
+    cacheName: 'stale-while-revalidate-cache',
+    plugins: [cacheablePlugin]
 }));
 
 workbox.routing.registerRoute(({ url, request, event }) => {
@@ -123,21 +138,25 @@ self.addEventListener('message', async (event) => {
         self.skipWaiting();
     } else if (msg.type === constants.SW_EVENT_REQ_CACHE_BATCH && msg.items && msg.items.length) {
         for (let item of msg.items) {
-            cacheOneItem(item);
+            cacheOneItem(item, event);
         }
     }
 });
 
-async function cacheOneItem(item) {
+async function cacheOneItem(item, event) {
     try {
         let response;
         if (item.type === constants.SW_CACHE_TYPE_IMG) {
             response = await dynamicImageHandler({
                 url: new URL(item.url),
-                request: new Request(item.url)
+                request: new Request(item.url),
+                event: event
             });
         } else {
-            response = await strategyNormalCacheFirst.handle({ request: new Request(item.url) });
+            response = await strategyNormalCacheFirst.handle({
+                request: new Request(item.url),
+                event: event
+            });
         }
 
         sendToClients({
