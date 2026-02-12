@@ -49,7 +49,8 @@ const strategyNormalCacheFirst = new workbox.strategies.CacheFirst({
 const strategyImageCacheFirstCors = new workbox.strategies.CacheFirst({
     cacheName: 'image-cache',
     fetchOptions: {
-        mode: 'cors'
+        mode: 'cors',
+        credentials: 'omit'
     },
     plugins: [cacheablePlugin]
 });
