@@ -20,6 +20,9 @@ constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
 constants.KNOWN_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
 
+let imageCachePromise = null;
+const inFlightCacheRequests = new Set();
+
 if (!workbox) {
     console.log('Workbox in service worker failed to load!');
 }
@@ -71,6 +74,31 @@ const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
 });
 
 const dynamicImageHandler = async ({ url, request, event }) => {
+    if (!inFlightCacheRequests.has(url.href)) {
+        // only do manual cache lookup if this url not currently caching for the first time
+        const cache = await getImageCache();
+        let cachedResponse = await cache.match(request.url);
+        cachedResponse = cachedResponse || await cache.match(request.url, {
+            ignoreSearch: true, // matches even if query strings differ
+            ignoreVary: true // ignore mismatch of headers
+        });
+        if (cachedResponse) {
+            // Even if the URL matches, we check the 'type'.
+            // If the client needs CORS but the cache is a 'black box' (opaque),
+            // we MUST ignore the cache and try a fresh fetch.
+            if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
+                console.debug('Cached version is opaque but CORS is required. Fetching fresh...');
+            } else {
+                return cachedResponse;
+            }
+        }
+    }
+
+    // fallback to network (Workbox strategies) only if online (otherwise strategies have long timeouts)
+    if (!navigator.onLine) {
+        return;
+    }
+
     try {
         // First Attempt: Try CORS
         // use the CORS strategy. If the server doesn't support CORS, this throws.
@@ -80,26 +108,7 @@ const dynamicImageHandler = async ({ url, request, event }) => {
         // This creates an "opaque" response (you can't read the pixels in JS,
         // but the <img> tag can still display it).
         console.info(`CORS fetch failed for ${url.href}, falling back to no-cors.`);
-        try {
-            return await strategyImageCacheFirstNoCors.handle({ url, request, event });
-        } catch {
-            // Third attempt: try to get result event if headers or search are not matching
-            const cache = await caches.open('image-cache');
-            const cachedResponse = await cache.match(request.url, {
-                ignoreSearch: true, // matches even if query strings differ
-                ignoreVary: true // ignore mismatch of headers
-            });
-            if (cachedResponse) {
-                // Even if the URL matches, we check the 'type'.
-                // If the client needs CORS but the cache is a 'black box' (opaque),
-                // we MUST ignore the cache and try a fresh fetch.
-                if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
-                    console.debug('Cached version is opaque but CORS is required. Fetching fresh...');
-                } else {
-                    return cachedResponse;
-                }
-            }
-        }
+        return await strategyImageCacheFirstNoCors.handle({ url, request, event });
     }
 };
 
@@ -155,6 +164,7 @@ self.addEventListener('message', async (event) => {
 
 async function cacheOneItem(item, event) {
     try {
+        inFlightCacheRequests.add(item.url);
         let response;
         if (item.type === constants.SW_CACHE_TYPE_IMG) {
             response = await dynamicImageHandler({
@@ -181,6 +191,8 @@ async function cacheOneItem(item, event) {
             url: item.url,
             success: false
         });
+    } finally {
+        inFlightCacheRequests.delete(item.url);
     }
 }
 
@@ -213,4 +225,11 @@ function sendToClients(msg) {
     self.clients.matchAll().then(clients => {
         clients.forEach(client => client.postMessage(msg));
     });
+}
+
+function getImageCache() {
+    if (!imageCachePromise) {
+        imageCachePromise = caches.open('image-cache');
+    }
+    return imageCachePromise;
 }
