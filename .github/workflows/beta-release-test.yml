@@ -100,7 +100,7 @@ jobs:
           SANITIZED_BRANCH=$(echo "$SANITIZED_BRANCH" | sed 's/-$//')
 
           # Construct the full remote path and make it available as a step output.
-          FULL_REMOTE_PATH="/${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
+          FULL_REMOTE_PATH="${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
           echo "remote_path_postfix=$POSTFIX" >> $GITHUB_OUTPUT
@@ -120,6 +120,8 @@ jobs:
           # 2. Execute SFTP Commands
           lftp -u "$USER","$PASS" sftp://$HOST <<EOF
           set sftp:connect-program "ssh -a -x -o StrictHostKeyChecking=no"
+          pwd        # Print Working Directory
+          ls -l      # List files to see where we are
 
           # Create the remote directory if it doesn't exist
           mkdir -p "$REMOTE_PATH"
