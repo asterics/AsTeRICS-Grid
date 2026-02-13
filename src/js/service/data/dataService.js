@@ -121,7 +121,7 @@ dataService.saveGrid = function (gridData, options = {}) {
     gridData = JSON.parse(JSON.stringify(gridData));
     if (options.clearThumbnail) {
         gridData.thumbnail = gridData.thumbnail || {};
-        gridData.thumbnail.data = null;
+        gridData.thumbnail.shouldUpdate = true;
     }
     gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
     gridData.lastUpdateTime = new Date().getTime();

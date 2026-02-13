@@ -500,7 +500,7 @@
                     totalSize += screenshot.length;
                     let thumbnail = {
                         data: screenshot,
-                        hash: gridUtil.getHash(grid)
+                        shouldUpdate: false
                     };
                     grid.thumbnail = thumbnail;
                     await dataService.updateGrid(grid.id, {

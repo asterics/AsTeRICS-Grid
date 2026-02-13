@@ -303,7 +303,8 @@
                         imageUtil.allImagesLoaded().then(async () => {
                             let screenshot = await imageUtil.getScreenshot("#grid-container");
                             let thumbnail = {
-                                data: screenshot
+                                data: screenshot,
+                                shouldUpdate: false
                             };
                             dataService.saveThumbnail(this.renderGridData.id, thumbnail);
                         })
