@@ -1,5 +1,5 @@
 # This workflow is triggered whenever a pull request is created or updated.
-name: Beta release
+name: Beta release test/dev
 
 on:
   #pull_request:
