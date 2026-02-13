@@ -120,19 +120,8 @@ jobs:
           # 2. Execute SFTP Commands
           lftp -u "$USER","$PASS" sftp://$HOST <<EOF
           set sftp:connect-program "ssh -a -x -o StrictHostKeyChecking=no"
-          pwd        # Print Working Directory
-          ls -l      # List files to see where we are
-
-          # Create the remote directory if it doesn't exist
           mkdir -p "$REMOTE_PATH"
-
-          # Change to the remote directory
           cd "$REMOTE_PATH"
-
-          # Sync: Upload everything and DELETE files on server not in local
-          # -R: Reverse mirror (upload)
-          # --delete: Remove remote files that don't exist locally
-          # --include-glob: Only process these specific files/folders
           mirror -R --delete \
             --include-glob app/ \
             --include-glob serviceWorker.js \
@@ -140,7 +129,6 @@ jobs:
             --include-glob unsupported.html \
             --include-glob index.html \
             ./ .
-
           bye
           EOF
           
