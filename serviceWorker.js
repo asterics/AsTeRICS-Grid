@@ -1,13 +1,13 @@
-/*importScripts(
+importScripts(
     'app/lib/workbox/workbox-v7.4.0/workbox-core.prod.js',
     'app/lib/workbox/workbox-v7.4.0/workbox-strategies.prod.js',
     'app/lib/workbox/workbox-v7.4.0/workbox-routing.prod.js',
     'app/lib/workbox/workbox-v7.4.0/workbox-precaching.prod.js',
     'app/lib/workbox/workbox-v7.4.0/workbox-cacheable-response.prod.js'
-);*/
-importScripts(
-    'https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js'
 );
+/*importScripts(
+    'https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js'
+);*/
 importScripts('serviceWorkerCachePaths.js');
 
 let constants = {};
@@ -148,7 +148,7 @@ self.addEventListener('activate', event => {
     })());
 });
 
-self.addEventListener('message', async (event) => {
+self.addEventListener('message', (event) => {
     let msg = event.data || {};
     if (!msg.type) {
         return;
@@ -156,9 +156,11 @@ self.addEventListener('message', async (event) => {
     if (msg.type === constants.SW_EVENT_SKIP_WAITING) {
         self.skipWaiting();
     } else if (msg.type === constants.SW_EVENT_REQ_CACHE_BATCH && msg.items && msg.items.length) {
-        for (let item of msg.items) {
-            cacheOneItem(item, event);
-        }
+        event.waitUntil((async () => {
+            for (let item of msg.items) {
+                await cacheOneItem(item, event);
+            }
+        })());
     }
 });
 
