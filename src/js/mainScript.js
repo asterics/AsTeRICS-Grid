@@ -109,30 +109,45 @@ function initServiceWorker() {
         navigator.serviceWorker.register('./serviceWorker.js', {
             updateViaCache: 'none'
         }).then((reg) => {
-            let isUpdate = false;
             setInterval(() => {
                 log.debug('Check for serviceworker update...');
                 reg.update();
             }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
+
+            if (reg.waiting) showUpdateNotification(reg);
+
             reg.addEventListener('updatefound', function () {
-                if (navigator.serviceWorker.controller) {
-                    isUpdate = true;
-                }
-            });
-            navigator.serviceWorker.addEventListener('message', (evt) => {
-                if (isUpdate && evt.data && evt.data.activated) {
-                    MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
-                        closeOnNavigate: false,
-                        actionLink: i18nService.t('updateNow'),
-                        actionLinkFn: () => {
-                            window.location.reload();
-                        },
-                        msgType: 'info'
-                    });
-                }
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showUpdateNotification(reg);
+                    }
+                });
             });
         });
     }
+}
+
+function showUpdateNotification(reg) {
+    MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
+        closeOnNavigate: false,
+        actionLink: i18nService.t('updateNow'),
+        actionLinkFn: () => {
+            if (reg && reg.waiting) {
+                // 1. Set up a one-time listener for the takeover
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    window.location.reload();
+                }, { once: true });
+
+                // 2. Tell the waiting worker to skip
+                reg.waiting.postMessage({ type: constants.SW_EVENT_SKIP_WAITING });
+            } else {
+                // Fallback: If for some reason there is no waiting worker, just reload
+                window.location.reload();
+            }
+        },
+        msgType: 'info'
+    });
 }
 
 function checkAppVersion() {

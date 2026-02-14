@@ -1331,5 +1331,6 @@
   "hideKeyboards": "Hide keyboards",
   "automaticallyAddImages": "Automatically add images",
   "showAllElements": "show all elements",
-  "firstRowHeightFactor": "Height factor for first row"
+  "firstRowHeightFactor": "Height factor for first row",
+  "downloadingImagesWithPercent": "Downloading images ... {0}%"
 }
