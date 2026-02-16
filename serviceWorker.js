@@ -94,11 +94,6 @@ const dynamicImageHandler = async ({ url, request, event }) => {
         }
     }
 
-    // fallback to network (Workbox strategies) only if online (otherwise strategies have long timeouts)
-    if (!navigator.onLine) {
-        return;
-    }
-
     try {
         // First Attempt: Try CORS
         // use the CORS strategy. If the server doesn't support CORS, this throws.
@@ -156,13 +151,30 @@ self.addEventListener('message', (event) => {
     if (msg.type === constants.SW_EVENT_SKIP_WAITING) {
         self.skipWaiting();
     } else if (msg.type === constants.SW_EVENT_REQ_CACHE_BATCH && msg.items && msg.items.length) {
-        event.waitUntil((async () => {
-            for (let item of msg.items) {
-                await cacheOneItem(item, event);
-            }
-        })());
+        const cachePromise = processCacheBatch(msg.items, event);
+        try {
+            event.waitUntil(cachePromise);
+        } catch (e) {
+            console.warn('[SW] waitUntil failed (Firefox iOS?), processing anyway:', e.message);
+            // The promise will still execute, we just can't prevent SW termination
+            // This is OK for Firefox iOS because it seems to keep SW alive differently
+        }
     }
 });
+
+async function processCacheBatch(items, event) {
+    for (let item of items) {
+        try {
+            await cacheOneItem(item, event);
+        } catch (e) {
+            sendToClients({
+                type: constants.SW_EVENT_URL_CACHED,
+                url: item.url,
+                success: false
+            });
+        }
+    }
+}
 
 async function cacheOneItem(item, event) {
     try {
