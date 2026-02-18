@@ -16,7 +16,7 @@ import { i18nService } from './service/i18nService';
 import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
 import { dataService } from './service/data/dataService';
-//import { consoleReService } from './service/consoleReService';
+import { consoleReService } from './service/consoleReService';
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
@@ -28,7 +28,7 @@ async function init() {
         'AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
             constants.CURRENT_VERSION
     );
-    //consoleReService.init();
+    await consoleReService.init();
     checkAppVersion();
     initServiceWorker();
     initMatomoAnalytics();

@@ -1,10 +1,16 @@
+import {constants} from '../util/constants';
+
 let consoleReService = {};
 
-consoleReService.init = function() {
-    if (!console.re) {
+consoleReService.init = async function() {
+    if (!constants.ENABLE_REMOTE_DEBUGGING) {
+        return;
+    }
+    let consoelre = await import("../../../app/lib/console.re.connector");
+    if (!consoelre) {
         return log.warn('console.re not installed.');
     }
-    console.re.connect({
+    consoelre.connect({
         server: 'https://console.re', // optional, default: https://console.re
         channel: 'channel-id', // required
         redirectDefaultConsoleToRemote: true, // optional, default: false
