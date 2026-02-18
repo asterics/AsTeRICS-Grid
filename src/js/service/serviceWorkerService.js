@@ -63,6 +63,10 @@ function init() {
                 listener(evt);
             }
             let msg = evt.data || {};
+            if (msg.type === constants.SW_CONSOLE) {
+                console[msg.method]('[SW]', ...msg.args);
+                return;
+            }
             if (msg.type === constants.SW_EVENT_ACTIVATED && msg.activated) {
                 cacheNext();
                 return;

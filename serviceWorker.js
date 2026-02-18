@@ -18,6 +18,7 @@ constants.SW_EVENT_SKIP_WAITING = 'SW_EVENT_SKIP_WAITING';
 constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
+constants.SW_CONSOLE = 'SW_CONSOLE';
 constants.KNOWN_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
 
 let imageCachePromise = null;
@@ -247,3 +248,28 @@ function getImageCache() {
     }
     return imageCachePromise;
 }
+
+// forward logs to page
+/*(function () {
+    const methods = ["log", "info", "warn", "error", "debug"];
+
+    methods.forEach(method => {
+        const original = console[method];
+
+        console[method] = function (...args) {
+            // Send to all clients
+            self.clients.matchAll().then(clients => {
+                clients.forEach(client => {
+                    client.postMessage({
+                        type: constants.SW_CONSOLE,
+                        method,
+                        args
+                    });
+                });
+            });
+
+            // Keep default behavior
+            original.apply(console, args);
+        };
+    });
+})();*/
