@@ -71,6 +71,14 @@ jobs:
              # replace "false" with "true" in the "FORCE_CONNECT_DB" line
              sed -i -E "s/(FORCE_CONNECT_DB\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
           fi
+          
+          # Check for "remote-debug" label
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'remote-debug') }}" == "true" ]]; then
+             echo "Label 'remote-debug' found in PR! Updating constants.js and serviceWorker.js..."
+             # replace "false" with "true" in the "ENABLE_REMOTE_DEBUGGING" line
+             sed -i -E "s/(ENABLE_REMOTE_DEBUGGING\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
+             sed -i -E "s/(ENABLE_REMOTE_DEBUGGING\s*[:=]\s*)false/\1true/g" serviceWorker.js
+          fi
 
       # Step 4: Build the web application. This command creates the production-ready
       # files, typically in a 'build' or 'dist' directory.
