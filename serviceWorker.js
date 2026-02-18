@@ -5,9 +5,6 @@ importScripts(
     'app/lib/workbox/workbox-v7.4.0/workbox-precaching.prod.js',
     'app/lib/workbox/workbox-v7.4.0/workbox-cacheable-response.prod.js'
 );
-/*importScripts(
-    'https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js'
-);*/
 importScripts('serviceWorkerCachePaths.js');
 
 let constants = {};
@@ -25,23 +22,42 @@ constants.KNOWN_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0
 let imageCachePromise = null;
 const inFlightCacheRequests = new Set();
 
+// ===== DIAGNOSTIC: Browser Detection =====
+const isFirefoxIOS = /FxiOS/i.test(navigator.userAgent);
+console.log('═══════════════════════════════════════════════════════');
+console.log('[SW INIT] Service Worker Starting');
+console.log('[SW INIT] Browser:', {
+    userAgent: navigator.userAgent,
+    isFirefoxIOS: isFirefoxIOS
+});
+console.log('[SW INIT] Workbox loaded:', !!self.workbox);
+console.log('[SW INIT] Cache API available:', !!self.caches);
+console.log('═══════════════════════════════════════════════════════');
+
 if (!workbox) {
-    console.log('Workbox in service worker failed to load!');
+    console.error('[SW INIT] ✗ Workbox in service worker FAILED to load!');
+} else {
+    console.log('[SW INIT] ✓ Workbox loaded successfully');
+    console.log('[SW INIT] Workbox modules:', {
+        core: !!workbox.core,
+        strategies: !!workbox.strategies,
+        routing: !!workbox.routing,
+        precaching: !!workbox.precaching,
+        cacheableResponse: !!workbox.cacheableResponse
+    });
 }
+
 self.__WB_DISABLE_DEV_LOGS = true;
-/*workbox.setConfig({
-    debug: true
-});*/
 
 if (self.URLS_TO_CACHE && self.URLS_TO_CACHE.length > 0) {
-    // map the strings to the format Workbox expects: { url: '...', revision: '...' }
-    // Since we don't have a build tool generating hashes use the version constant
+    console.log('[SW INIT] Precaching', self.URLS_TO_CACHE.length, 'URLs');
     const precacheManifest = self.URLS_TO_CACHE.map(url => ({
         url: url,
         revision: '#ASTERICS_GRID_VERSION#'
     }));
-
     workbox.precaching.precacheAndRoute(precacheManifest);
+} else {
+    console.log('[SW INIT] No URLs to precache');
 }
 
 // cache normal 200 and 304 not modified (if something is already in browser cache)
@@ -75,37 +91,112 @@ const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
     ]
 });
 
+console.log('[SW INIT] Strategies configured');
+
 const dynamicImageHandler = async ({ url, request, event }) => {
+    console.log('───────────────────────────────────────────────────────');
+    console.log('[SW dynamicImageHandler] START');
+    console.log('[SW dynamicImageHandler] URL:', url.href);
+    console.log('[SW dynamicImageHandler] Request:', {
+        mode: request.mode,
+        destination: request.destination,
+        method: request.method
+    });
+    console.log('[SW dynamicImageHandler] In-flight?', inFlightCacheRequests.has(url.href));
+
     if (!inFlightCacheRequests.has(url.href)) {
-        // only do manual cache lookup if this url not currently caching for the first time
+        console.log('[SW dynamicImageHandler] Checking cache...');
         const cache = await getImageCache();
+
+        // Try exact match first
         let cachedResponse = await cache.match(request.url);
-        cachedResponse = cachedResponse || await cache.match(request.url, {
-            ignoreSearch: true, // matches even if query strings differ
-            ignoreVary: true // ignore mismatch of headers
-        });
         if (cachedResponse) {
-            // Even if the URL matches, we check the 'type'.
-            // If the client needs CORS but the cache is a 'black box' (opaque),
-            // we MUST ignore the cache and try a fresh fetch.
-            if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
-                console.debug('Cached version is opaque but CORS is required. Fetching fresh...');
+            console.log('[SW dynamicImageHandler] ✓ Cache HIT (exact match):', {
+                type: cachedResponse.type,
+                status: cachedResponse.status,
+                ok: cachedResponse.ok
+            });
+        } else {
+            console.log('[SW dynamicImageHandler] Cache MISS (exact), trying fuzzy match...');
+
+            // Try fuzzy match
+            cachedResponse = await cache.match(request.url, {
+                ignoreSearch: true,
+                ignoreVary: true
+            });
+
+            if (cachedResponse) {
+                console.log('[SW dynamicImageHandler] ✓ Cache HIT (fuzzy match):', {
+                    type: cachedResponse.type,
+                    status: cachedResponse.status
+                });
             } else {
+                console.log('[SW dynamicImageHandler] ✗ Cache MISS (both attempts)');
+            }
+        }
+
+        if (cachedResponse) {
+            // Check CORS compatibility
+            if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
+                console.warn('[SW dynamicImageHandler] ⚠ Cached response is opaque but CORS required');
+                console.warn('[SW dynamicImageHandler] Ignoring cache, will fetch fresh');
+            } else {
+                console.log('[SW dynamicImageHandler] ✓ Returning cached response');
+                console.log('───────────────────────────────────────────────────────');
                 return cachedResponse;
             }
         }
+    } else {
+        console.log('[SW dynamicImageHandler] URL is in-flight, skipping cache check');
     }
 
+    // Network fetch
+    console.log('[SW dynamicImageHandler] Proceeding to network fetch...');
+
     try {
-        // First Attempt: Try CORS
-        // use the CORS strategy. If the server doesn't support CORS, this throws.
-        return await strategyImageCacheFirstCors.handle({ url, request, event });
+        console.log('[SW dynamicImageHandler] Attempt 1: CORS strategy');
+        const corsStart = Date.now();
+        const response = await strategyImageCacheFirstCors.handle({ url, request, event });
+        const corsDuration = Date.now() - corsStart;
+
+        console.log('[SW dynamicImageHandler] ✓ CORS strategy SUCCESS in', corsDuration, 'ms');
+        console.log('[SW dynamicImageHandler] Response:', {
+            hasResponse: !!response,
+            type: response?.type,
+            status: response?.status,
+            ok: response?.ok
+        });
+        console.log('───────────────────────────────────────────────────────');
+        return response;
     } catch (error) {
-        // Second Attempt: Fallback to No-CORS
-        // This creates an "opaque" response (you can't read the pixels in JS,
-        // but the <img> tag can still display it).
-        console.info(`CORS fetch failed for ${url.href}, falling back to no-cors.`);
-        return await strategyImageCacheFirstNoCors.handle({ url, request, event });
+        console.warn('[SW dynamicImageHandler] ✗ CORS strategy FAILED:', {
+            name: error.name,
+            message: error.message
+        });
+        console.log('[SW dynamicImageHandler] Attempt 2: No-CORS strategy');
+
+        try {
+            const noCorsStart = Date.now();
+            const response = await strategyImageCacheFirstNoCors.handle({ url, request, event });
+            const noCorsDuration = Date.now() - noCorsStart;
+
+            console.log('[SW dynamicImageHandler] ✓ No-CORS strategy SUCCESS in', noCorsDuration, 'ms');
+            console.log('[SW dynamicImageHandler] Response:', {
+                hasResponse: !!response,
+                type: response?.type,
+                status: response?.status
+            });
+            console.log('───────────────────────────────────────────────────────');
+            return response;
+        } catch (noCorsError) {
+            console.error('[SW dynamicImageHandler] ✗ No-CORS strategy FAILED:', {
+                name: noCorsError.name,
+                message: noCorsError.message,
+                stack: noCorsError.stack
+            });
+            console.log('───────────────────────────────────────────────────────');
+            throw noCorsError;
+        }
     }
 };
 
@@ -124,96 +215,240 @@ workbox.routing.registerRoute(({ url, request, event }) => {
     return shouldCacheImage(url, request);
 }, dynamicImageHandler);
 
-self.addEventListener('install', (event) => {
-    console.log('installing service worker ...');
+console.log('[SW INIT] Routes registered');
 
-    // LEGACY SUPPORT: Trigger the "Old UI" update notification
-    // We send the 'activated' message even though we are just 'installed'
-    // so the old UI code shows the tooltip.
-    // self.skipWaiting(); // Temporary: keep this for ONE release to force the swap
+self.addEventListener('install', (event) => {
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('[SW install] Installing service worker...');
+    console.log('═══════════════════════════════════════════════════════');
 });
 
 self.addEventListener('activate', event => {
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('[SW activate] Starting activation...');
+
     event.waitUntil((async () => {
+        console.log('[SW activate] Claiming clients...');
         await clients.claim();
+        console.log('[SW activate] ✓ Clients claimed');
+
+        console.log('[SW activate] Sending activation message...');
         await sendToClients({
             type: constants.SW_EVENT_ACTIVATED,
             activated: true
         });
+        console.log('[SW activate] ✓ Activation message sent');
 
-        console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
+        console.log('[SW activate] ✓ Service Worker ACTIVE!');
+        console.log('[SW activate] Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
+        console.log('═══════════════════════════════════════════════════════');
     })());
 });
 
 self.addEventListener('message', (event) => {
     let msg = event.data || {};
+
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('[SW message] Message received');
+    console.log('[SW message] Type:', msg.type);
+    console.log('[SW message] Items:', msg.items?.length);
+    console.log('[SW message] Event info:', {
+        hasWaitUntil: typeof event.waitUntil === 'function',
+        eventConstructor: event.constructor.name,
+        isTrusted: event.isTrusted
+    });
+
     if (!msg.type) {
+        console.warn('[SW message] ⚠ Message has no type!');
+        console.log('═══════════════════════════════════════════════════════');
         return;
     }
+
     if (msg.type === constants.SW_EVENT_SKIP_WAITING) {
+        console.log('[SW message] Executing skipWaiting...');
         self.skipWaiting();
+        console.log('[SW message] ✓ skipWaiting executed');
+        console.log('═══════════════════════════════════════════════════════');
     } else if (msg.type === constants.SW_EVENT_REQ_CACHE_BATCH && msg.items && msg.items.length) {
+        console.log('[SW message] Processing CACHE BATCH request');
+        console.log('[SW message] Total items:', msg.items.length);
+        console.log('[SW message] First 5 URLs:', msg.items.slice(0, 5).map(i => i.url));
+
         const cachePromise = processCacheBatch(msg.items, event);
+
+        console.log('[SW message] Attempting waitUntil...');
         try {
             event.waitUntil(cachePromise);
+            console.log('[SW message] ✓ waitUntil SUCCEEDED');
         } catch (e) {
-            console.warn('[SW] waitUntil failed (Firefox iOS?), processing anyway:', e.message);
-            // The promise will still execute, we just can't prevent SW termination
-            // This is OK for Firefox iOS because it seems to keep SW alive differently
+            console.error('[SW message] ✗ waitUntil FAILED:', {
+                name: e.name,
+                message: e.message,
+                isInvalidStateError: e.name === 'InvalidStateError',
+                stack: e.stack
+            });
+            console.warn('[SW message] Promise will execute anyway...');
         }
+
+        // Track promise directly
+        cachePromise.then(() => {
+            console.log('[SW message] ✓ Cache promise RESOLVED');
+        }).catch(err => {
+            console.error('[SW message] ✗ Cache promise REJECTED:', err);
+        });
+
+        console.log('═══════════════════════════════════════════════════════');
     }
 });
 
 async function processCacheBatch(items, event) {
-    for (let item of items) {
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('[SW processCacheBatch] START');
+    console.log('[SW processCacheBatch] Total items:', items.length);
+    console.log('═══════════════════════════════════════════════════════');
+
+    let successCount = 0;
+    let failCount = 0;
+    const startTime = Date.now();
+
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const itemStartTime = Date.now();
+
+        console.log(`[SW processCacheBatch] ┌─ [${i + 1}/${items.length}] Starting`);
+        console.log(`[SW processCacheBatch] │  URL: ${item.url}`);
+        console.log(`[SW processCacheBatch] │  Type: ${item.type}`);
+
         try {
             await cacheOneItem(item, event);
+            const itemDuration = Date.now() - itemStartTime;
+            successCount++;
+            console.log(`[SW processCacheBatch] └─ [${i + 1}/${items.length}] ✓ SUCCESS (${itemDuration}ms)`);
         } catch (e) {
+            const itemDuration = Date.now() - itemStartTime;
+            failCount++;
+            console.error(`[SW processCacheBatch] └─ [${i + 1}/${items.length}] ✗ FAILED (${itemDuration}ms)`);
+            console.error(`[SW processCacheBatch]    Error:`, {
+                name: e.name,
+                message: e.message
+            });
+
             sendToClients({
                 type: constants.SW_EVENT_URL_CACHED,
                 url: item.url,
                 success: false
             });
         }
+
+        if ((i + 1) % 10 === 0) {
+            console.log(`[SW processCacheBatch] Progress: ${i + 1}/${items.length} (${successCount} success, ${failCount} failed)`);
+        }
     }
+
+    const totalDuration = Date.now() - startTime;
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('[SW processCacheBatch] COMPLETE');
+    console.log('[SW processCacheBatch] Total items:', items.length);
+    console.log('[SW processCacheBatch] Success:', successCount);
+    console.log('[SW processCacheBatch] Failed:', failCount);
+    console.log('[SW processCacheBatch] Duration:', totalDuration, 'ms');
+    console.log('[SW processCacheBatch] Avg per item:', Math.round(totalDuration / items.length), 'ms');
+    console.log('═══════════════════════════════════════════════════════');
 }
 
 async function cacheOneItem(item, event) {
+    console.log('[SW cacheOneItem] ┌─ START:', item.url);
+
     try {
+        console.log('[SW cacheOneItem] │  Adding to inFlightCacheRequests');
         inFlightCacheRequests.add(item.url);
+        console.log('[SW cacheOneItem] │  inFlightCacheRequests size:', inFlightCacheRequests.size);
+
         let response;
+
         if (item.type === constants.SW_CACHE_TYPE_IMG) {
-            response = await dynamicImageHandler({
-                url: new URL(item.url),
-                request: new Request(item.url),
-                event: event
-            });
+            console.log('[SW cacheOneItem] │  Type: IMAGE - using dynamicImageHandler');
+
+            try {
+                const url = new URL(item.url);
+                const request = new Request(item.url);
+                console.log('[SW cacheOneItem] │  URL and Request objects created');
+
+                response = await dynamicImageHandler({
+                    url: url,
+                    request: request,
+                    event: event
+                });
+
+                console.log('[SW cacheOneItem] │  dynamicImageHandler returned:', {
+                    hasResponse: !!response,
+                    type: response?.type,
+                    status: response?.status,
+                    ok: response?.ok
+                });
+            } catch (e) {
+                console.error('[SW cacheOneItem] │  ✗ dynamicImageHandler threw:', {
+                    name: e.name,
+                    message: e.message
+                });
+                throw e;
+            }
         } else {
-            response = await strategyNormalCacheFirst.handle({
-                request: new Request(item.url),
-                event: event
-            });
+            console.log('[SW cacheOneItem] │  Type: GENERIC - using strategyNormalCacheFirst');
+
+            try {
+                response = await strategyNormalCacheFirst.handle({
+                    request: new Request(item.url),
+                    event: event
+                });
+
+                console.log('[SW cacheOneItem] │  strategyNormalCacheFirst returned:', {
+                    hasResponse: !!response,
+                    status: response?.status
+                });
+            } catch (e) {
+                console.error('[SW cacheOneItem] │  ✗ strategyNormalCacheFirst threw:', {
+                    name: e.name,
+                    message: e.message
+                });
+                throw e;
+            }
         }
 
+        console.log('[SW cacheOneItem] │  Sending success message to clients...');
         sendToClients({
             type: constants.SW_EVENT_URL_CACHED,
             url: item.url,
             success: !!response
         });
+        console.log('[SW cacheOneItem] │  Message sent');
+        console.log('[SW cacheOneItem] └─ ✓ COMPLETE');
 
     } catch (e) {
+        console.error('[SW cacheOneItem] └─ ✗ EXCEPTION CAUGHT:', {
+            url: item.url,
+            errorName: e.name,
+            errorMessage: e.message,
+            errorStack: e.stack
+        });
+
         sendToClients({
             type: constants.SW_EVENT_URL_CACHED,
             url: item.url,
             success: false
         });
+
+        throw e;
+
     } finally {
+        console.log('[SW cacheOneItem]    Removing from inFlightCacheRequests');
         inFlightCacheRequests.delete(item.url);
+        console.log('[SW cacheOneItem]    inFlightCacheRequests size:', inFlightCacheRequests.size);
     }
 }
 
 function isKnownImageAPI(url) {
-    url = url.href ? url.href : url; // use full URL
+    url = url.href ? url.href : url;
     return constants.KNOWN_IMAGE_APIS.some(apiUrl => url.startsWith(apiUrl));
 }
 
@@ -238,19 +473,28 @@ function shouldCacheNormal(url, request) {
 }
 
 function sendToClients(msg) {
+    console.log('[SW sendToClients] Sending message, type:', msg.type);
     self.clients.matchAll().then(clients => {
-        clients.forEach(client => client.postMessage(msg));
+        console.log('[SW sendToClients] Found', clients.length, 'client(s)');
+        clients.forEach((client, index) => {
+            console.log(`[SW sendToClients] Sending to client ${index + 1}, ID:`, client.id.substring(0, 8) + '...');
+            client.postMessage(msg);
+        });
+        console.log('[SW sendToClients] All messages sent');
+    }).catch(err => {
+        console.error('[SW sendToClients] ✗ matchAll FAILED:', err);
     });
 }
 
 function getImageCache() {
     if (!imageCachePromise) {
+        console.log('[SW getImageCache] Opening image-cache for first time');
         imageCachePromise = caches.open('image-cache');
     }
     return imageCachePromise;
 }
 
-// forward logs to page
+// ===== REMOTE DEBUGGING: Forward all console logs to page =====
 if (constants.ENABLE_REMOTE_DEBUGGING) {
     (function() {
         const methods = ['log', 'info', 'warn', 'error', 'debug'];
@@ -275,4 +519,12 @@ if (constants.ENABLE_REMOTE_DEBUGGING) {
             };
         });
     })();
+
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('[SW INIT] ✓ Remote debugging console forwarding ENABLED');
+    console.log('[SW INIT] ✓ All console logs will be sent to client');
+    console.log('═══════════════════════════════════════════════════════');
 }
+
+console.log('[SW INIT] ✓ Service Worker initialization COMPLETE');
+console.log('[SW INIT] Ready to receive messages');
