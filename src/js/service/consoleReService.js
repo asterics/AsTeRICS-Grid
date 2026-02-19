@@ -2,23 +2,31 @@ import {constants} from '../util/constants';
 
 let consoleReService = {};
 
-consoleReService.init = async function(timeout = 3000) {
+consoleReService.init = async function() {
     if (!constants.ENABLE_REMOTE_DEBUGGING) {
         return;
     }
-    setTimeout(async () => {
-        log.info("activating console.re...");
-        let consoelre = await import("../../../app/lib/console.re.connector");
-        if (!consoelre) {
-            return log.warn('console.re not installed.');
-        }
-        consoelre.connect({
-            server: 'https://console.re', // optional, default: https://console.re
-            channel: 'asterics-aac', // required
-            redirectDefaultConsoleToRemote: true, // optional, default: false
-            disableDefaultConsoleOutput: true // optional, default: false
-        });
-    }, timeout);
+    log.info("activating console.re...");
+    let consolere = await import("../../../app/lib/console.re.connector");
+    if (!consolere) {
+        return log.warn('console.re not installed.');
+    }
+    consolere.connect({
+        server: 'https://console.re', // optional, default: https://console.re
+        channel: 'asterics-aac', // required
+        redirectDefaultConsoleToRemote: false, // optional, default: false
+        disableDefaultConsoleOutput: true // optional, default: false
+    });
+    const original = { ...console };
+    ["log","info","warn","error","debug"].forEach(method => {
+        console[method] = function(...args) {
+            try {
+                consolere[method](...args);
+            } catch {}
+            return original[method].apply(console, args);
+        };
+    });
+    window.consolere = consolere;
 };
 
 export { consoleReService };

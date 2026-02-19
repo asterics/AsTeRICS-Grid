@@ -21,6 +21,9 @@ let _processingUrls = new Set(); // urls that are currently processed
 let _hasCachedImages = false;
 
 serviceWorkerService.cacheUrl = function (url) {
+    if (!constants.SUPPORTS_SERVICE_WORKER) {
+        return;
+    }
     addCacheElem(url, constants.SW_CACHE_TYPE_GENERIC);
     cacheNext();
 };
@@ -30,6 +33,9 @@ serviceWorkerService.cacheUrl = function (url) {
  * @param array array of grids, can also contain other documents from couchDB/pouchDB
  */
 serviceWorkerService.cacheImagesOfGrids = function (array) {
+    if (!constants.SUPPORTS_SERVICE_WORKER) {
+        return;
+    }
     array = array || [];
     for (let doc of array) {
         if (doc.modelName === GridData.getModelName()) {
@@ -102,6 +108,9 @@ function init() {
 }
 
 function cacheNext() {
+    if (!constants.SUPPORTS_SERVICE_WORKER) {
+        return;
+    }
     if (!constants.IS_ENVIRONMENT_PROD && !constants.FORCE_USE_SW) {
         return;
     }
