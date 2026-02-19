@@ -200,20 +200,26 @@ function postMessageInternal(msg) {
 }
 
 async function getController() {
-    if (!navigator.serviceWorker) return null;
-
-    await navigator.serviceWorker.ready;  // Wait for activation
-
-    // check if it's controlling our page
-    if (navigator.serviceWorker.controller) {
-        return navigator.serviceWorker.controller;
+    console.warn("call get controller");
+    if (!navigator.serviceWorker) {
+        return null;
     }
 
-    // If not, wait for controllerchange
     return new Promise((resolve) => {
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
+        navigator.serviceWorker.addEventListener('controllerchange', resolveController, { once: true });
+
+        function resolveController() {
+            console.warn("returning from event");
             resolve(navigator.serviceWorker.controller);
-        }, { once: true });
+        }
+
+        // check if it's controlling our page
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.removeEventListener('controllerchange', resolveController);
+            console.warn("returning existing");
+            resolve(navigator.serviceWorker.controller);
+        }
+        log.warn("noting at all");
     });
 }
 
