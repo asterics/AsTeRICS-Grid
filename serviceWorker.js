@@ -126,11 +126,7 @@ workbox.routing.registerRoute(({ url, request, event }) => {
 
 self.addEventListener('install', (event) => {
     console.log('installing service worker ...');
-
-    // LEGACY SUPPORT: Trigger the "Old UI" update notification
-    // We send the 'activated' message even though we are just 'installed'
-    // so the old UI code shows the tooltip.
-    // self.skipWaiting(); // Temporary: keep this for ONE release to force the swap
+    event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', event => {
