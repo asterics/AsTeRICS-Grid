@@ -200,7 +200,6 @@ function postMessageInternal(msg) {
 }
 
 async function getController() {
-    console.warn("call get controller");
     if (!navigator.serviceWorker) {
         return null;
     }
@@ -209,17 +208,14 @@ async function getController() {
         navigator.serviceWorker.addEventListener('controllerchange', resolveController, { once: true });
 
         function resolveController() {
-            console.warn("returning from event");
             resolve(navigator.serviceWorker.controller);
         }
 
         // check if it's controlling our page
         if (navigator.serviceWorker.controller) {
             navigator.serviceWorker.removeEventListener('controllerchange', resolveController);
-            console.warn("returning existing");
             resolve(navigator.serviceWorker.controller);
         }
-        log.warn("noting at all");
     });
 }
 
