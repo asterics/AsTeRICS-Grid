@@ -18,12 +18,19 @@ consoleReService.init = async function() {
         disableDefaultConsoleOutput: true // optional, default: false
     });
     const original = { ...console };
+    const original2 = { ...log };
     ["log","info","warn","error","debug"].forEach(method => {
         console[method] = function(...args) {
             try {
                 consolere[method](...args);
             } catch {}
             return original[method].apply(console, args);
+        };
+        log[method] = function(...args) {
+            try {
+                consolere[method](...args);
+            } catch {}
+            return original2[method].apply(log, args);
         };
     });
     window.consolere = consolere;
