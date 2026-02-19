@@ -236,6 +236,7 @@ Router.toGrid = function (id, props) {
                 if (history && history.replaceState) {
                     history.replaceState(null, null, getFullUrl(`#grid/${id}`));
                 }
+                $(document).trigger(constants.EVENT_NAVIGATE);
                 $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, [gridData, props]);
             });
         } else {
