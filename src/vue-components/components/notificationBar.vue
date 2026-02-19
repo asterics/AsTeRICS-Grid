@@ -15,6 +15,10 @@
 </template>
 
 <script>
+    import { i18nService } from '../../js/service/i18nService';
+    import $ from '../../js/externals/jquery';
+    import { constants } from '../../js/util/constants';
+
     let notificationBar = null;
     let _defaultTooltipsOptions = {
         closeOnNavigate: true,
@@ -26,7 +30,9 @@
         actionLinkFn2: null,
         imageUrl: null,
         faIcon: null,
-        msgType: null
+        msgType: null,
+        translate: false,
+        translateParams: []
     };
 
     export default {
@@ -68,9 +74,9 @@
                         thiz.tooltipOptions.faIcon = 'fas fa-check-circle fa-2x';
                         break;
                 }
-                this.tooltipHTML = html;
+                this.tooltipHTML = options.translate ? i18nService.t(html, ...thiz.tooltipOptions.translateParams) : html;
                 this.tooltipImageUrl = thiz.tooltipOptions.imageUrl;
-                this.actionLink = thiz.tooltipOptions.actionLink;
+                this.actionLink = options.translate ? i18nService.t(thiz.tooltipOptions.actionLink) : thiz.tooltipOptions.actionLink;
                 this.currentToolTipID = new Date().getTime();
                 this.showTooltip = true;
                 return {
