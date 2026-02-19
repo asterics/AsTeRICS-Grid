@@ -12,7 +12,6 @@ import { urlParamService } from './service/urlParamService';
 import { constants } from './util/constants';
 import { modelUtil } from './util/modelUtil';
 import { keyboardShortcuts } from './service/keyboardShortcuts';
-import { i18nService } from './service/i18nService';
 import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
 import { dataService } from './service/data/dataService';
@@ -133,9 +132,10 @@ function initServiceWorker() {
 }
 
 function showUpdateNotification(reg) {
-    MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
+    MainVue.setTooltip('newVersionAvailableTheNextTimeYoullUseUpdated', {
+        translate: true,
         closeOnNavigate: false,
-        actionLink: i18nService.t('updateNow'),
+        actionLink: 'updateNow',
         actionLinkFn: () => {
             if (reg && reg.waiting) {
                 // 1. Set up a one-time listener for the takeover
