@@ -192,6 +192,7 @@ function resetNotifyTooltip() {
 function postMessageInternal(msg) {
     getController().then((controller) => {
         if (!controller) {
+            console.warn("could not set message to SW - no controller!")
             return;
         }
         controller.postMessage(msg);
@@ -201,8 +202,19 @@ function postMessageInternal(msg) {
 async function getController() {
     if (!navigator.serviceWorker) return null;
 
-    const registration = await navigator.serviceWorker.ready;
-    return navigator.serviceWorker.controller || registration.active;
+    await navigator.serviceWorker.ready;  // Wait for activation
+
+    // check if it's controlling our page
+    if (navigator.serviceWorker.controller) {
+        return navigator.serviceWorker.controller;
+    }
+
+    // If not, wait for controllerchange
+    return new Promise((resolve) => {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            resolve(navigator.serviceWorker.controller);
+        }, { once: true });
+    });
 }
 
 function addCacheElem(url = '', type) {
