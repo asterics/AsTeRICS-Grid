@@ -14,7 +14,6 @@ let constants = {};
 constants.SW_EVENT_ACTIVATED = 'SW_EVENT_ACTIVATED';
 constants.SW_EVENT_URL_CACHED = 'SW_EVENT_URL_CACHED';
 constants.SW_EVENT_REQ_CACHE_BATCH = 'SW_EVENT_REQ_CACHE_BATCH';
-constants.SW_EVENT_SKIP_WAITING = 'SW_EVENT_SKIP_WAITING';
 constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
@@ -146,9 +145,7 @@ self.addEventListener('message', (event) => {
     if (!msg.type) {
         return;
     }
-    if (msg.type === constants.SW_EVENT_SKIP_WAITING) {
-        self.skipWaiting();
-    } else if (msg.type === constants.SW_EVENT_REQ_CACHE_BATCH && msg.items && msg.items.length) {
+    if (msg.type === constants.SW_EVENT_REQ_CACHE_BATCH && msg.items && msg.items.length) {
         const cachePromise = processCacheBatch(msg.items, event);
         try {
             event.waitUntil(cachePromise);

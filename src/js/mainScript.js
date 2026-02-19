@@ -117,13 +117,13 @@ function initServiceWorker() {
                 reg.update();
             }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
 
-            if (reg.waiting) showUpdateNotification(reg);
+            if (reg.waiting) showUpdateNotification();
 
             reg.addEventListener('updatefound', function () {
                 const newWorker = reg.installing;
                 newWorker.addEventListener('statechange', () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        showUpdateNotification(reg);
+                        showUpdateNotification();
                     }
                 });
             });
@@ -131,24 +131,13 @@ function initServiceWorker() {
     }
 }
 
-function showUpdateNotification(reg) {
+function showUpdateNotification() {
     MainVue.setTooltip('newVersionAvailableTheNextTimeYoullUseUpdated', {
         translate: true,
         closeOnNavigate: false,
         actionLink: 'updateNow',
         actionLinkFn: () => {
-            if (reg && reg.waiting) {
-                // 1. Set up a one-time listener for the takeover
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    window.location.reload();
-                }, { once: true });
-
-                // 2. Tell the waiting worker to skip
-                reg.waiting.postMessage({ type: constants.SW_EVENT_SKIP_WAITING });
-            } else {
-                // Fallback: If for some reason there is no waiting worker, just reload
-                window.location.reload();
-            }
+            window.location.reload();
         },
         msgType: 'info'
     });
