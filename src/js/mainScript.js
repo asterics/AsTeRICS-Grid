@@ -91,7 +91,7 @@ function initServiceWorker() {
         log.warn('Not installing Service Worker because on development environment.');
         return;
     }
-    if ('serviceWorker' in navigator) {
+    if (constants.SUPPORTS_SERVICE_WORKER) {
         if (window.loaded) {
             installServiceWorker();
         } else {

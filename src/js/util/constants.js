@@ -91,6 +91,7 @@ constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
 constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 constants.IS_MAC = (navigator.platform || ((navigator.userAgentData || {}).platform) || "").toUpperCase().includes('MAC');
+constants.SUPPORTS_SERVICE_WORKER = ('serviceWorker' in navigator);
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
