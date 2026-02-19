@@ -109,11 +109,18 @@
                     this.tooltipOptions.actionLinkFn();
                 }
             },
+            checkClearOnNavigate() {
+                if (this.tooltipOptions.closeOnNavigate) {
+                    this.clearTooltip();
+                }
+            }
         },
         mounted() {
             notificationBar = this;
+            $(document).on(constants.EVENT_NAVIGATE, this.checkClearOnNavigate);
         },
         beforeDestroy() {
+            $(document).off(constants.EVENT_NAVIGATE, this.checkClearOnNavigate);
         }
     }
 </script>

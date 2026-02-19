@@ -25,9 +25,6 @@ let modalTypes = {
 };
 
 MainVue.setViewComponent = function (component, properties) {
-    if (app && app.$refs.notificationBar.tooltipOptions.closeOnNavigate) {
-        MainVue.clearTooltip();
-    }
     app.setComponent(component, properties);
 };
 
