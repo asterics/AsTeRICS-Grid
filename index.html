@@ -118,10 +118,6 @@
         logAndRedirect("Browser doesn't support Array.fill");
     }
 
-    if (!('serviceWorker' in navigator)) {
-        logAndRedirect("Browser doesn't support service worker");
-    }
-
     checkModernizr('promises');
     checkModernizr('indexeddb');
 

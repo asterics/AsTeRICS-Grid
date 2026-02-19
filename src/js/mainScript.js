@@ -101,6 +101,8 @@ function initServiceWorker() {
                 installServiceWorker();
             });
         }
+    } else {
+        MainVue.setTooltipAfterNavigation('browserNotSupportingOfflineMode', { msgType: 'warn', translate: true, timeout: 15000 });
     }
 
     function installServiceWorker() {
@@ -155,18 +157,15 @@ function showUpdateNotification(reg) {
 function checkAppVersion() {
     let version = localStorageService.getCurrentAppVersion();
     if (version && version !== constants.CURRENT_VERSION) {
-        let showMsg = () => {
-            let text = i18nService.t('youreNowUsingVersion', constants.CURRENT_VERSION);
-            MainVue.setTooltip(text, {
-                closeOnNavigate: true,
-                timeout: 30000,
-                actionLink: i18nService.t('moreInformation'),
-                actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
-                msgType: 'info'
-            });
-            $(document).off(constants.EVENT_GRID_LOADED, showMsg);
-        };
-        $(document).on(constants.EVENT_GRID_LOADED, showMsg);
+        MainVue.setTooltipAfterNavigation("youreNowUsingVersion", {
+            closeOnNavigate: true,
+            translate: true,
+            translateParams: [constants.CURRENT_VERSION],
+            timeout: 30000,
+            actionLink: 'moreInformation',
+            actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
+            msgType: 'info'
+        });
     }
     localStorageService.setCurrentAppVersion(constants.CURRENT_VERSION);
 }

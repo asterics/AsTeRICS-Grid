@@ -158,7 +158,7 @@ Router.init = function (injectIdParam, initialHash) {
             }
         },
         after: function (params) {
-            //log.debug('after');
+            $(document).trigger(constants.EVENT_NAVIGATED);
         },
         leave: function (params) {
             //log.debug('leave');
