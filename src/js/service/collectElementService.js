@@ -426,7 +426,7 @@ async function updateCollectElements(isSecondTry) {
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
                 if (image) {
-                    imgHTML = `<img src="${image}1" height="${imgHeight}" style="height: ${imgHeight}px" onerror="handleError()" ${_useCrossorignAttribute ? 'crossorigin="anonymous"' : ''}/>`;
+                    imgHTML = `<img src="${image}" height="${imgHeight}" style="height: ${imgHeight}px" onerror="handleError()" ${_useCrossorignAttribute ? 'crossorigin="anonymous"' : ''}/>`;
                     totalWidth += elemWidth + 2 * imgMargin;
                 } else {
                     let fontSizeFactor = collectElement.textElemSizeFactor || 1.5;
