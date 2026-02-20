@@ -45,6 +45,7 @@ let lastCollectTime = 0;
 
 let imgDimensionsCache = new MapCache();
 let _localMetadata = null;
+let _useCrossorignAttribute = true;
 
 collectElementService.getText = function () {
     return getPrintText();
@@ -425,7 +426,7 @@ async function updateCollectElements(isSecondTry) {
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
                 if (image) {
-                    imgHTML = `<img src="${image}" height="${imgHeight}" style="height: ${imgHeight}px" crossorigin="anonymous"/>`;
+                    imgHTML = `<img src="${image}1" height="${imgHeight}" style="height: ${imgHeight}px" onerror="handleError()" ${_useCrossorignAttribute ? 'crossorigin="anonymous"' : ''}/>`;
                     totalWidth += elemWidth + 2 * imgMargin;
                 } else {
                     let fontSizeFactor = collectElement.textElemSizeFactor || 1.5;
@@ -683,6 +684,15 @@ async function getMetadataConfig() {
     convertMode = _localMetadata.textConfig.convertMode;
     activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
 }
+
+window.handleError = function() {
+    let firstTime = !!_useCrossorignAttribute;
+    _useCrossorignAttribute = false;
+    if (firstTime) {
+        log.warn('error with crossorign attribute in collect element image - remove it (no screenshots, copy of content possible anymore)...');
+        updateCollectElements();
+    }
+};
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
     setTimeout(updateCollectElements, 500);
