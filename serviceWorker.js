@@ -22,7 +22,6 @@ constants.ENABLE_REMOTE_DEBUGGING = false;
 constants.KNOWN_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
 
 let imageCachePromise = null;
-const inFlightCacheRequests = new Set();
 
 if (!workbox) {
     console.log('Workbox in service worker failed to load!');
@@ -53,59 +52,28 @@ const strategyNormalCacheFirst = new workbox.strategies.CacheFirst({
     plugins: [cacheablePlugin]
 });
 
-const strategyImageCacheFirstCors = new workbox.strategies.CacheFirst({
-    cacheName: 'image-cache',
-    fetchOptions: {
-        mode: 'cors',
-        credentials: 'omit'
-    },
-    plugins: [cacheablePlugin]
-});
-
-const strategyImageCacheFirstNoCors = new workbox.strategies.CacheFirst({
-    cacheName: 'image-cache',
-    fetchOptions: {
-        mode: 'no-cors'
-    },
-    plugins: [
-        new workbox.cacheableResponse.CacheableResponsePlugin({
-            statuses: [0, 200] // Explicitly allow Status 0 (Opaque) and 200
-        })
-    ]
-});
-
-const dynamicImageHandler = async ({ url, request, event }) => {
-    if (!inFlightCacheRequests.has(url.href)) {
-        // only do manual cache lookup if this url not currently caching for the first time
-        const cache = await getImageCache();
-        let cachedResponse = await cache.match(request.url);
-        cachedResponse = cachedResponse || await cache.match(request.url, {
-            ignoreSearch: true, // matches even if query strings differ
-            ignoreVary: true // ignore mismatch of headers
-        });
-        if (cachedResponse) {
-            // Even if the URL matches, we check the 'type'.
-            // If the client needs CORS but the cache is a 'black box' (opaque),
-            // we MUST ignore the cache and try a fresh fetch.
-            if (request.mode === 'cors' && cachedResponse.type === 'opaque') {
-                console.debug('Cached version is opaque but CORS is required. Fetching fresh...');
-            } else {
-                return cachedResponse;
-            }
-        }
+const dynamicImageHandler = async ({ url, request }) => {
+    const cache = await getImageCache();
+    const cached = await cache.match(url.href);
+    if (cached) {
+        return cached;
     }
 
+    // Fetch from network
+    let response;
     try {
-        // First Attempt: Try CORS
-        // use the CORS strategy. If the server doesn't support CORS, this throws.
-        return await strategyImageCacheFirstCors.handle({ url, request, event });
-    } catch (error) {
-        // Second Attempt: Fallback to No-CORS
-        // This creates an "opaque" response (you can't read the pixels in JS,
-        // but the <img> tag can still display it).
-        console.info(`CORS fetch failed for ${url.href}, falling back to no-cors.`);
-        return await strategyImageCacheFirstNoCors.handle({ url, request, event });
+        response = await fetch(request);
+    } catch (e) {
+        console.warn('[SW] fetch image failed:', e);
+        throw e;
     }
+
+    // Cache successful responses
+    if (response.status === 200 || response.status === 304 || response.type === 'opaque') {
+        let responseToCache = response.clone();
+        await cache.put(url.href, responseToCache);
+    }
+    return response;
 };
 
 workbox.routing.registerRoute(({ url, request, event }) => {
@@ -173,7 +141,6 @@ async function processCacheBatch(items, event) {
 
 async function cacheOneItem(item, event) {
     try {
-        inFlightCacheRequests.add(item.url);
         let response;
         if (item.type === constants.SW_CACHE_TYPE_IMG) {
             response = await dynamicImageHandler({
@@ -200,8 +167,6 @@ async function cacheOneItem(item, event) {
             url: item.url,
             success: false
         });
-    } finally {
-        inFlightCacheRequests.delete(item.url);
     }
 }
 
