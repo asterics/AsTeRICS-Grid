@@ -25,9 +25,6 @@ let modalTypes = {
 };
 
 MainVue.setViewComponent = function (component, properties) {
-    if (app && app.$refs.notificationBar.tooltipOptions.closeOnNavigate) {
-        MainVue.clearTooltip();
-    }
     app.setComponent(component, properties);
 };
 
@@ -49,16 +46,21 @@ MainVue.setTooltip = function (html, options) {
     return app.$refs.notificationBar.setTooltip(html, options);
 };
 
-MainVue.setTooltipI18n = function (text, options) {
-    MainVue.setTooltip(text, options);
-};
-
 MainVue.clearTooltip = function () {
     if (!app) {
         return;
     }
     app.hiddenPopupData = null;
     app.$refs.notificationBar.clearTooltip();
+};
+
+MainVue.setTooltipAfterNavigation = function(html, options) {
+    $(document).on(constants.EVENT_NAVIGATED, handler);
+
+    function handler() {
+        MainVue.setTooltip(html, options);
+        $(document).off(constants.EVENT_NAVIGATED, handler);
+    }
 };
 
 /**

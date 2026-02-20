@@ -175,6 +175,9 @@ i18nService.getLangReadable = function (lang) {
  * @return {*}
  */
 i18nService.t = function (key, ...args) {
+    if (!key) {
+        return '';
+    }
     return vueI18n.t(key, i18nService.getAppLang(), args);
 };
 

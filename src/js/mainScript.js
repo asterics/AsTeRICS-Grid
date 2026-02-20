@@ -12,10 +12,10 @@ import { urlParamService } from './service/urlParamService';
 import { constants } from './util/constants';
 import { modelUtil } from './util/modelUtil';
 import { keyboardShortcuts } from './service/keyboardShortcuts';
-import { i18nService } from './service/i18nService';
 import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
 import { dataService } from './service/data/dataService';
+import { consoleReService } from './service/consoleReService';
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
@@ -27,6 +27,7 @@ async function init() {
         'AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
             constants.CURRENT_VERSION
     );
+    consoleReService.init();
     checkAppVersion();
     initServiceWorker();
     initMatomoAnalytics();
@@ -90,7 +91,7 @@ function initServiceWorker() {
         log.warn('Not installing Service Worker because on development environment.');
         return;
     }
-    if ('serviceWorker' in navigator) {
+    if (constants.SUPPORTS_SERVICE_WORKER) {
         if (window.loaded) {
             installServiceWorker();
         } else {
@@ -99,6 +100,8 @@ function initServiceWorker() {
                 installServiceWorker();
             });
         }
+    } else {
+        MainVue.setTooltipAfterNavigation('browserNotSupportingOfflineMode', { msgType: 'warn', translate: true, timeout: 15000 });
     }
 
     function installServiceWorker() {
@@ -109,47 +112,49 @@ function initServiceWorker() {
         navigator.serviceWorker.register('./serviceWorker.js', {
             updateViaCache: 'none'
         }).then((reg) => {
-            let isUpdate = false;
             setInterval(() => {
                 log.debug('Check for serviceworker update...');
                 reg.update();
             }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
+
+            if (reg.waiting) showUpdateNotification();
+
             reg.addEventListener('updatefound', function () {
-                if (navigator.serviceWorker.controller) {
-                    isUpdate = true;
-                }
-            });
-            navigator.serviceWorker.addEventListener('message', (evt) => {
-                if (isUpdate && evt.data && evt.data.activated) {
-                    MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
-                        closeOnNavigate: false,
-                        actionLink: i18nService.t('updateNow'),
-                        actionLinkFn: () => {
-                            window.location.reload();
-                        },
-                        msgType: 'info'
-                    });
-                }
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showUpdateNotification();
+                    }
+                });
             });
         });
     }
 }
 
+function showUpdateNotification() {
+    MainVue.setTooltip('newVersionAvailableTheNextTimeYoullUseUpdated', {
+        translate: true,
+        closeOnNavigate: false,
+        actionLink: 'updateNow',
+        actionLinkFn: () => {
+            window.location.reload();
+        },
+        msgType: 'info'
+    });
+}
+
 function checkAppVersion() {
     let version = localStorageService.getCurrentAppVersion();
     if (version && version !== constants.CURRENT_VERSION) {
-        let showMsg = () => {
-            let text = i18nService.t('youreNowUsingVersion', constants.CURRENT_VERSION);
-            MainVue.setTooltip(text, {
-                closeOnNavigate: true,
-                timeout: 30000,
-                actionLink: i18nService.t('moreInformation'),
-                actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
-                msgType: 'info'
-            });
-            $(document).off(constants.EVENT_GRID_LOADED, showMsg);
-        };
-        $(document).on(constants.EVENT_GRID_LOADED, showMsg);
+        MainVue.setTooltipAfterNavigation("youreNowUsingVersion", {
+            closeOnNavigate: true,
+            translate: true,
+            translateParams: [constants.CURRENT_VERSION],
+            timeout: 30000,
+            actionLink: 'moreInformation',
+            actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
+            msgType: 'info'
+        });
     }
     localStorageService.setCurrentAppVersion(constants.CURRENT_VERSION);
 }

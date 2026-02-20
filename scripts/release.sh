@@ -67,9 +67,6 @@ echo "building..."
 rm -rf app/build
 npm run build
 
-# generate and replace paths to cache in serviceWorker.js
-node scripts/getServiceWorkerCachePaths.js
-
 echo "commiting bundles and service worker..."
 git add app/build
 git add serviceWorker.js

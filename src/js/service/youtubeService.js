@@ -505,10 +505,11 @@ function saveState() {
 }
 
 function errorMessage() {
-    tooltipID = MainVue.setTooltip(i18nService.t('errorPlayingYoutube'), {
+    let tooltipInfos = MainVue.setTooltip(i18nService.t('errorPlayingYoutube'), {
         timeout: 30000,
         msgType: 'warn'
     });
+    tooltipID = tooltipInfos.id;
 }
 
 function init() {

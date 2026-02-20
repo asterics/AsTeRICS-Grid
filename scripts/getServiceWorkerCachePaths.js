@@ -2,11 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const namesToSkip = ['/examples/', '/gridsets/', '.LICENSE.txt'];
 const namesMustInclude = ['/examples/translations/', 'gridset_metadata.json'];
-const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/translations/original', 'app/simple', 'app/lang', 'app/dictionaries'];
+const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/translations/original', 'app/simple', 'app/lang', 'app/dictionaries', 'app/lib/workbox'];
 let startDir = path.resolve(__dirname, '../app');
 const basePath = path.resolve(__dirname, '..');   // one level above your script
 const outputFile = path.resolve(__dirname, '../serviceWorkerCachePaths.js');
-let printPaths = ['/', '/latest/', 'index.html'];
+let printPaths = ['./', 'index.html'];
 
 
 function traverseDir(dir) {

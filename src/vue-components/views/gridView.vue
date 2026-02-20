@@ -42,7 +42,7 @@
                 </i18n>
             </div>
         </div>
-        <div class="srow content d-flex" v-if="renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
+        <div class="srow content d-flex" v-if="showGrid && renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
             <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
     </div>
@@ -109,6 +109,7 @@
             return {
                 globalGridData: null,
                 renderGridData: null,
+                showGrid: false,
                 metadata: null,
                 updatedMetadataDoc: null,
                 scanner: null,
@@ -292,9 +293,8 @@
                         areService.uploadAndStartModel(areModel.dataBase64, gridUtil.getAREURL(gridData), areModel.fileName);
                     }
 
-                    // these two lines before recalculateRenderGrid since it changes gridData!
+                    // this line before recalculateRenderGrid since it changes gridData!
                     let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
-                    let newHash = updateThumbnail ? gridUtil.getHash(gridData) : null;
 
                     await this.recalculateRenderGrid(gridData);
                     Router.addToGridHistory(this.renderGridData.id);
@@ -304,7 +304,7 @@
                             let screenshot = await imageUtil.getScreenshot("#grid-container");
                             let thumbnail = {
                                 data: screenshot,
-                                hash: newHash
+                                shouldUpdate: false
                             };
                             dataService.saveThumbnail(this.renderGridData.id, thumbnail);
                         })
@@ -403,6 +403,7 @@
             async recalculateRenderGrid(gridData) {
                 // attention: gridData also changes because of "noDeepCopy: true"
                 // just using this.renderGridData for clarity
+                this.showGrid = false;
                 let globalGrid = null;
                 gridData = gridUtil.fillFreeSpaces(gridData, GridElement.ELEMENT_TYPE_UI_FILLER);
                 if (gridUtil.hasDynamicGridPlaceholder(this.globalGridData)) {
@@ -446,6 +447,7 @@
                         }
                     });
                 }
+                this.showGrid = true;
                 stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {
