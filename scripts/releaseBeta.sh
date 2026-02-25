@@ -43,6 +43,7 @@ ssh $sshUserHost "rm -rf ~/asterics-grid-beta/*"
 scp index.html $sshUserHost:~/asterics-grid-beta/
 scp unsupported.html $sshUserHost:~/asterics-grid-beta/
 scp serviceWorker.js $sshUserHost:~/asterics-grid-beta/
+scp serviceWorkerCachePaths.js $sshUserHost:~/asterics-grid-beta/
 scp -r app $sshUserHost:~/asterics-grid-beta/app
 
 echo "discard temporary changes..."
