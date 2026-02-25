@@ -62,10 +62,18 @@ const dynamicImageHandler = async ({ url, request }) => {
     // Fetch from network
     let response;
     try {
-        response = await fetch(request);
+        response = await fetch(url.href, {
+            mode: 'cors'
+        });
     } catch (e) {
-        console.warn('[SW] fetch image failed:', e);
-        throw e;
+        try {
+            response = await fetch(url.href, {
+                mode: 'no-cors'
+            });
+        } catch (e) {
+            console.warn('[SW] fetch image failed:', e);
+            throw e;
+        }
     }
 
     // Cache successful responses
