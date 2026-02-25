@@ -31,6 +31,12 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/abo
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 
 rm -rf app/build
+
+if $doStash; then
+    echo "apply stashed changes..."
+    git stash apply
+fi
+
 npm run build
 
 echo "copy data to host..."
@@ -40,6 +46,7 @@ scp unsupported.html $sshUserHost:~/asterics-grid-beta/
 scp serviceWorker.js $sshUserHost:~/asterics-grid-beta/
 scp -r app $sshUserHost:~/asterics-grid-beta/app
 
+echo "discard temporary changes..."
 git checkout .
 
 if $doStash; then
