@@ -22,6 +22,11 @@ if $doStash; then
     git stash
 fi
 
+if $doStash; then
+    echo "apply stashed changes..."
+    git stash apply
+fi
+
 echo "building..."
 tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-beta-$(date +%Y-%m-%d-%H.%M\\/%z)"
@@ -31,12 +36,6 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/abo
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 
 rm -rf app/build
-
-if $doStash; then
-    echo "apply stashed changes..."
-    git stash apply
-fi
-
 npm run build
 
 echo "copy data to host..."
