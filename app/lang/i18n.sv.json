@@ -1331,5 +1331,7 @@
   "hideKeyboards": "Dölj tangentbord",
   "automaticallyAddImages": "Lägg automatiskt till bilder",
   "showAllElements": "visa alla element",
-  "firstRowHeightFactor": "Höjdfaktor för första raden"
+  "firstRowHeightFactor": "Höjdfaktor för första raden",
+  "downloadingImagesWithPercent": "Downloading images ... {0}%",
+  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
 }
