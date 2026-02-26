@@ -1,12 +1,12 @@
 # This workflow is triggered whenever a pull request is created or updated.
-name: Beta release
+name: Beta release test/dev
 
 on:
-  pull_request:
+  #pull_request:
     # The types of pull request events that will trigger this workflow.
     # 'opened' for a new PR, 'synchronize' for new commits, and 'reopened'
     # if a closed PR is opened again.
-    types: [opened, synchronize, reopened]
+    #types: [opened, synchronize, reopened]
   workflow_dispatch:
     # This allows the workflow to be triggered manually from the GitHub UI.
     # The branch for the deployment will be selected via the built-in "Use workflow from" dropdown.
@@ -71,14 +71,6 @@ jobs:
              # replace "false" with "true" in the "FORCE_CONNECT_DB" line
              sed -i -E "s/(FORCE_CONNECT_DB\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
           fi
-          
-          # Check for "remote-debug" label
-          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'remote-debug') }}" == "true" ]]; then
-             echo "Label 'remote-debug' found in PR! Updating constants.js and serviceWorker.js..."
-             # replace "false" with "true" in the "ENABLE_REMOTE_DEBUGGING" line
-             sed -i -E "s/(ENABLE_REMOTE_DEBUGGING\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
-             sed -i -E "s/(ENABLE_REMOTE_DEBUGGING\s*[:=]\s*)false/\1true/g" serviceWorker.js
-          fi
 
       # Step 4: Build the web application. This command creates the production-ready
       # files, typically in a 'build' or 'dist' directory.
@@ -108,34 +100,37 @@ jobs:
           SANITIZED_BRANCH=$(echo "$SANITIZED_BRANCH" | sed 's/-$//')
 
           # Construct the full remote path and make it available as a step output.
-          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
+          FULL_REMOTE_PATH="${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
           echo "remote_path_postfix=$POSTFIX" >> $GITHUB_OUTPUT
           echo "remote_user=$REMOTE_USER" >> $GITHUB_OUTPUT
 
-     # Step 6: Use SSH to connect to the server and delete the existing remote directory.
-      # This is a separate step that runs before the upload.
-      - name: Clean remote directory with SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.IONOS_SSH_HOST }}
-          username: ${{ secrets.IONOS_SSH_USER }}
-          password: ${{ secrets.IONOS_SSH_PASS }}
-          # The command to execute on the remote server. We use the path variable created above.
-          script: |
-            rm -rf "${{ steps.prepare_path.outputs.remote_path }}" && mkdir -p "${{ steps.prepare_path.outputs.remote_path }}"
+      # install lftp and upload / sync everything to the remote folder
+      - name: Deploy and Sync via SFTP (lftp)
+        env:
+          HOST: ${{ secrets.IONOS_SFTP_HOST }}
+          USER: ${{ secrets.IONOS_SFTP_USER }}
+          PASS: ${{ secrets.IONOS_SFTP_PASS }}
+          REMOTE_PATH: ${{ steps.prepare_path.outputs.remote_path }}
+        run: |
+          # 1. Install lftp
+          sudo apt-get update && sudo apt-get install -y lftp
 
-      # Step 5: Deploy the build directory to the SFTP server.
-      # This step uses a third-party action to handle the SFTP transfer.
-      - name: Deploy via SCP
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ secrets.IONOS_SSH_HOST }}
-          username: ${{ secrets.IONOS_SSH_USER }}
-          password: ${{ secrets.IONOS_SSH_PASS }}
-          source: "app/,serviceWorker.js,serviceWorkerCachePaths.js,unsupported.html,index.html"
-          target: "${{ steps.prepare_path.outputs.remote_path }}"
+          # 2. Execute SFTP Commands
+          lftp -u "$USER","$PASS" sftp://$HOST <<EOF
+          set sftp:connect-program "ssh -a -x -o StrictHostKeyChecking=no"
+          mkdir -p "$REMOTE_PATH"
+          cd "$REMOTE_PATH"
+          mirror -R --delete \
+            --include-glob app/ \
+            --include-glob serviceWorker.js \
+            --include-glob serviceWorkerCachePaths.js \
+            --include-glob unsupported.html \
+            --include-glob index.html \
+            ./ .
+          bye
+          EOF
           
       # Step 8: Log the deployment URL.
       # This step constructs the full URL and prints it to the workflow log.

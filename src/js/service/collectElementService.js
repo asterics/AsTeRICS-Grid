@@ -45,6 +45,7 @@ let lastCollectTime = 0;
 
 let imgDimensionsCache = new MapCache();
 let _localMetadata = null;
+let _useCrossorignAttribute = true;
 
 collectElementService.getText = function () {
     return getPrintText();
@@ -236,16 +237,30 @@ collectElementService.doCollectElementActions = async function (action, gridElem
     predictionService.predict(getPredictText(), dictionaryKey);
 };
 
-collectElementService.addWordFormTagsToLast = function (tags, toggle) {
-    let lastElement = collectedElements[collectedElements.length - 1];
-    if (lastElement && !lastElement.wordFormFixated) {
-        let lastElementCopy = JSON.parse(JSON.stringify(lastElement));
-        lastElementCopy.wordFormTags = lastElementCopy.wordFormTags || [];
-        let currentLabel = getPrintTextOfElement(lastElementCopy);
-        lastElementCopy.wordFormTags = stateService.mergeTags(lastElementCopy.wordFormTags, tags, toggle);
-        let newLabel = stateService.getWordForm(lastElementCopy, {searchTags: lastElementCopy.wordFormTags, searchSubTags: true});
+collectElementService.addWordFormTagsToLast = function (tags, toggle, skipElementId) {
+    // Find the last element that doesn't have skipElementId
+    // This is more robust than skipLast because it doesn't depend on execution order
+    let targetIndex = -1;
+    for (let i = collectedElements.length - 1; i >= 0; i--) {
+        if (!skipElementId || collectedElements[i].id !== skipElementId) {
+            targetIndex = i;
+            break;
+        }
+    }
+
+    if (targetIndex < 0) {
+        return;
+    }
+
+    let targetElement = collectedElements[targetIndex];
+    if (targetElement && !targetElement.wordFormFixated) {
+        let elementCopy = JSON.parse(JSON.stringify(targetElement));
+        elementCopy.wordFormTags = elementCopy.wordFormTags || [];
+        let currentLabel = getPrintTextOfElement(elementCopy);
+        elementCopy.wordFormTags = stateService.mergeTags(elementCopy.wordFormTags, tags, toggle);
+        let newLabel = stateService.getWordForm(elementCopy, {searchTags: elementCopy.wordFormTags, searchSubTags: true});
         if (newLabel && newLabel !== currentLabel) {
-            collectedElements[collectedElements.length - 1] = lastElementCopy;
+            collectedElements[targetIndex] = elementCopy;
             updateCollectElements();
         }
     }
@@ -411,7 +426,7 @@ async function updateCollectElements(isSecondTry) {
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
                 if (image) {
-                    imgHTML = `<img src="${image}" height="${imgHeight}" style="height: ${imgHeight}px"/>`;
+                    imgHTML = `<img src="${image}" height="${imgHeight}" style="height: ${imgHeight}px" onerror="handleCollectElementImageError()" ${_useCrossorignAttribute ? 'crossorigin="anonymous"' : ''}/>`;
                     totalWidth += elemWidth + 2 * imgMargin;
                 } else {
                     let fontSizeFactor = collectElement.textElemSizeFactor || 1.5;
@@ -669,6 +684,15 @@ async function getMetadataConfig() {
     convertMode = _localMetadata.textConfig.convertMode;
     activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
 }
+
+window.handleCollectElementImageError = function() {
+    let firstTime = !!_useCrossorignAttribute;
+    _useCrossorignAttribute = false;
+    if (firstTime) {
+        log.warn('error with crossorign attribute in collect element image - remove it (no screenshots, copy of content possible anymore)...');
+        updateCollectElements();
+    }
+};
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
     setTimeout(updateCollectElements, 500);

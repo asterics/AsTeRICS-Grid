@@ -22,6 +22,11 @@ if $doStash; then
     git stash
 fi
 
+if $doStash; then
+    echo "apply stashed changes..."
+    git stash apply
+fi
+
 echo "building..."
 tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-beta-$(date +%Y-%m-%d-%H.%M\\/%z)"
@@ -33,16 +38,15 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 rm -rf app/build
 npm run build
 
-# generate and replace paths to cache in serviceWorker.js
-node scripts/getServiceWorkerCachePaths.js
-
 echo "copy data to host..."
 ssh $sshUserHost "rm -rf ~/asterics-grid-beta/*"
 scp index.html $sshUserHost:~/asterics-grid-beta/
 scp unsupported.html $sshUserHost:~/asterics-grid-beta/
 scp serviceWorker.js $sshUserHost:~/asterics-grid-beta/
+scp serviceWorkerCachePaths.js $sshUserHost:~/asterics-grid-beta/
 scp -r app $sshUserHost:~/asterics-grid-beta/app
 
+echo "discard temporary changes..."
 git checkout .
 
 if $doStash; then

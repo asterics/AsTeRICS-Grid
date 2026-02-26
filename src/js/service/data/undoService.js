@@ -34,7 +34,9 @@ function UndoService() {
                     _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                     _redoGridDataStack = [];
                     stateService.setCurrentGrid(newGridData);
-                    dataService.saveGrid(newGridData).then(() => {
+                    dataService.saveGrid(newGridData, {
+                        clearThumbnail: true
+                    }).then(() => {
                         resolve(true);
                     });
                 } else {
