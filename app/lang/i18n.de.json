@@ -1331,5 +1331,7 @@
   "hideKeyboards": "Keyboards ausblenden",
   "automaticallyAddImages": "Bilder automatisch hinzufügen",
   "showAllElements": "Alle Elemente anzeigen",
-  "firstRowHeightFactor": "Faktor für Höhe der ersten Zeile"
+  "firstRowHeightFactor": "Faktor für Höhe der ersten Zeile",
+  "downloadingImagesWithPercent": "Downloading images ... {0}%",
+  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
 }
