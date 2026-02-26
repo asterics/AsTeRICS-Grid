@@ -229,7 +229,7 @@
   "includeGlobalGrid": "Rögzített kártyák megjelenítése",
   "downloadPdf": "PDF letöltése",
   "size": "Méret",
-  "minimumNumberOfRows": "Kártyaoszlopok minimális száma",
+  "minimumNumberOfRows": "Kártyasorok minimális száma",
   "minimumNumberOfColumns": "Oszlopok minimális száma",
   "heightOfFirstGlobalGridRow": "Az első rögzített kártyasor magassága [%]",
   "linkGrids": "Táblák csatolása",
