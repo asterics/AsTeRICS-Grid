@@ -57,10 +57,10 @@ util.throttle = function (fn, args, minPauseMs, key) {
     if (!fn || !fn.apply) {
         return;
     }
-    minPauseMs = minPauseMs || 500;
+    minPauseMs = minPauseMs !== undefined ? minPauseMs : 500;
     let historyKey = key || fn;
     let lastCall = _throttleHistory[historyKey];
-    if (!lastCall || new Date().getTime() - lastCall > minPauseMs) {
+    if (!lastCall || new Date().getTime() - lastCall >= minPauseMs) {
         fn.apply(null, args);
         _throttleHistory[historyKey] = new Date().getTime();
     }

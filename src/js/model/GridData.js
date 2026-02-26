@@ -19,7 +19,7 @@ class GridData extends Model({
     gridElements: Model.Array(GridElement),
     additionalFiles: [Model.Array(AdditionalGridFile)],
     webRadios: [Model.Array(Webradio)],
-    thumbnail: [Object], // map with 2 properties: [data, hash], where "data" is base64 Screenshot data and "hash" is the hash of the grid when the screenshot was made,
+    thumbnail: [Object], // map with 2 properties: [data, shouldUpdate], where "data" is base64 Screenshot data and "shouldUpdate" indicates if the thumb should be updated after some update of the grid's content
     showGlobalGrid: [Boolean],
     globalGridId: [String],
     keyboardMode: [String],

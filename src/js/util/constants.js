@@ -57,6 +57,7 @@ constants.EVENT_USERSETTINGS_UPDATED = 'EVENT_USERSETTINGS_UPDATED';
 constants.EVENT_CONFIG_RESET = 'EVENT_CONFIG_RESET';
 constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE = 'EVENT_NAVIGATE_GRID_IN_VIEWMODE';
 constants.EVENT_NAVIGATE = 'EVENT_NAVIGATE';
+constants.EVENT_NAVIGATED = 'EVENT_NAVIGATED';
 constants.EVENT_SPEAKING_TEXT = 'EVENT_SPEAKING_TEXT';
 
 constants.EVENT_MATRIX_SCROLL_UP = 'EVENT_MATRIX_SCROLL_UP';
@@ -66,10 +67,11 @@ constants.EVENT_MATRIX_SENDING_START = 'EVENT_MATRIX_SENDING_START';
 
 constants.SW_EVENT_ACTIVATED = 'SW_EVENT_ACTIVATED';
 constants.SW_EVENT_URL_CACHED = 'SW_EVENT_URL_CACHED';
-constants.SW_EVENT_REQ_CACHE = 'SW_EVENT_REQ_CACHE';
+constants.SW_EVENT_REQ_CACHE_BATCH = 'SW_EVENT_REQ_CACHE_BATCH';
 constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
+constants.SW_CONSOLE = 'SW_CONSOLE';
 
 constants.DB_SYNC_STATE_SYNCINC = 'DB_SYNC_STATE_SYNCINC';
 constants.DB_SYNC_STATE_SYNCED = 'DB_SYNC_STATE_SYNCED';
@@ -83,10 +85,12 @@ constants.IS_ENVIRONMENT_BETA = constants.ENVIRONMENT === 'BETA';
 constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV && !constants.IS_ENVIRONMENT_BETA;
 constants.FORCE_USE_SW = false;
 constants.FORCE_CONNECT_DB = false;
+constants.ENABLE_REMOTE_DEBUGGING = false;
 constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
 constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 constants.IS_MAC = (navigator.platform || ((navigator.userAgentData || {}).platform) || "").toUpperCase().includes('MAC');
+constants.SUPPORTS_SERVICE_WORKER = ('serviceWorker' in navigator);
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 

@@ -68,7 +68,8 @@ These are the Javascript libraries that are directly imported:
 * **[responsive-voice](https://responsivevoice.org/)**: library for interacting with responsive voice service, generating TTS samples
 * **[sjcl](https://github.com/bitwiseshiftleft/sjcl)**: crypto library published by Stanford University that is used for encryption of user configuration
 * **[uart.min.js](https://github.com/asterics/EspruinoWebTools/blob/master/uart.js)**: library for interacting with WebSerial and WebBluetooth APIs, used for UART action.
-* **[workbox-sw.js](https://github.com/GoogleChrome/workbox)**: library for creating Service Workers for offline support of the app
+* **[Workbox](https://github.com/GoogleChrome/workbox)**: library for creating Service Workers for offline support of the app
+   * Workbox library files were generated using `worbox-cli copyLibraries`, see [docs for using workbox hosted](https://developer.chrome.com/docs/workbox/modules/workbox-sw/#using_local_workbox_files_instead_of_cdn) 
 
 [&#x2190; Previous Chapter](01_structure.md) [Next Chapter &#x2192;](03_grid.md)
 

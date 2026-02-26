@@ -109,7 +109,7 @@ Other people and organizations we want to thank:
     * [couch-auth](https://github.com/perfood/couch-auth)
     * [file-saver](https://www.npmjs.com/package/file-saver)
     * [hls.js](https://github.com/video-dev/hls.js/)
-    * [html2canvas](https://github.com/niklasvh/html2canvas)
+    * [html-to-image](https://github.com/bubkoo/html-to-image)
     * [interactjs](https://interactjs.io/)
     * [jspdf](https://github.com/parallax/jsPDF)
     * [jszip](https://stuk.github.io/jszip/)

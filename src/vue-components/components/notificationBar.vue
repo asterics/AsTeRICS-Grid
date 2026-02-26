@@ -1,5 +1,5 @@
 <template>
-    <div id="notificationBar" v-if="tooltipHTML" style="display: flex">
+    <div id="notificationBar" v-if="showTooltip && tooltipHTML" style="display: flex">
         <img id="notificationBarImg" v-show="tooltipImageUrl" :src="tooltipImageUrl" alt="">
         <i v-if="tooltipOptions.faIcon" :class="tooltipOptions.faIcon"></i>
         <div style="padding-left: 0.5em">
@@ -10,11 +10,15 @@
                 <a class="d-block" v-if="tooltipOptions.actionLinkUrl" :href="tooltipOptions.actionLinkUrl" target="_blank" style="color: #44a8f1">{{actionLink | translate}}</a>
             </div>
         </div>
-        <button @click="tooltipHTML = ''" style="position: absolute; top: 0; right: 10px; padding: 0 10px" :label="$t('close')">X</button>
+        <button @click="clearTooltip()" style="position: absolute; top: 0; right: 10px; padding: 0 10px" :label="$t('close')">X</button>
     </div>
 </template>
 
 <script>
+    import { i18nService } from '../../js/service/i18nService';
+    import $ from '../../js/externals/jquery';
+    import { constants } from '../../js/util/constants';
+
     let notificationBar = null;
     let _defaultTooltipsOptions = {
         closeOnNavigate: true,
@@ -26,7 +30,9 @@
         actionLinkFn2: null,
         imageUrl: null,
         faIcon: null,
-        msgType: null
+        msgType: null,
+        translate: false,
+        translateParams: []
     };
 
     export default {
@@ -39,7 +45,8 @@
                 lastTooltipHTML: null,
                 tooltipTimeoutHandler: null,
                 tooltipOptions: _defaultTooltipsOptions,
-                currentToolTipID: null
+                currentToolTipID: null,
+                showTooltip: false
             }
         },
         methods: {
@@ -67,17 +74,26 @@
                         thiz.tooltipOptions.faIcon = 'fas fa-check-circle fa-2x';
                         break;
                 }
-                this.tooltipHTML = html;
+                this.tooltipHTML = options.translate ? i18nService.t(html, ...thiz.tooltipOptions.translateParams) : html;
                 this.tooltipImageUrl = thiz.tooltipOptions.imageUrl;
-                this.actionLink = thiz.tooltipOptions.actionLink;
+                this.actionLink = options.translate ? i18nService.t(thiz.tooltipOptions.actionLink) : thiz.tooltipOptions.actionLink;
                 this.currentToolTipID = new Date().getTime();
-                return this.currentToolTipID;
+                this.showTooltip = true;
+                return {
+                    id: this.currentToolTipID,
+                    htmlUpdateFn: (id, html) => {
+                        if (this.currentToolTipID === id) {
+                            this.tooltipHTML = html;
+                        }
+                    }
+                };
             },
             clearTooltip: function (id) {
                 if (id && id !== this.currentToolTipID) {
                     return;
                 }
                 let thiz = this;
+                this.showTooltip = false;
                 if (thiz.tooltipOptions.revertOnClose && this.tooltipHTML) {
                     thiz.setTooltip(thiz.lastTooltipHTML, thiz.lastTooltipOptions);
                 } else {
@@ -93,11 +109,18 @@
                     this.tooltipOptions.actionLinkFn();
                 }
             },
+            checkClearOnNavigate() {
+                if (this.tooltipOptions.closeOnNavigate) {
+                    this.clearTooltip();
+                }
+            }
         },
         mounted() {
             notificationBar = this;
+            $(document).on(constants.EVENT_NAVIGATE, this.checkClearOnNavigate);
         },
         beforeDestroy() {
+            $(document).off(constants.EVENT_NAVIGATE, this.checkClearOnNavigate);
         }
     }
 </script>
