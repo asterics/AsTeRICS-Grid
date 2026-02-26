@@ -1332,6 +1332,6 @@
   "automaticallyAddImages": "Añadir imágenes automáticamente",
   "showAllElements": "mostrar todas las celdas",
   "firstRowHeightFactor": "Ajuste de altura de la primera fila",
-  "downloadingImagesWithPercent": "Downloading images ... {0}%",
-  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
+  "downloadingImagesWithPercent": "Descargando imágenes ... {0}%",
+  "browserNotSupportingOfflineMode": "Su navegador no soporta el modo offline. Si lo necesita, actualice o utilice un navegador diferente."
 }
