@@ -1331,5 +1331,7 @@
   "hideKeyboards": "Amagar teclats",
   "automaticallyAddImages": "Afegir imatges automàticament",
   "showAllElements": "Mostrar totes les cel·les",
-  "firstRowHeightFactor": "Height factor for first row"
+  "firstRowHeightFactor": "Height factor for first row",
+  "downloadingImagesWithPercent": "Downloading images ... {0}%",
+  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
 }
