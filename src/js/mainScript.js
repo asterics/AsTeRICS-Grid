@@ -27,6 +27,7 @@ async function init() {
         'AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
             constants.CURRENT_VERSION
     );
+    console.log("test deploy works!")
     consoleReService.init();
     checkAppVersion();
     initServiceWorker();
