@@ -1331,5 +1331,7 @@
   "hideKeyboards": "Nascondi tastiere",
   "automaticallyAddImages": "Aggiungi automaticamente le immagini",
   "showAllElements": "mostra tutti gli elementi",
-  "firstRowHeightFactor": "Fattore di altezza per la prima riga"
+  "firstRowHeightFactor": "Fattore di altezza per la prima riga",
+  "downloadingImagesWithPercent": "Downloading images ... {0}%",
+  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
 }

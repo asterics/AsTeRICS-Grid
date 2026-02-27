@@ -1331,5 +1331,7 @@
   "hideKeyboards": "Bullentyűzet elrejtése",
   "automaticallyAddImages": "Képek automatikus hozzáadása",
   "showAllElements": "minden kártya mutatása",
-  "firstRowHeightFactor": "Első sor magasság-hányadosa"
+  "firstRowHeightFactor": "Első sor magasság-hányadosa",
+  "downloadingImagesWithPercent": "Downloading images ... {0}%",
+  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
 }

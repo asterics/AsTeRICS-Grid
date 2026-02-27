@@ -1331,5 +1331,7 @@
   "hideKeyboards": "Ocultar teclados",
   "automaticallyAddImages": "Añadir imágenes automáticamente",
   "showAllElements": "mostrar todas las celdas",
-  "firstRowHeightFactor": "Ajuste de altura de la primera fila"
+  "firstRowHeightFactor": "Ajuste de altura de la primera fila",
+  "downloadingImagesWithPercent": "Descargando imágenes ... {0}%",
+  "browserNotSupportingOfflineMode": "Su navegador no soporta el modo offline. Si lo necesita, actualice o utilice un navegador diferente."
 }
