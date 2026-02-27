@@ -122,9 +122,7 @@ jobs:
           # 2. Execute SFTP Commands
           lftp -u "$USER","$PASS" sftp://$HOST <<EOF
           set sftp:connect-program "ssh -a -x -o StrictHostKeyChecking=no"
-          -mkdir "$REMOTE_USER"
-          -mkdir "$REMOTE_USER/$SANITIZED_BRANCH"
-          -mkdir "$REMOTE_PATH"
+          mkdir -fp "$REMOTE_PATH"
           cd "$REMOTE_PATH"
           mirror -R --delete \
             --include-glob app/ \
