@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Kod seryjny",
   "copyDirectLinkToConfigToClipboard": "Skopiuj bezpośredni link do tej konfiguracji do schowka",
   "importantInformation": "Ważne informacje",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 270 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
   "useIt": "Użyj",
   "details": "Właściwości",
   "chooseHowToStart": "Wybierz jak rozpocząć",
