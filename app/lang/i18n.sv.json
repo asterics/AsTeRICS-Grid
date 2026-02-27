@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Serienummer",
   "copyDirectLinkToConfigToClipboard": "Kopiera direktlänk till denna konfiguration till urklipp",
   "importantInformation": "Viktig information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 270 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
   "useIt": "Använd den",
   "details": "Detaljer",
   "chooseHowToStart": "Välj hur man startar",
