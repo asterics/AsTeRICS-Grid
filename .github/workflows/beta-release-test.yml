@@ -123,6 +123,7 @@ jobs:
           mkdir -fp "$REMOTE_PATH"
           cd "$REMOTE_PATH"
           mirror -R --delete -v \
+            --exclude-glob .git/ \
             --exclude-glob .github/ \
             --exclude-glob docs/ \
             --exclude-glob node_modules/ \
