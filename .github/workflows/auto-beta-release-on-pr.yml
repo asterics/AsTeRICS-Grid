@@ -108,7 +108,7 @@ jobs:
           SANITIZED_BRANCH=$(echo "$SANITIZED_BRANCH" | sed 's/-$//')
 
           # Construct the full remote path and make it available as a step output.
-          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
+          FULL_REMOTE_PATH="${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
           echo "remote_path_postfix=$POSTFIX" >> $GITHUB_OUTPUT
