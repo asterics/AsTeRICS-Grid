@@ -24,6 +24,34 @@
                 </div>
             </div>
         </div>
+        <div class="srow">
+            <div class="eleven columns">
+                <h3 class="mt-2">Pictogram Prediction</h3>
+                <div class="srow">
+                    <input id="showPictosInPredictions" type="checkbox" v-model="metadata.showPictogramsInPredictions" @change="saveMetadata(metadata)"/>
+                    <label for="showPictosInPredictions">{{ $t('showPictogramsInPredictions') }}</label>
+                </div>
+                <div class="srow">
+                    <input id="refreshPredictionsWhileTyping" type="checkbox" v-model="metadata.refreshPredictionsWhileTyping" @change="saveMetadata(metadata)"/>
+                    <label for="refreshPredictionsWhileTyping">{{ $t('refreshPredictionsWhileTyping') }}</label>
+                </div>
+                <div class="srow">
+                    <label class="three columns" for="pictoPredProvider">{{ $t('searchProvider') }}</label>
+                    <select class="five columns" id="pictoPredProvider" v-model="metadata.pictogramPredictionProvider" @change="saveMetadata(metadata)">
+                        <option value="GLOBALSYMBOLS">GlobalSymbols</option>
+                        <option value="ARASAAC">ARASAAC</option>
+                        <option value="OPENSYMBOLS">OpenSymbols</option>
+                    </select>
+                </div>
+                <div class="srow">
+                    <label class="three columns" for="pictoPredLang">{{ $t('searchLang') }}</label>
+                    <select class="five columns" id="pictoPredLang" v-model="metadata.pictogramPredictionLang" @change="saveMetadata(metadata)">
+                        <option :value="null">{{ $t('automaticCurrentLanguage') }}</option>
+                        <option v-for="lang in i18nService.getAllLangCodes()" :value="lang">{{ $t('lang.' + lang) }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <h3>{{ $t('externalSpeechService') }}</h3>
         <div class="srow">
             <label class="three columns" for="externalSpeechUrl">{{ $t('externalSpeechUrl') }}</label>
@@ -73,6 +101,18 @@
                 urlValid: null,
                 MODALS: MODALS,
                 currentModal: null
+            }
+        },
+        created() {
+            // Ensure the label exists even if translation keys aren’t present
+            if (!this.$te('refreshPredictionsWhileTyping')) {
+                i18nService.addCustomTranslation('en', 'refreshPredictionsWhileTyping', 'Refresh predictions while typing');
+            }
+        },
+        created() {
+            // ensure default translation exists at runtime even if missing key; fallback to English string
+            if (!this.$te('refreshPredictionsWhileTyping')) {
+                i18n.addCustomTranslation('en', 'refreshPredictionsWhileTyping', 'Refresh predictions while typing');
             }
         },
         methods: {
