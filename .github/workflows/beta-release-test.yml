@@ -113,8 +113,6 @@ jobs:
           USER: ${{ secrets.IONOS_SFTP_USER }}
           PASS: ${{ secrets.IONOS_SFTP_PASS }}
           REMOTE_PATH: ${{ steps.prepare_path.outputs.remote_path }}
-          REMOTE_USER: ${{ steps.prepare_path.outputs.remote_user }}
-          SANITIZED_BRANCH: ${{ steps.prepare_path.outputs.sanitized_branch }}
         run: |
           # 1. Install lftp
           sudo apt-get update && sudo apt-get install -y lftp
@@ -124,12 +122,13 @@ jobs:
           set sftp:connect-program "ssh -a -x -o StrictHostKeyChecking=no"
           mkdir -fp "$REMOTE_PATH"
           cd "$REMOTE_PATH"
-          mirror -R --delete \
-            --include-glob app/ \
-            --include-glob serviceWorker.js \
-            --include-glob serviceWorkerCachePaths.js \
-            --include-glob unsupported.html \
-            --include-glob index.html \
+          mirror -R --delete -v \
+            --exclude-glob .github/ \
+            --exclude-glob docs/ \
+            --exclude-glob node_modules/ \
+            --exclude-glob scripts/ \
+            --exclude-glob src/ \
+            --exclude-glob superlogin/ \
             ./ .
           bye
           EOF
