@@ -1,6 +1,8 @@
 import { encryptionService } from './encryptionService';
 import { EncryptedObject } from '../../model/EncryptedObject';
 import { dataUtil } from '../../util/dataUtil';
+import { localStorageService } from './localStorageService';
+import { constants } from '../../util/constants';
 
 jest.mock('../../externals/sjcl');
 jest.mock('../../model/EncryptedObject');
@@ -14,6 +16,7 @@ let MODEL_NAME = 'MODEL_NAME';
 let DEFAULT_PASSWORD = 'DEFAULT_PASSWORD';
 let DEFAULT_SALT = 'DEFAULT_SALT';
 let DEFAULT_ENC_KEY = DEFAULT_SALT + DEFAULT_PASSWORD;
+let NEW_ENC_KEY = localStorageService.getAutologinOrActiveUser() + DEFAULT_PASSWORD;
 
 test('encryptionService.encryptObject - Test 0', () => {
     let object = { data: 'testdata' };
@@ -29,7 +32,7 @@ test('encryptionService.encryptObject - Test 1', () => {
     encryptionService.setEncryptionProperties(DEFAULT_PASSWORD, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
     expect(result instanceof EncryptedObject).toBeTruthy();
-    expect(result.encryptedDataBase64).toEqual(DEFAULT_ENC_KEY + json);
+    expect(result.encryptedDataBase64).toEqual(NEW_ENC_KEY + json);
     expect(result.encryptedDataBase64Short).toEqual(null);
 });
 
@@ -45,7 +48,7 @@ test('encryptionService.encryptObject - Test 2', () => {
         id: ID,
         _id: ID,
         _rev: REV,
-        encryptedDataBase64: DEFAULT_ENC_KEY + JSON.stringify(object),
+        encryptedDataBase64: NEW_ENC_KEY + JSON.stringify(object),
         encryptedDataBase64Short: null
     };
     encryptionService.setEncryptionProperties(DEFAULT_PASSWORD, DEFAULT_SALT);
@@ -62,7 +65,7 @@ test('encryptionService.encryptObject - Test 3', () => {
     encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
     expect(result instanceof EncryptedObject).toBeTruthy();
-    expect(result.encryptedDataBase64).toEqual(DEFAULT_SALT + encryptionKey + json);
+    expect(result.encryptedDataBase64).toEqual(localStorageService.getAutologinOrActiveUser() + encryptionKey + json);
     expect(result.encryptedDataBase64Short).toEqual(null);
 });
 
@@ -80,7 +83,7 @@ test('encryptionService.encryptObject - Test 4', () => {
         id: ID,
         _id: ID,
         _rev: REV,
-        encryptedDataBase64: DEFAULT_SALT + encryptionKey + JSON.stringify(object),
+        encryptedDataBase64: localStorageService.getAutologinOrActiveUser() + encryptionKey + JSON.stringify(object),
         encryptedDataBase64Short: null
     };
     encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
@@ -109,8 +112,8 @@ test('encryptionService.encryptObject - shortening 1', () => {
         id: ID,
         _id: ID,
         _rev: REV,
-        encryptedDataBase64: DEFAULT_SALT + encryptionKey + JSON.stringify(object),
-        encryptedDataBase64Short: DEFAULT_SALT + encryptionKey + JSON.stringify(objectShortened)
+        encryptedDataBase64: localStorageService.getAutologinOrActiveUser() + encryptionKey + JSON.stringify(object),
+        encryptedDataBase64Short: localStorageService.getAutologinOrActiveUser() + encryptionKey + JSON.stringify(objectShortened)
     };
     encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
@@ -120,16 +123,19 @@ test('encryptionService.encryptObject - shortening 1', () => {
 
 test('encryptionService.decryptObject - shortening', () => {
     //with password -> real encryption
+    EncryptedObject.prototype.modelVersion = '{"major": 7, "minor": 0, "patch": 0}'; // newly created instances should have this modelVersion
     let encryptionKey = 'mykey';
     let object = {
         data: getLongData(501),
         modelName: MODEL_NAME,
+        modelVersion: constants.MODEL_VERSION,
         id: ID,
         _rev: REV
     };
     let objectShortened = {
         data: dataUtil.getDefaultRemovedPlaceholder(),
         modelName: MODEL_NAME,
+        modelVersion: constants.MODEL_VERSION,
         id: ID,
         _rev: REV
     };
@@ -141,6 +147,7 @@ test('encryptionService.decryptObject - shortening', () => {
 
 test('encryptionService.decryptObject - shortening, no short version', () => {
     //with password -> real encryption
+    EncryptedObject.prototype.modelVersion = '{"major": 7, "minor": 0, "patch": 0}'; // newly created instances should have this modelVersion
     let encryptionKey = 'mykey';
     let object = {
         data: getLongData(10),
@@ -155,6 +162,7 @@ test('encryptionService.decryptObject - shortening, no short version', () => {
 
 test('encryptionService.encryptObject - shortening 2, below threshold', () => {
     //with password -> real encryption
+    EncryptedObject.prototype.modelVersion = '{"major": 7, "minor": 0, "patch": 0}'; // newly created instances should have this modelVersion
     let encryptionKey = 'mykey';
     let object = {
         data: getLongData(500),
@@ -167,7 +175,7 @@ test('encryptionService.encryptObject - shortening 2, below threshold', () => {
         id: ID,
         _id: ID,
         _rev: REV,
-        encryptedDataBase64: DEFAULT_SALT + encryptionKey + JSON.stringify(object),
+        encryptedDataBase64: localStorageService.getAutologinOrActiveUser() + encryptionKey + JSON.stringify(object),
         encryptedDataBase64Short: null
     };
     encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
