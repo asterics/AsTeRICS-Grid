@@ -114,28 +114,33 @@ jobs:
           echo "remote_path_postfix=$POSTFIX" >> $GITHUB_OUTPUT
           echo "remote_user=$REMOTE_USER" >> $GITHUB_OUTPUT
 
-     # Step 6: Use SSH to connect to the server and delete the existing remote directory.
-      # This is a separate step that runs before the upload.
-      - name: Clean remote directory with SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.IONOS_SSH_HOST }}
-          username: ${{ secrets.IONOS_SSH_USER }}
-          password: ${{ secrets.IONOS_SSH_PASS }}
-          # The command to execute on the remote server. We use the path variable created above.
-          script: |
-            rm -rf "${{ steps.prepare_path.outputs.remote_path }}" && mkdir -p "${{ steps.prepare_path.outputs.remote_path }}"
+      # install lftp and upload / sync everything to the remote folder
+      - name: Deploy and Sync via SFTP (lftp)
+        env:
+          HOST: ${{ secrets.IONOS_SFTP_HOST }}
+          USER: ${{ secrets.IONOS_SFTP_USER }}
+          PASS: ${{ secrets.IONOS_SFTP_PASS }}
+          REMOTE_PATH: ${{ steps.prepare_path.outputs.remote_path }}
+        run: |
+          # 1. Install lftp
+          sudo apt-get update && sudo apt-get install -y lftp
 
-      # Step 5: Deploy the build directory to the SFTP server.
-      # This step uses a third-party action to handle the SFTP transfer.
-      - name: Deploy via SCP
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ secrets.IONOS_SSH_HOST }}
-          username: ${{ secrets.IONOS_SSH_USER }}
-          password: ${{ secrets.IONOS_SSH_PASS }}
-          source: "app/,serviceWorker.js,serviceWorkerCachePaths.js,unsupported.html,index.html"
-          target: "${{ steps.prepare_path.outputs.remote_path }}"
+          # 2. Execute SFTP Commands
+          lftp -u "$USER","$PASS" sftp://$HOST <<EOF
+          set sftp:connect-program "ssh -a -x -o StrictHostKeyChecking=no"
+          mkdir -fp "$REMOTE_PATH"
+          cd "$REMOTE_PATH"
+          mirror -R --delete -v \
+            --exclude-glob .git/ \
+            --exclude-glob .github/ \
+            --exclude-glob docs/ \
+            --exclude-glob node_modules/ \
+            --exclude-glob scripts/ \
+            --exclude-glob src/ \
+            --exclude-glob superlogin/ \
+            ./ .
+          bye
+          EOF
           
       # Step 8: Log the deployment URL.
       # This step constructs the full URL and prints it to the workflow log.
