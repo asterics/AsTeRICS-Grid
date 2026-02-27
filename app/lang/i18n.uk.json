@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Серійний",
   "copyDirectLinkToConfigToClipboard": "Скопіюйте пряме посилання на цю конфігурацію в буфер обміну",
   "importantInformation": "Важлива інформація",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Користувачів буде <b>видалено після 270 днів бездіяльності</b>, тому, будь ласка, створіть резервні копії важливих конфігурацій.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
   "useIt": "Використовуйте це",
   "details": "Деталі",
   "chooseHowToStart": "Виберіть, як почати",

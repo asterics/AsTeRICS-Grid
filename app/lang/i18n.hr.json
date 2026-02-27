@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Serijski",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Važne informacije",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 270 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
   "useIt": "Koristi",
   "details": "Detalji",
   "chooseHowToStart": "Odaberi kako započeti",
