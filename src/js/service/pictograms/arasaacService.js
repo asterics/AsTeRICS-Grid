@@ -190,8 +190,10 @@ arasaacService.getSupportedGrammarLangs = function (translate) {
 
 function getUrl(apiId, options) {
     let paramSuffix = '';
+    // Only use ARASAAC-specific options, ignore options from other providers
+    const validArasaacOptions = ['plural', 'color', 'action', 'skin', 'hair', 'identifier', 'identifierPosition'];
     options.forEach((option) => {
-        if (option.value !== undefined) {
+        if (option.value !== undefined && validArasaacOptions.includes(option.name)) {
             paramSuffix += `&${option.name}=${encodeURIComponent(option.value)}`;
         }
     });
