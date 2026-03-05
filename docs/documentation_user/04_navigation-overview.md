@@ -2,7 +2,7 @@
 
 [Back to Overview](README.md)
 
-Once a user has been created and some grid set has been imported, AsTeRICS Grid always opens the last used user in the "main view", which looks like Figure 1:
+Once a user has been created and some grid set has been imported, Asterics AAC always opens the last used user in the "main view", which looks like Figure 1:
 
 ![main view](./img/main_en.jpg)
 *Figure 1: Main view (desktop view on the left, mobile view on the right)*
@@ -17,8 +17,8 @@ The elements have this functionality:
 6. [**Add online user**](04_navigation-overview.md#add-online-user): register a new online user (synchronized across devices)
 7. [**Add offline user**](04_navigation-overview.md#add-offline-user): add a new offline user (only for this device)
 8. **Settings**: select between general settings like application language and user settings like grid content language, voice or colors. (See chapters [basic setup](03_basic_setup.md) and [editing grid set](05_editing-grid-set.md))
-9. **About AsTeRICS Grid**: Show general information, links, contact address
-10. **Help**: find the AsTeRICS Grid user manuel, the ARASAAC tutorial or video tutorials
+9. **About Asterics AAC**: Show general information, links, contact address
+10. **Help**: find the Asterics AAC user manuel, the ARASAAC tutorial or video tutorials
 11. [**Editing on**](04_navigation-overview.md#editing-on): edit the layout of the grid, add new elements, actions for grid elements
 12. [**Input options**](09_input-options.md): Options about how to select grid elements (e.g. click, hover, scanning)
 13. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid 
@@ -108,7 +108,7 @@ In view "add offline user" it's possible to add a new [offline user](01_terms.md
 
 Note that for macOs `⌘` (command key) can be used instead of `Ctrl`.
 
-These are the global keyboard shortcuts available in AsTeRICS Grid:
+These are the global keyboard shortcuts available in Asterics AAC:
 * `Ctrl + Alt + Arrow Right`: change to the next stored user
 * `Ctrl + Backspace`: navigate to the last grid
 * `Ctrl + Pos1`: navigate to the main/home grid

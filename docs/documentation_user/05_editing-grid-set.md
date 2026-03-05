@@ -58,7 +58,7 @@ It can also be deactivated on specific grids. More information in [editing grid]
 
 ## Backup
 
-We **highly recommend to do backups** if you are using AsTeRICS Grid on a regular basis and have put some effort into customizing own grids for your use case. This is why backups are important:
+We **highly recommend to do backups** if you are using Asterics AAC on a regular basis and have put some effort into customizing own grids for your use case. This is why backups are important:
 
 1. **Offline users**: since all data is only stored in an browser-internal storage, any browser crash or failure of your device could cause data loss.
 2. **Online users**: Although online users are not susceptible to device or browser errors, data loss is still possible because of the end-to-end encryption of user data. If the user forgets his password or decryption fails because of any kind of programming error, the data cannot be recovered. Backups are saved to an unencrypted file and therefore can recover the user data in such cases.

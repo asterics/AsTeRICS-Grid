@@ -2,8 +2,8 @@
 
 [Back to Overview](README.md)
 
-This chapter is about dictionaries and how to manage and use them within AsTeRICS Grid.
-A dictionary is a collection of words and their relations that is saved within AsTeRICS Grid in order to fill [prediction elements](01_terms.md#grid-element). 
+This chapter is about dictionaries and how to manage and use them within Asterics AAC.
+A dictionary is a collection of words and their relations that is saved within Asterics AAC in order to fill [prediction elements](01_terms.md#grid-element). 
 
 In the manage dictionaries view, currently saved dictionaries that are used for filling prediction elements (see [Terms](01_terms.md#grid-element)) can be shown and adapted (Figure 1):
 
@@ -62,7 +62,7 @@ The format of the list looks like this:
 ...
 ```
 
-Each data record has the format `<rank> <frequency> <word>` and is separated by a line separator `\n`. In order to import this list to AsTeRICS Grid the whole list has to be copied, inserted into the text field of the import modal (Figure 3, number 2) and the following advanced options have to be set (Figure 3, number 6-9):
+Each data record has the format `<rank> <frequency> <word>` and is separated by a line separator `\n`. In order to import this list to Asterics AAC the whole list has to be copied, inserted into the text field of the import modal (Figure 3, number 2) and the following advanced options have to be set (Figure 3, number 6-9):
 
 * **Element separator**: `\n` - since the data records are separated by line breaks
 * **In-element separator**: `[ ]` (space) - since the data inside the lines is separated by spaces

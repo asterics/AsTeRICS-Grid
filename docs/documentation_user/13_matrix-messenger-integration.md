@@ -1,6 +1,6 @@
-# Matrix messenger in AsTeRICS Grid
+# Matrix messenger in Asterics AAC
 
-The integration of the Matrix protocol makes it possible to use AsTeRICS Grid as simple or complex messenger and connect to other people via chatting.
+The integration of the Matrix protocol makes it possible to use Asterics AAC as simple or complex messenger and connect to other people via chatting.
 
 ## Background info
 
@@ -10,13 +10,13 @@ There are many clients for Matrix (similar to email apps) and providers using th
 
 The most well known provider (like GMail for mails) is run by [matrix.org](https://matrix.org/), but there are many others, see [list of matrix providers](https://servers.joinmatrix.org/) or other lists. For advanced users it's also possible to [set up an own "homeserver"](https://matrix.org/ecosystem/servers/) and it's even possible to [connect it with well-known messengers](https://matrix.org/ecosystem/bridges/) like WhatsApp or Signal using bridges.
 
-AsTeRICS Grid can be used as Matrix client, so it's possible to connect and chat with any other user in the Matrix world. It's also possible to chat with another user of AsTeRICS Grid.
+Asterics AAC can be used as Matrix client, so it's possible to connect and chat with any other user in the Matrix world. It's also possible to chat with another user of Asterics AAC.
 
 ## Getting started
 
-Follow these steps in order to be able to use Matrix within AsTeRICS Grid:
+Follow these steps in order to be able to use Matrix within Asterics AAC:
 * create an account on a Matrix server of your choice. The simplest is to use the web version: [Register using Element web](https://app.element.io/#/register).
-* In AsTeRICS Grid go to `Settings -> Integrations -> Matrix messenger` and click on `Configure matrix messenger`. It opens a dialog where it's possible to log in using the credentials you registered with earlier.
+* In Asterics AAC go to `Settings -> Integrations -> Matrix messenger` and click on `Configure matrix messenger`. It opens a dialog where it's possible to log in using the credentials you registered with earlier.
 
 ## Settings
 
@@ -49,9 +49,9 @@ These are the contents of tab "Rooms":
 * **Room name**: a name for the new room (optional)
 * **Use end-to-end encryption**: check if you want that the room is end-to-end encrypted, ensuring that no one other than your conversation partner(s) can read the content of your messages
 
-## Use AsTeRICS Grid as Matrix messenger
+## Use Asterics AAC as Matrix messenger
 
-There is this [demo configuration for matrix messenger](https://grid.asterics.eu/?gridset_filename=matrix_messenger_demo.grd.json) which shows some common use-cases for Matrix messenger integration in AsTeRICS Grid.
+There is this [demo configuration for matrix messenger](https://grid.asterics.eu/?gridset_filename=matrix_messenger_demo.grd.json) which shows some common use-cases for Matrix messenger integration in Asterics AAC.
 
 ### Matrix messenger element
 

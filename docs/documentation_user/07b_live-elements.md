@@ -1,4 +1,4 @@
-# Live elements in AsTeRICS Grid
+# Live elements in Asterics AAC
 
 Live elements can display dynamic information. This can be:
 * **Application / system status**, e.g. current volume or battery level
