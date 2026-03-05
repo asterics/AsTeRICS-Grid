@@ -1,6 +1,6 @@
 {
-  "name": "AsTeRICS Grid",
-  "short_name": "Grid",
+  "name": "Asterics AAC",
+  "short_name": "Asterics",
   "start_url": "../",
   "id": "/",
   "display": "standalone",
@@ -36,13 +36,13 @@
     "sizes": "1920x1080",
     "type": "image/jpeg",
     "form_factor": "wide",
-    "label": "AsTeRICS Grid on desktop"
+    "label": "Asterics AAC on desktop"
   },
   {
     "src": "img/screenshots/narrow.png",
     "sizes": "776x1120",
     "type": "image/png",
     "form_factor": "narrow",
-    "label": "AsTeRICS Grid on mobile"
+    "label": "Asterics AAC on mobile"
   }]
 }

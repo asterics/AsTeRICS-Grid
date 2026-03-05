@@ -1,7 +1,7 @@
 set -e
 
 # ------------------------------------------------------------------
-# AsTeRICS Grid release script
+# Asterics AAC release script
 # ------------------------------------------------------------------
 # releases the committed version on the current branch to gh-pages
 # by performing the following steps:

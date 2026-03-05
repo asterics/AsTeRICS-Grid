@@ -1,6 +1,6 @@
 # Installation
 
-This page provides information on requirements and how to install AsTeRICS Grid on a device:
+This page provides information on requirements and how to install Asterics AAC on a device:
 - [Internet Connection Requirements](02_installation.md#internet-connection-requirements)
 - [Selecting a Device](02_installation.md#selecting-a-device)
 - [Selecting a Browser](02_installation.md#selecting-a-browser)
@@ -10,22 +10,22 @@ This page provides information on requirements and how to install AsTeRICS Grid 
 
 ## Internet Connection Requirements
 
-Despite being a web-application that runs in an internet browser, AsTeRICS Grid is designed to be usable also without internet connection.
+Despite being a web-application that runs in an internet browser, Asterics AAC is designed to be usable also without internet connection.
 
 **Internet connection is required for:**
 
-1. First usage of AsTeRICS Grid. Initially opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/</a> automatically downloads the whole application to browser cache and therefore AsTeRICS Grid is usable offline afterwards.
+1. First usage of Asterics AAC. Initially opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/</a> automatically downloads the whole application to browser cache and therefore Asterics AAC is usable offline afterwards.
 2. Synchronizing configuration of online users
 3. Certain voices
 
 **Without internet access it is possible to:**
 
-1. Use AsTeRICS Grid by just re-opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/</a> in the browser (only initial access needs internet access).
+1. Use Asterics AAC by just re-opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/</a> in the browser (only initial access needs internet access).
 2. Switch between all saved users, which can be both offline and online users
 
 ## Selecting a Device
 
-You can use AsTeRICS Grid on all computers, tablets and mobile phones with Android, iOS, Windows, macOS or Linux.
+You can use Asterics AAC on all computers, tablets and mobile phones with Android, iOS, Windows, macOS or Linux.
 
 The primary consideration for selecting a specific hardware is the availability of the voice(s) you intend to use. This will be influenced by the availabiltity of internet connection, as some voices are available online only. For a detailed list of currently available voices, see [chapter 11](11_voices.md).
 
@@ -39,7 +39,7 @@ Other criteria for selecting a particular device could be:
 
 ## Selecting a Browser
 
-AsTeRICS Grid is compatible with all modern browsers, but certain features, particularly some voices, may not work in all of them. For the best multilingual experience, we recommend using the following browsers:
+Asterics AAC is compatible with all modern browsers, but certain features, particularly some voices, may not work in all of them. For the best multilingual experience, we recommend using the following browsers:
 
 - **iOS**: Firefox
 - **Windows**: Microsoft Edge
@@ -49,7 +49,7 @@ Some special features like hardware access via Bluetooth or serial interface onl
 
 ## Installing the App
 
-You can access AsTeRICS Grid by simply opening your browser and navigating to https://grid.asterics.eu/ and you can set a bookmark for quicker access. We however recommend adding a website shortcut to the desktop of the device. This not only provides fast access to AsTeRICS Grid but also helps prevent younger users from accidentally navigating to other sites. It also solves some browser-specific issues like the fullscreen not working in iOS Firefox.
+You can access Asterics AAC by simply opening your browser and navigating to https://grid.asterics.eu/ and you can set a bookmark for quicker access. We however recommend adding a website shortcut to the desktop of the device. This not only provides fast access to Asterics AAC but also helps prevent younger users from accidentally navigating to other sites. It also solves some browser-specific issues like the fullscreen not working in iOS Firefox.
 
 The steps to create a desktop shortcut vary by browser. Here are the steps for some browsers:
 
@@ -84,7 +84,7 @@ The steps to create a desktop shortcut vary by browser. Here are the steps for s
 2. Click on the `Install` button in the popup
 
 #### Firefox (Windows)
-Firefox intentionally does not support to "installing" web-applications on Desktop since december 2020, see [this bugreport](https://bugzilla.mozilla.org/show_bug.cgi?id=1682593). However, you can still use AsTeRICS Grid within Firefox without installing it.
+Firefox intentionally does not support to "installing" web-applications on Desktop since december 2020, see [this bugreport](https://bugzilla.mozilla.org/show_bug.cgi?id=1682593). However, you can still use Asterics AAC within Firefox without installing it.
 
 
 

@@ -3,7 +3,7 @@
         <header-icon full-header="true"></header-icon>
         <div class="container ms-0">
             <div class="row ps-2 ps-sm-3 ps-md-4 col-12 col-md-10 col-xl-8">
-                <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('welcome') }}</span></h2>
+                <h2><span class="show-mobile">Asterics AAC - </span><span>{{ $t('welcome') }}</span></h2>
                 <div>
                     <h3>
                         <i18n path="useAstericsGridWithoutRegistrationBold" tag="span">

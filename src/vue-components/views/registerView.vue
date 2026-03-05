@@ -2,7 +2,7 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="srow content spaced">
-            <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('registerOnlineUser') }}</span></h2>
+            <h2><span class="show-mobile">Asterics AAC - </span><span>{{ $t('registerOnlineUser') }}</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()" style="margin-bottom: 0.5em">
                 <div class="srow">
                     <label for="inputUser" class="two columns"><span class="desktop-right inputlabel">{{ $t('username') }}</span></label>

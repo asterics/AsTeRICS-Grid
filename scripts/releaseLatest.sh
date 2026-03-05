@@ -1,7 +1,7 @@
 set -e
 
 # ------------------------------------------------------------------
-# AsTeRICS Grid latest-release script
+# Asterics AAC latest-release script
 # ------------------------------------------------------------------
 # releases the committed version on the current branch to gh-pages
 # as latest-release by performing the following steps:

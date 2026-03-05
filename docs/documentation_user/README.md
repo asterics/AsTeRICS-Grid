@@ -1,6 +1,6 @@
-# AsTeRICS Grid user documentation
+# Asterics AAC user documentation
 
-This is the user documentation for AsTeRICS Grid, a web-based tool for augmented and alternative communication (AAC). Integration with the AsTeRICS Framework makes it possible to realize additional functionalities like environmental or computer control.
+This is the user documentation for Asterics AAC, a web-based tool for augmented and alternative communication (AAC). Integration with the AsTeRICS Framework makes it possible to realize additional functionalities like environmental or computer control.
 
 The documentation is divided in the following parts:
 
@@ -22,9 +22,9 @@ The documentation is divided in the following parts:
 1. [Matrix messenger integration](13_matrix-messenger-integration.md)
 
 ## Additional Resources
-Additional resources, not directly related to specific features of AsTeRICS Grid:
+Additional resources, not directly related to specific features of Asterics AAC:
 * [FAQ - frequently asked questions](faq.md)
-* [Contributing to AsTeRICS Grid](contributing-to-ag.md)
+* [Contributing to Asterics AAC](contributing-to-ag.md)
 
 ## Tutorials
 Step-by-step tutorials for specific use cases are available

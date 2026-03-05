@@ -1,7 +1,7 @@
 {
-  "name": "asterics-grid",
+  "name": "asterics-aac",
   "version": "0.1.0",
-  "description": "Flexible Grid System for the AsTeRICS Framework",
+  "description": "Free, easy-to-use AAC app with offline support, flexible input options, media & smart home access",
   "main": "index.js",
   "dependencies": {
     "@klues/couch-auth": "^0.20.1",

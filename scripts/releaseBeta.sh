@@ -1,7 +1,7 @@
 set -e
 
 # ------------------------------------------------------------------
-# AsTeRICS Grid beta-release script
+# Asterics AAC beta-release script
 # ------------------------------------------------------------------
 # just builds and pushes to a sftp server of our hosting provider
 

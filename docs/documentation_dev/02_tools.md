@@ -1,5 +1,5 @@
 # Tools and libraries
-This chapter is about tools, libraries and technologies that are used in AsTeRICS Grid project:
+This chapter is about tools, libraries and technologies that are used in Asterics AAC project:
 
 1. [Tools](02_tools.md#tools)
 1. [Javascript libaries](02_tools.md#javascript-libraries)
@@ -13,8 +13,8 @@ This section is about tools that are used for development, dependency management
 The [node package manager (npm)](https://www.npmjs.com/) is used for managing Javascript dependencies and running various tasks related to the project. The npm configuration file is [package.json](https://github.com/asterics/AsTeRICS-Grid/blob/master/package.json).
 
 #### npm dependencies
-The configuration file [package.json](https://github.com/asterics/AsTeRICS-Grid/blob/master/package.json) includes the key `dependencies` which include dependencies that are used in order to run AsTeRICS Grid:
-* **[@klues/couch-auth](https://github.com/perfood/couch-auth)**: framework providing user management in connection to [CouchDB](http://couchdb.apache.org/), the database backend used by AsTeRICS Grid. Using fork of original [couch-auth](https://github.com/perfood/couch-auth) in order to fix [session creation conflicts](https://github.com/perfood/couch-auth/issues/65) - already merged, so we could again use original `couch-auth`
+The configuration file [package.json](https://github.com/asterics/AsTeRICS-Grid/blob/master/package.json) includes the key `dependencies` which include dependencies that are used in order to run Asterics AAC:
+* **[@klues/couch-auth](https://github.com/perfood/couch-auth)**: framework providing user management in connection to [CouchDB](http://couchdb.apache.org/), the database backend used by Asterics AAC. Using fork of original [couch-auth](https://github.com/perfood/couch-auth) in order to fix [session creation conflicts](https://github.com/perfood/couch-auth/issues/65) - already merged, so we could again use original `couch-auth`
 * **[cors](https://www.npmjs.com/package/cors)**: CORS handler for HTTP requests, used by couch-auth
 * `dotenv-flow`: used by `superlogin/start.js`
 * `express`: used by `superlogin/start.js`
@@ -39,7 +39,7 @@ The configuration file [package.json](https://github.com/asterics/AsTeRICS-Grid/
 Also see other directly imported [Javascript libraries](02_tools.md#javascript-libraries).
 
 #### npm dev-dependencies
-The configuration file [package.json](https://github.com/asterics/AsTeRICS-Grid/blob/master/package.json) includes the key `dev-dependencies` which include dependencies that are used for development of AsTeRICS Grid. These are the most important ones:
+The configuration file [package.json](https://github.com/asterics/AsTeRICS-Grid/blob/master/package.json) includes the key `dev-dependencies` which include dependencies that are used for development of Asterics AAC. These are the most important ones:
 * **[webpack](https://www.npmjs.com/package/webpack)**: framework using for bundling javascript, vue and css resources
 * **[webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server)**: local http server for development of the application
 * **[babel-core](https://www.npmjs.com/package/babel-core)**: framework for transpiling Javascript sources with newer language features to Javascript that is compatible with older browsers.
@@ -54,12 +54,12 @@ A description of [available npm scripts is available in README.md](https://githu
 [Webpack](https://webpack.js.org/) is used in order to bundling the Javascript sources to a single and minified bundle file. The configuration file for webpack is [webpack.config.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/webpack.config.js).
 
 ## Javascript libraries
-This section is about Javascript libraries that are used within the AsTeRICS Grid project and are imported directly in `index.html` and not via `npm`. All directly imported libraries are located at [app/lib/](https://github.com/asterics/AsTeRICS-Grid/tree/master/app/lib).
+This section is about Javascript libraries that are used within the Asterics AAC project and are imported directly in `index.html` and not via `npm`. All directly imported libraries are located at [app/lib/](https://github.com/asterics/AsTeRICS-Grid/tree/master/app/lib).
 
 These are the Javascript libraries that are directly imported:
 * **[dom-i18n](https://github.com/ruyadorno/dom-i18n)**: easy to use DOM-internationalization library
 * **[jQueryUI](https://jqueryui.com/)**: library for user interface interactions, needed for jQuery contextMenu and GridList
-* **[jQuery contextMenu](https://swisnl.github.io/jQuery-contextMenu/)**: jQuery plugin for right-click context menus, used in AsTeRICS Grid e.g. for edit menu of a grid element
+* **[jQuery contextMenu](https://swisnl.github.io/jQuery-contextMenu/)**: jQuery plugin for right-click context menus, used in Asterics AAC e.g. for edit menu of a grid element
 * **[jQuery](https://jquery.com/)**: library for document traversal and manipulation, needed for jQueryUI
 * **[loglevel](https://github.com/pimterry/loglevel)**: javascript logging library
 * **[modernizr](https://github.com/Modernizr/Modernizr)**: for testing availability of JS features and redirect to `unsupported.html` if needed, see [checks in index.html](https://github.com/asterics/AsTeRICS-Grid/blob/master/index.html#L111)

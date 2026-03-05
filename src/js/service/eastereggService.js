@@ -42,7 +42,7 @@ async function startEasteregg10000() {
     let gridElements = Array.from(document.getElementsByClassName('grid-item-content'));
     let colors = generateRainbowHslColors(gridElements.length);
     let originals = gridElements.map(e => e.style.backgroundColor);
-    MainVue.setTooltip('🥳 Happy Birthday AsTeRICS Grid! On 24.05.2025 it turned 7 years and this easter egg was created with commit 10 000! 🥳', {
+    MainVue.setTooltip('🥳 Happy Birthday Asterics AAC! On 24.05.2025 it turned 7 years and this easter egg was created with commit 10 000! 🥳', {
         timeout: 20000,
         actionLink: 'Stop',
         actionLinkFn: () => {

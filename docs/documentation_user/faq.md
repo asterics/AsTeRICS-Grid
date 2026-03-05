@@ -2,28 +2,28 @@
 
 [Back to Overview](README.md)
 
-This page contains information about frequently asked questions about AsTeRICS Grid.
+This page contains information about frequently asked questions about Asterics AAC.
 *Updated: 31 Jan 2025*
 
-## AsTeRICS Grid is currently free. Is it possible that this changes in the future?
-No, AsTeRICS Grid will always remain free and open-source. It is developed within funded projects.
+## Asterics AAC is currently free. Is it possible that this changes in the future?
+No, Asterics AAC will always remain free and open-source. It is developed within funded projects.
 
 ## What happens if funding ends?
 
 Funding is essential to cover server costs and continue developing new features. Without sufficient funding, the **synchronization feature** (which enables syncing boards across devices) will become unavailable. The app itself is hosted on **GitHub**, so it will still function. As an **open-source project**, the source code can be downloaded and hosted on other servers by anyone and any developer can continue to develop.
 
-## Is AsTeRICS Grid a robust AAC app?
+## Is Asterics AAC a robust AAC app?
 
-AsTeRICS Grid provides a **flexible framework** for creating robust AAC grid sets, including flexible layouts, support for word forms and grammar, keyboards with prediction, and support for multiple languages. Further improvements, such as the option to set progressive language, are in development.  
+Asterics AAC provides a **flexible framework** for creating robust AAC grid sets, including flexible layouts, support for word forms and grammar, keyboards with prediction, and support for multiple languages. Further improvements, such as the option to set progressive language, are in development.  
 
-Since AsTeRICS Grid doesn’t have a dedicated team creating grid sets, the availability of fully developed robust grid sets depends on **user contributions**. A feature enabling users to share their boards publicly in collaboration with **globalsymbols** is in progress.
+Since Asterics AAC doesn’t have a dedicated team creating grid sets, the availability of fully developed robust grid sets depends on **user contributions**. A feature enabling users to share their boards publicly in collaboration with **globalsymbols** is in progress.
 
-## Which languages are available in AsTeRICS Grid?
+## Which languages are available in Asterics AAC?
 
 The available languages depend on the platform you're using. Check [chapter 11](11_voices.md) for details.
 
 ## Issues with online text-to-speech voices (lags, not working)
-AsTeRICS Grid uses voices from these sources:
+Asterics AAC uses voices from these sources:
 * **offline:** voices installed on the operating system (differs depending on platform, Windows has different voices than Android or iOS), e.g. `Microsoft David - English, offline` on a Windows computer
 * **online (best quality):** voices from Microsoft, e.g. `Microsoft Eric Online (Natural), online`. These voices are only available in the Microsoft Edge Browser on a Windows computer.
 * **online (good quality):**, Google voices, e.g. `Google Deutsch, online`. These voices are only available in Google Chrome browser.
@@ -32,7 +32,7 @@ AsTeRICS Grid uses voices from these sources:
 As stated the quality and availability of these voices differs, in general **offline voices should be preferred**, because they are most reliable and not depending on an internet connection. Most **problems occur with voices from [responsivevoice.org](https://responsivevoice.org/)**, which is why they only should be used if no alternatives are available.
 
 ### Installing additional voices
-On most operating systems it's possible to install additional offline voices and afterwards use them in AsTeRICS Grid.
+On most operating systems it's possible to install additional offline voices and afterwards use them in Asterics AAC.
 
 #### Microsoft Windows 10
 On Windows 10 follow these steps to install additional voices:
@@ -43,22 +43,22 @@ On Windows 10 follow these steps to install additional voices:
 <div align="center"><img width=350 src="https://user-images.githubusercontent.com/2537025/233000407-6d8410b7-834f-45bb-ab06-d4931340071a.png"/></div>
 
 1. If a TTS voice is available for your language, **install it**!
-2. **Restart the computer**: Afterwards the new offline voices should be available in AsTeRICS Grid
+2. **Restart the computer**: Afterwards the new offline voices should be available in Asterics AAC
 
 #### Android
 Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dinamic-communicator-asterics-grid-synthesised-voices-tts-android-ios)
 
 #### iOS
-With iOS 15 it was possible to use all voices installed on the device within AsTeRICS Grid. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from AsTeRICS Grid. See this [issue on Github about iOS voices](https://github.com/asterics/AsTeRICS-Grid/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
+With iOS 15 it was possible to use all voices installed on the device within Asterics AAC. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from Asterics AAC. See this [issue on Github about iOS voices](https://github.com/asterics/AsTeRICS-Grid/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
 
-**Update**: with iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for AsTeRICS Grid, also see https://github.com/asterics/AsTeRICS-Grid/issues/223#issuecomment-1729299302
+**Update**: with iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for Asterics AAC, also see https://github.com/asterics/AsTeRICS-Grid/issues/223#issuecomment-1729299302
 
-## Is there a recommended Tablet which works well with AsTeRICS Grid?
+## Is there a recommended Tablet which works well with Asterics AAC?
 We recommend Samsung tablets because Samsung makes available high quality offline Speech Synthesis Voices in their Galaxy Store.
 These voices are offered for the most important languages. Example models are the Galaxy Tab A9 or A9+ (good quality/price ratio) or the more expensive Galaxy Tab S9.
 Generally, all Android tablets support an offline text-to-speech engine (and it is important to have voices available offline.)
 You can read more about the topic in an article by ARASAAC here: https://aulaabierta.arasaac.org/comunicador-dinamico-asterics-grid-voces-sintetizadas-tts-android-ios
-We currently don't recommend iOS devcies (iPads) for AsTeRICS grid because Apple restricted the use of offline voices from web applications (like AsTeRICS Grid).
+We currently don't recommend iOS devcies (iPads) for Asterics AAC because Apple restricted the use of offline voices from web applications (like Asterics AAC).
 
 A list of the voices currently available for each system can be downloaded here: [Overview Voices AG](https://github.com/user-attachments/files/17969149/Overview.Voices.AG.pdf) (last updated: 2024-12)
 
@@ -70,13 +70,13 @@ Other criteria for selecting a particular tablet model could be:
 * The availability of a USB port in case an assistive switch should be connected via USB - (note that there are also switches with a Bluetooth interface)
 
 ## Can I recover the password of my online user?
-We care about the protection of private data that can be inserted into grids, e.g. images or sound recordings. Therefore we've designed AsTeRICS Grid in a way where only the user itself can see his/her data, nobody else. All data of online users is encrypted using the password of the user. So even if we have access to the database, we cannot see anything but encrypted, unreadable data. While that's great for privacy, it also has this major drawback:
+We care about the protection of private data that can be inserted into grids, e.g. images or sound recordings. Therefore we've designed Asterics AAC in a way where only the user itself can see his/her data, nobody else. All data of online users is encrypted using the password of the user. So even if we have access to the database, we cannot see anything but encrypted, unreadable data. While that's great for privacy, it also has this major drawback:
 
 It's **not possible to reset or recover the password of an online user**. If the password of an online user is lost, also the data of this user is lost and cannot be recovered.
 
 So there are two things that are important in order to prevent loosing data:
 * keep the usernames and passwords of your online users safe, write them down somewhere or use a password safe software for saving them.
-* regularily download backups of your user's data to file. AsTeRICS Grid automatically reminds for downloading backups, but it can be done at any time by going to `Manage grids -> More (right top) -> Save backup to file`. Backups saved to file are not encrypted and therefore can be used and imported for a new user.
+* regularily download backups of your user's data to file. Asterics AAC automatically reminds for downloading backups, but it can be done at any time by going to `Manage grids -> More (right top) -> Save backup to file`. Backups saved to file are not encrypted and therefore can be used and imported for a new user.
 
 ### Transfer data to new user
 If you've lost the password of a user and you're still logged in with this user on any device, just make a backup to file, create a new user and import the data from the backup there. Follow these steps:

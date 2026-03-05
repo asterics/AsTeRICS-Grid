@@ -16,7 +16,7 @@ Clicking on Button "Input Options" in [Main view](04_navigation-overview.md) ope
 
 **Video on YouTube:** [Input actions and input events](https://www.youtube.com/watch?v=ZsBsifa2kwc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=6&t=0s) (German, but auto-translated subtitles available)
 
-An input event in general is any kind of defined, single user interaction. AsTeRICS Grid currently supports the following input event types:
+An input event in general is any kind of defined, single user interaction. Asterics AAC currently supports the following input event types:
 
 * **Keypress, Mouseclick, Tap:** event of pressing a key on the keyboard, click on the mouse or tap on the screen, also can be an external button press using additional external hardware
 * **Microphone input:** event from microphone input, e.g. reaching a threshold of microphone input volume at a specific frequency.
@@ -99,16 +99,16 @@ Figure 3 shows the configuration of an AsTeRICS ARE input event (AsTeRICS ARE Ev
 
 #### Example of using an AsTeRICS ARE event
 
-Follow these steps in order to set up an AsTeRICS Grid input method while using AsTeRICS ARE event for input:
+Follow these steps in order to set up an Asterics AAC input method while using AsTeRICS ARE event for input:
 
-1. Open the settings modal for the desired input method in AsTeRICS Grid
+1. Open the settings modal for the desired input method in Asterics AAC
 2. Start AsTeRICS ARE
-3. Select *AsTeRICS ARE event* for the desired input action in AsTeRICS Grid
+3. Select *AsTeRICS ARE event* for the desired input action in Asterics AAC
 4. Click on "Record ARE event" to start recording
 5. Do any action in AsTeRICS ARE that tiggers an event, e.g. clicking on a button
-6. The recorded event should be shown in AsTeRICS Grid
-7. Save and close the input options in AsTeRICS Grid by clicking "OK"
-8. Redo the same action in AsTeRICS ARE as before - it should trigger the configured input action in AsTeRICS Grid
+6. The recorded event should be shown in Asterics AAC
+7. Save and close the input options in Asterics AAC by clicking "OK"
+8. Redo the same action in AsTeRICS ARE as before - it should trigger the configured input action in Asterics AAC
 
 ## Input options modals
 
@@ -145,7 +145,7 @@ These are the basic elements of an input option dialog as in figure 4:
 
 In Advanced Settings there is the additional option "*Directly select element on pressing mouse button (not waiting for complete click)*". If it is enabled, the element is selected when pressing the mouse button, not when releasing the mouse button (which is default). For Touchscreens it's similar: an element is selected directly at touching the screen, not after lifting the finger again (which is default). This can make sense for:
 * facilitating operation for people which can't reliably "tap" (quickly put finger on and lifting the finger afterwards) on the touchscreen.
-* when using AsTeRICS Grid with an eyetracker and an additional button for clicking / selecting. Since the mouse controlled via an eyetracker always moves a little bit, in default mode it can happen that instead of selecting an element, the image of an element is dragged. This can be prevented if the selection of the element is done directly at pressing the mouse button.
+* when using Asterics AAC with an eyetracker and an additional button for clicking / selecting. Since the mouse controlled via an eyetracker always moves a little bit, in default mode it can happen that instead of selecting an element, the image of an element is dragged. This can be prevented if the selection of the element is done directly at pressing the mouse button.
 
 ### Scanning
 

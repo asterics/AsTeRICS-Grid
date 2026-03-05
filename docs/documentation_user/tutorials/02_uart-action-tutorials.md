@@ -4,7 +4,7 @@ These tutorials show specific use cases for [UART actions](../08_actions.md#uart
 
 ## Remote control (Infrared)
 
-The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database (modified version for AsTeRICS Grid).
+The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database (modified version for Asterics AAC).
 
 ![AG-puckmote](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/6459d87a-aac6-4456-84a1-00fbcb847e9a)
 

@@ -159,7 +159,7 @@
                 if (gridIds.length === 1 && this.selectedGrid) {
                     filename = `${user}_${util.getCurrentDateTimeString()}_${i18nService.getTranslation(this.selectedGrid.label)}`;
                 } else {
-                    filename = `${user}_${util.getCurrentDateTimeString()}_asterics-grid-custom-backup`;
+                    filename = `${user}_${util.getCurrentDateTimeString()}_asterics-aac-custom-backup`;
                 }
                 dataService.downloadToFile(gridIds, {
                     exportGlobalGrid: this.options.exportGlobalGrid,

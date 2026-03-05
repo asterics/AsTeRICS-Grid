@@ -4,7 +4,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = env => {
     let buildDir = 'app/build/';
     let entryScript = './src/js/mainScript.js';
-    let outputFilename = 'asterics-grid.bundle.js';
+    let outputFilename = 'asterics-aac.bundle.js';
     let mode = env && env.production ? 'production' : 'development';
 
     let scssRule = {

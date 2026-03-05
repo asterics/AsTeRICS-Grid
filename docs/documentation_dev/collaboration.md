@@ -1,6 +1,6 @@
 # Collaboration
 
-This document contains info about for collaborating in the development of AsTeRICS Grid.
+This document contains info about for collaborating in the development of Asterics AAC.
 
 ## Create issues
 Everyone is welcome to [create issues on GitHub](https://github.com/asterics/AsTeRICS-Grid/issues/new). Keep in mind these rules:
@@ -59,14 +59,14 @@ For code changes and pull requests please note these rules:
 You're welcome to test open PR's and add your comments or code reviews.
 
 ## Working on translations
-Please see [Translation of AsTeRICS Grid](../documentation_user/contributing-to-ag.md#translate-the-application) for information how to contribute translations of the application or the content.
+Please see [Translation of Asterics AAC](../documentation_user/contributing-to-ag.md#translate-the-application) for information how to contribute translations of the application or the content.
 
 <!--
 ## Internal collaboration
 This section is for people who have access to our email address and servers.
 
 ### Responding to email requests
-For emails regarding AsTeRICS Grid received at `office@asterics-foundation.org` the general rule is:
+For emails regarding Asterics AAC received at `office@asterics-foundation.org` the general rule is:
 * We answer all non-spanish requests
 * Spanish requests are redirected to the social media platforms that are maintained by ARASAAC. Use this mail to respond to Spanish requests:
 
@@ -81,7 +81,7 @@ https://www.facebook.com/asterics.grid.y.arasaac
 If you don't use social media you can also write directly to ARASAAC via mail:
 arasaac@aragon.es
 
-We're also trying to create a community around AsTeRICS Grid on Github discussions: https://github.com/asterics/AsTeRICS-Grid/discussions
+We're also trying to create a community around Asterics AAC on Github discussions: https://github.com/asterics/AsTeRICS-Grid/discussions
 If you want to register on Github and you think your question (and it's answer) could be usable for other people, please consider posting your question there.
 
 Thanks and best regards,
@@ -90,7 +90,7 @@ Thanks and best regards,
 
 In general try to point people with requests to Github discussions, by adding a line like this at the end of your response:
 ```
-We're trying to create a community around AsTeRICS Grid on Github discussions: https://github.com/asterics/AsTeRICS-Grid/discussions
+We're trying to create a community around Asterics AAC on Github discussions: https://github.com/asterics/AsTeRICS-Grid/discussions
 If you want to register on Github and you think your question (and it's answer) could be usable for other people, please consider posting your question there.
 ```
 
