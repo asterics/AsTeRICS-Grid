@@ -441,7 +441,7 @@ A system action allows to do some action related to the current application stat
 
 ## Predefined actions
 
-Predefined actions are a special category of actions. They wrap other actions for being able to set them up in a more user-friendly way. The most common use-case is wrapping HTTP actions for devices with a REST API, but also all other actions could be wrapped. The possible predefined actions are defined within the external repository [Asterics AAC Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#predefined-actions).
+Predefined actions are a special category of actions. They wrap other actions for being able to set them up in a more user-friendly way. The most common use-case is wrapping HTTP actions for devices with a REST API, but also all other actions could be wrapped. The possible predefined actions are defined within the external repository [Asterics AAC Boards](https://github.com/asterics/Asterics-AAC-Data?tab=readme-ov-file#predefined-actions).
 
 ### Example
 

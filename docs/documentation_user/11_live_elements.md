@@ -37,7 +37,7 @@ Figure 1 shows the configuration of a live element displaying the result of an H
 * **(11) Test**: tests the current configuration and shows the current result of the configuration below (12).
 
 ## Action result - Predefined action
-If "Predefined action" is selected for "Action type", it's possible to select from a set of predefined actions (requests) making configuration easier for the user. All predefined actions and requests are defined in the GitHub repository [AsTeRICS-Grid-Boards](https://github.com/asterics/AsTeRICS-Grid-Boards/).
+If "Predefined action" is selected for "Action type", it's possible to select from a set of predefined actions (requests) making configuration easier for the user. All predefined actions and requests are defined in the GitHub repository [Asterics-AAC-Data](https://github.com/asterics/Asterics-AAC-Data/).
 
 ![Tab live data predefined](./img/edit-live-element-predefined.png)
 *Fig.2: Configuration for action type "Predefined action", example of getting weather data*

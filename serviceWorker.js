@@ -195,7 +195,7 @@ function shouldCacheImage(url, request) {
 }
 
 function shouldCacheStaleWhileRevalidate(url, request) {
-    return url.href.startsWith('https://asterics.github.io/AsTeRICS-Grid-Boards');
+    return url.href.startsWith('https://asterics.github.io/Asterics-AAC-Data');
 }
 
 function shouldCacheNormal(url, request) {

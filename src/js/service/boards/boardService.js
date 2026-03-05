@@ -5,8 +5,8 @@ import { constants } from '../../util/constants';
 
 let boardService = {};
 
-let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
-let GITHUB_BASE_URL = "https://github.com/asterics/AsTeRICS-Grid-Boards/tree/main/";
+let BASE_URL = "https://asterics.github.io/Asterics-AAC-Data/";
+let GITHUB_BASE_URL = "https://github.com/asterics/Asterics-AAC-Data/tree/main/";
 let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_metadata.json" : BASE_URL + "live_metadata_beta.json";
 let ownResults = [];
 let searchTermsMap = new Map();
@@ -48,7 +48,7 @@ boardService.query = async function (searchTerm = '', options = {}) {
 };
 
 /**
- * returns the preview for a given filename for the results coming from AsTeRICS-Grid-Boards
+ * returns the preview for a given filename for the results coming from Asterics-AAC-Data
  * @param filename
  * @return {*|string}
  */

@@ -62,7 +62,7 @@ Follow these steps to publish a translation of an multilingual grid set:
 * Import the grid set you want to translate or start with an empty configuration if you want to build something new
 * Translate the grid set (see [chapter 13](12_multilingual-grid-sets.md))
 * Create a backup with the new language via `Manage grids -> More (right top corner) -> Save backup to file`
-* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can add this translation to the default grid set! Alternatively you can also [directly create a Pull Request at Asterics AAC Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#update-the-contents-of-the-boards-of-existing-configuration).
+* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can add this translation to the default grid set! Alternatively you can also [directly create a Pull Request at Asterics AAC Boards](https://github.com/asterics/Asterics-AAC-Data?tab=readme-ov-file#update-the-contents-of-the-boards-of-existing-configuration).
 
 ### Creation of a new monolingual default grid set
 Follow these steps to publish a translation of a monolingual grid set:
@@ -76,6 +76,6 @@ Follow these steps to publish a translation of a monolingual grid set:
    * Uncheck `Export dictionaries`
    * Check `Export global grid`
   <div><img src="https://github.com/user-attachments/assets/6d3adaf4-7041-4303-a715-ee0db5352dfb" width="650"/></div>
-* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can offer it as new default grid set! Alternatively you can also [directly create a Pull Request at Asterics AAC Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#add-translated-version-of-monolingual-configuration).
+* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can offer it as new default grid set! Alternatively you can also [directly create a Pull Request at Asterics AAC Boards](https://github.com/asterics/Asterics-AAC-Data?tab=readme-ov-file#add-translated-version-of-monolingual-configuration).
 
 [Back to Overview](README.md)
