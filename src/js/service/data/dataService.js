@@ -528,7 +528,7 @@ dataService.convertFileToImportData = async function (file, options = {}) {
             return null;
         }
         if (!importData || (!importData.grids && !importData.metadata && !importData.dictionaries)) {
-            log.warn("data doesn't contain AsTeRICS Grid config");
+            log.warn("data doesn't contain Asterics AAC config");
             return null;
         }
     } else if (fileUtil.isObfFile(file)) {

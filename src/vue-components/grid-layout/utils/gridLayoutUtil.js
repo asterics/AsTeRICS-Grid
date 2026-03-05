@@ -1,5 +1,5 @@
 /**
- * util methods for grid layout, e.g. collision-handling, independent of AsTeRICS Grid
+ * util methods for grid layout, e.g. collision-handling, independent of Asterics AAC
  */
 let gridLayoutUtil = {};
 
