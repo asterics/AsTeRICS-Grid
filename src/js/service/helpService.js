@@ -8,7 +8,7 @@ let GOOGLE_TRANSLATE_BASE_PATH = 'https://translate.google.com/translate?sl=en&t
 let HELP_FILE_POSTFIX = '.html';
 
 let _initHelpFile = '';
-let _initHash = '#asterics-grid-user-documentation';
+let _initHash = '#asterics-aac-user-documentation';
 let _helpFile = _initHelpFile;
 let _helpHash = _initHash;
 let _lastHelpFile = _helpFile;
