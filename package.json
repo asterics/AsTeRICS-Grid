@@ -64,14 +64,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asterics/AsTeRICS-Grid.git"
+    "url": "git+https://github.com/asterics/Asterics-AAC.git"
   },
   "author": "Benjamin Klaus",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/asterics/AsTeRICS-Grid/issues"
+    "url": "https://github.com/asterics/Asterics-AAC/issues"
   },
-  "homepage": "https://github.com/asterics/AsTeRICS-Grid#readme",
+  "homepage": "https://github.com/asterics/Asterics-AAC#readme",
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
   },

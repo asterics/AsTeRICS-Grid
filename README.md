@@ -46,7 +46,7 @@ There are three online versions of Asterics AAC:
 
 * https://grid.asterics.eu/ current stable release
 * https://grid.asterics.eu/latest/ current testing (beta) release, possibly unstable
-* http://grid.asterics-foundation.org/ non-https version, but otherwise exactly the same app as https://grid.asterics.eu/ - may be used in cases where interaction with local resources (e.g. HTTP action) is needed and [browsers are refusing it because of mixed content](https://github.com/asterics/AsTeRICS-Grid/discussions/410). 
+* http://grid.asterics-foundation.org/ non-https version, but otherwise exactly the same app as https://grid.asterics.eu/ - may be used in cases where interaction with local resources (e.g. HTTP action) is needed and [browsers are refusing it because of mixed content](https://github.com/asterics/Asterics-AAC/discussions/410). 
 
 ## Documentation
 See [User documentation](docs/documentation_user/README.md) or [Asterics AAC Playlist on YouTube](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz).
@@ -54,7 +54,7 @@ See [User documentation](docs/documentation_user/README.md) or [Asterics AAC Pla
 Also see [Developer documentation (not finished, maybe outdated)](docs/documentation_dev/README.md) and the [Collaboration guide](docs/documentation_dev/collaboration.md).
 
 ## Run project locally
-1. clone the project `git clone git@github.com:asterics/AsTeRICS-Grid.git`
+1. clone the project `git clone git@github.com:asterics/Asterics-AAC.git`
 2. install node.js https://nodejs.org/
 3. install yarn, see https://yarnpkg.com/
 4. go to the directory of the cloned project and run `yarn install`
@@ -74,10 +74,10 @@ While development is currently funded within research projects (see below), the 
 
 <div>
 <a title="Donate with PayPal" href="https://www.paypal.com/donate/?hosted_button_id=38AJJNS427MJ2" target="_blank" style="margin-right:3em">
-<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/donate-paypal.png" width=300/></a>
+<img src="https://github.com/asterics/Asterics-AAC/raw/master/app/img/donate-paypal.png" width=300/></a>
 <span>&nbsp;&nbsp;&nbsp;</span>
 <a title="Donate at opencollective.com" href="https://opencollective.com/asterics-foundation/projects/asterics-grid" target="_blank">
-<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/donate-open-collective.png" width=300/></a>
+<img src="https://github.com/asterics/Asterics-AAC/raw/master/app/img/donate-open-collective.png" width=300/></a>
 </div>
 
 ## Acknowledgements and Attribution
@@ -89,9 +89,9 @@ Asterics AAC was developed within several funded projects:
 * **2024-2025:** [netidee project funding for Asterics AAC](https://www.netidee.at/asterics-grid), Call 18
 * **2024-2028:** project [Inclusion via digital augmentative and alternative communication (InDiKo)](https://www.technikum-wien.at/forschungsprojekte/indiko/) at the [UAS Technikum Wien](https://www.technikum-wien.at/), funded by the [City of Vienna](https://www.wien.gv.at/kontakte/ma23/index.html), Project 38-09
 
-<img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/290d809f-1ccf-4362-be68-f07ff0e21878" width="400"/>
+<img src="https://github.com/asterics/Asterics-AAC/assets/2537025/290d809f-1ccf-4362-be68-f07ff0e21878" width="400"/>
 <br/><br/>
-<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/netidee.svg" width="250"/>
+<img src="https://github.com/asterics/Asterics-AAC/raw/master/app/img/netidee.svg" width="250"/>
 <br/><br/>
 
 Other people and organizations we want to thank:

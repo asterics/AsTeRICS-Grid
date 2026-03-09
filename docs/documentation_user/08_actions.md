@@ -423,7 +423,7 @@ This action allows sending commands to microcontrollers using the UART (Serial) 
 
 ### Supported commands
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/a1f3d53c-0237-4342-a85d-90d745d2f0d9)
+![image](https://github.com/asterics/Asterics-AAC/assets/4621810/a1f3d53c-0237-4342-a85d-90d745d2f0d9)
 
 *Figure 17: Configuration of a UART action.*
 

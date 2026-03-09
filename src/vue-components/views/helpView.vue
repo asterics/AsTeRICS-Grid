@@ -41,7 +41,7 @@
                     <li>
                         <i18n path="foundBugReportGithubIssue" tag="span">
                             <template v-slot:githubLink>
-                                <a href="https://github.com/asterics/AsTeRICS-Grid/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
+                                <a href="https://github.com/asterics/Asterics-AAC/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
                             </template>
                         </i18n>
                         <span>({{ $t('lang.en') }})</span>

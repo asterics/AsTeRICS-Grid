@@ -1,7 +1,7 @@
 # Grid layout
 This chapter is about the technical background of the dynamic grid system which visualizes grids and grid elements in Asterics AAC.
 
-The implementation using the [GridList library](https://github.com/klues/grid) was replaced by [vue-css-grid-layout](https://github.com/asterics/vue-css-grid-layout), see [issue #451](https://github.com/asterics/AsTeRICS-Grid/issues/451).
+The implementation using the [GridList library](https://github.com/klues/grid) was replaced by [vue-css-grid-layout](https://github.com/asterics/vue-css-grid-layout), see [issue #451](https://github.com/asterics/Asterics-AAC/issues/451).
 
 For convenience reasons `vue-css-grid-layout` is developed directly within Asterics AAC in folder `src/vue-components/grid-layout`, the [vue-css-grid-layout](https://github.com/asterics/vue-css-grid-layout) contains a copy in order to be usable as standalone library in other projects.
 

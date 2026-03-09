@@ -10,18 +10,18 @@ This chapter is about [Vue.js](https://vuejs.org/), the single-page application 
 ## General
 In Asterics AAC [Vue.js](https://vuejs.org/) is used in order to manage views and it's elements in components and to create all kinds of interactivity in the UI. In Vue.js components can be organized in single `.vue` files, containing the HTML, Javascript and CSS needed for this component. These files are called single-file-components (SFC). These are the files and folders that are important regarding the usage of Vue.js:
 
-* **[src/vue-components](https://github.com/asterics/AsTeRICS-Grid/tree/master/src/vue-components)**: contains all Vue.js single-file components (`.vue` files)
-* **[index.html](https://github.com/asterics/AsTeRICS-Grid/blob/master/index.html)**: contains the HTML for the main Vue wrapper component consisting of the navigation sidebar and a placeholder for the currently show view
-* **[src/js/vue/mainVue.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/vue/mainVue.js)**: Javascript part for the main Vue component in `index.html`
-* **[src/js/vue/vuePluginManager.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/vue/vuePluginManager.js)**: defines custom Vue directives and filters that can be used globally, e.g. a [translate filter](07_i18n.md#vuejs-filter).
+* **[src/vue-components](https://github.com/asterics/Asterics-AAC/tree/master/src/vue-components)**: contains all Vue.js single-file components (`.vue` files)
+* **[index.html](https://github.com/asterics/Asterics-AAC/blob/master/index.html)**: contains the HTML for the main Vue wrapper component consisting of the navigation sidebar and a placeholder for the currently show view
+* **[src/js/vue/mainVue.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/vue/mainVue.js)**: Javascript part for the main Vue component in `index.html`
+* **[src/js/vue/vuePluginManager.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/vue/vuePluginManager.js)**: defines custom Vue directives and filters that can be used globally, e.g. a [translate filter](07_i18n.md#vuejs-filter).
 
 ## Component structure
-The main Vue wrapper component is defined in [index.html](https://github.com/asterics/AsTeRICS-Grid/blob/master/index.html) and [mainVue.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/vue/mainVue.js). This line in `index.html` is a placeholder for the currently shown view of the application:
+The main Vue wrapper component is defined in [index.html](https://github.com/asterics/Asterics-AAC/blob/master/index.html) and [mainVue.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/vue/mainVue.js). This line in `index.html` is a placeholder for the currently shown view of the application:
 ```
 <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
 ```
 
-The method [MainVue.setViewComponent()](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/vue/mainVue.js) is used in order to change the currently shown view. This method is primarily used by [router.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/router.js) which chooses the correct view based on the current [URL hash](https://en.wikipedia.org/wiki/Fragment_identifier) in the address. For instance `https://grid.asterics.eu/#grids` has the hash `#grids` and therefore will render the [manage grids](../documentation_user/02_navigation.md#manage-grids-view) component which is defined in file [manageGridsView.vue](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/vue-components/views/manageGridsView.vue).
+The method [MainVue.setViewComponent()](https://github.com/asterics/Asterics-AAC/blob/master/src/js/vue/mainVue.js) is used in order to change the currently shown view. This method is primarily used by [router.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/router.js) which chooses the correct view based on the current [URL hash](https://en.wikipedia.org/wiki/Fragment_identifier) in the address. For instance `https://grid.asterics.eu/#grids` has the hash `#grids` and therefore will render the [manage grids](../documentation_user/02_navigation.md#manage-grids-view) component which is defined in file [manageGridsView.vue](https://github.com/asterics/Asterics-AAC/blob/master/src/vue-components/views/manageGridsView.vue).
 
 Figure 1 highlights the Vue.js components that are used for the main view:
 
@@ -29,7 +29,7 @@ Figure 1 highlights the Vue.js components that are used for the main view:
 *Fig. 1: Vue component structure of the main view, red part (right) is replaced depending on the current navigation*
 
 ## Used components
-The used Vue components can be found in the folder [src/vue-components](https://github.com/asterics/AsTeRICS-Grid/tree/master/src/vue-components) which contains the following folders:
+The used Vue components can be found in the folder [src/vue-components](https://github.com/asterics/Asterics-AAC/tree/master/src/vue-components) which contains the following folders:
 * **components**: generic components that can be used in various places across the application, for instance:
     * **accordion.vue**: accordion component showing some collapsable content
     * **comparisonComponent.vue**: accordion component showing a comparison between online and offline users (information only)

@@ -21,7 +21,7 @@ Asterics AAC uses LocalStorage for temporary or small device-specific data which
 For accessing IndexedDB in a more comfortable manner and making synchronization with the remote [CouchDB](http://couchdb.apache.org/) possible, the Javascript library [PouchDB](https://pouchdb.com/) is used.
 
 ## Data storage abstraction layers
-All Javascript modules regarding storage of data in Asterics AAC can be found in the folder [src/js/service/data](https://github.com/asterics/AsTeRICS-Grid/tree/master/src/js/service/data). Figure 1 shows the relevant files and their relationships:
+All Javascript modules regarding storage of data in Asterics AAC can be found in the folder [src/js/service/data](https://github.com/asterics/Asterics-AAC/tree/master/src/js/service/data). Figure 1 shows the relevant files and their relationships:
 
 ![Concept of data storage layers](./img/data_storage_layers_en.png)
 
@@ -48,9 +48,9 @@ Asterics AAC implements the idea of [one database per user](https://www.joshmoro
 ## Authentication layer
 The one-database-per-user approach needs a layer for managing user accounts and the corresponding CouchDB user databases (only for online users). For Asterics AAC the framework [couch-auth](https://github.com/perfood/couch-auth) (former "superlogin") is used. It provides an API in order to register and login users and creates the corresponding CouchDB databases in the background.
 
-The file [superlogin/start.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/superlogin/start.js) starts superlogin and contains it's configuration (= server side). The file [loginService.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/service/loginService.js) is the client-side counterpart which uses the library [superlogin-client](https://www.npmjs.com/package/superlogin-client) in order to connect to and make use of the superlogin server.
+The file [superlogin/start.js](https://github.com/asterics/Asterics-AAC/blob/master/superlogin/start.js) starts superlogin and contains it's configuration (= server side). The file [loginService.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/service/loginService.js) is the client-side counterpart which uses the library [superlogin-client](https://www.npmjs.com/package/superlogin-client) in order to connect to and make use of the superlogin server.
 
-In order to start couch-auth the correct parameters of some CouchDB instance have to be inserted in [start.js:38](https://github.com/asterics/AsTeRICS-Grid/blob/master/superlogin/start.js#L38). Then use `npm run start-auth` or `npm run start-auth-ssl` in order to start couch-auth in development or production mode using SSL.
+In order to start couch-auth the correct parameters of some CouchDB instance have to be inserted in [start.js:38](https://github.com/asterics/Asterics-AAC/blob/master/superlogin/start.js#L38). Then use `npm run start-auth` or `npm run start-auth-ssl` in order to start couch-auth in development or production mode using SSL.
 
 ## Inspecting locally saved data
 For examining the locally saved data of Asterics AAC do the following (e.g. in Firefox or Chrome browser):

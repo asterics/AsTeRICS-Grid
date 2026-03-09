@@ -71,6 +71,6 @@ Under `Settings -> Input Methods` you can select the following settings:
 
 Under `Settings -> Integrations` you can select the following settings:
 - **ARASAAC**: If you're using the grid set in Spanish, you can activate an automatic grammar correction.
-- **Expternal speech service**: Make additional voices available in the app. This requires technical knowledge how to start and use the [external speech bridge](https://github.com/asterics/AsTeRICS-Grid-Helper?tab=readme-ov-file#speech).
+- **Expternal speech service**: Make additional voices available in the app. This requires technical knowledge how to start and use the [external speech bridge](https://github.com/asterics/Asterics-AAC-Helper?tab=readme-ov-file#speech).
 
 [Back to Overview](README.md)

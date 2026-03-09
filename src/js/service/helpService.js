@@ -1,7 +1,7 @@
 import { i18nService } from './i18nService';
 
 let helpService = {};
-//let HELP_BASE_PATH = 'https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/';
+//let HELP_BASE_PATH = 'https://github.com/asterics/Asterics-AAC/blob/master/docs/documentation_user/';
 let HELP_BASE_PATH = 'https://www.asterics.eu/manuals/asterics-grid/';
 let GOOGLE_TRANSLATE_BASE_PATH = 'https://translate.google.com/translate?sl=en&tl=de&u=';
 //let HELP_FILE_POSTFIX = '.md';

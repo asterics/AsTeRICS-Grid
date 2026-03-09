@@ -20,7 +20,7 @@ After clicking on the "Translate grid" option, the following window opens (Figur
 
 The language, in which the grid content shall be translated, can be chosen on the right (Fig. 2). The column below shows the translations for the selected language. Missing translations can be filled inserted there. To translate the full grid set, select 'show all grids' from the dropdown list (Figure 3).
 
-<div><img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/3962002b-c737-4a3f-b55c-116a20197d31" width="650"/></div>
+<div><img src="https://github.com/asterics/Asterics-AAC/assets/2537025/3962002b-c737-4a3f-b55c-116a20197d31" width="650"/></div>
 
 *Figure 3: Select all grids - copy paste*
 

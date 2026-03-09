@@ -5,7 +5,7 @@
 You can help shape the future of Asterics AAC and ensure it meets the needs of its users. Contribute actively to the development of Asterics AAC by suggesting new features, discussing ideas, and reporting bugs directly on GitHub.
 
 ## GitHub
-Asterics AAC is free and Open Source and the [source code can be found on GitHub](https://github.com/asterics/AsTeRICS-Grid/).
+Asterics AAC is free and Open Source and the [source code can be found on GitHub](https://github.com/asterics/Asterics-AAC/).
 
 Terms related to GitHub:
 * **Repository**: A repository is the place where all the files for a specific project are stored and where discussion about that specific project takes place.
@@ -13,10 +13,10 @@ Terms related to GitHub:
 
 ### Joining GitHub
 - **Sign Up on GitHub**: If you don’t already have an account, [sign up for GitHub here](https://github.com/signup). Provide your email address, choose a username, and create a password. Verify your email address by entering the confirmation code sent to your inbox.  
-- **Access the Asterics AAC Repository**: Once logged in, open the [Asterics AAC repository](https://github.com/asterics/AsTeRICS-Grid/)
+- **Access the Asterics AAC Repository**: Once logged in, open the [Asterics AAC repository](https://github.com/asterics/Asterics-AAC/)
 - **Engage with the Repository**: If you’re not a developer, there are two key features relevant to you:  
      - *Stay updated*: Click the *Watch* button (next to the repository name) and select *Custom*. Then, choose *Issues* and *Releases* to receive notifications about new discussions, bug reports, and updates. This way, you’ll stay informed about the latest developments, which are typically released in monthly updates.  
-     - *The issues tab*: Click on the [Issues tab](https://github.com/asterics/AsTeRICS-Grid/issues) to view existing feature requests, bug reports, and discussions. You can join ongoing conversations, share your thoughts, or create new issues to suggest features or report problems.
+     - *The issues tab*: Click on the [Issues tab](https://github.com/asterics/Asterics-AAC/issues) to view existing feature requests, bug reports, and discussions. You can join ongoing conversations, share your thoughts, or create new issues to suggest features or report problems.
 
 ### Participating on GitHub
 - **One issue per topic**: Create a separate issue for each suggestion you have. This makes it much easier to keep discussions separated and the organization of the issues clear.
@@ -30,7 +30,7 @@ Your input is valuable!
 
 ## Join As a Programmer
 
-Issues labelled with [good first issue](https://github.com/asterics/AsTeRICS-Grid/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) are a good way to get to know the programming. Please also read the [Collaboration guide](../documentation_dev/collaboration.md).
+Issues labelled with [good first issue](https://github.com/asterics/Asterics-AAC/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) are a good way to get to know the programming. Please also read the [Collaboration guide](../documentation_dev/collaboration.md).
 
 ## Translate the Application
 

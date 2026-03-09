@@ -49,9 +49,9 @@ On Windows 10 follow these steps to install additional voices:
 Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dinamic-communicator-asterics-grid-synthesised-voices-tts-android-ios)
 
 #### iOS
-With iOS 15 it was possible to use all voices installed on the device within Asterics AAC. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from Asterics AAC. See this [issue on Github about iOS voices](https://github.com/asterics/AsTeRICS-Grid/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
+With iOS 15 it was possible to use all voices installed on the device within Asterics AAC. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from Asterics AAC. See this [issue on Github about iOS voices](https://github.com/asterics/Asterics-AAC/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
 
-**Update**: with iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for Asterics AAC, also see https://github.com/asterics/AsTeRICS-Grid/issues/223#issuecomment-1729299302
+**Update**: with iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for Asterics AAC, also see https://github.com/asterics/Asterics-AAC/issues/223#issuecomment-1729299302
 
 ## Is there a recommended Tablet which works well with Asterics AAC?
 We recommend Samsung tablets because Samsung makes available high quality offline Speech Synthesis Voices in their Galaxy Store.
@@ -82,7 +82,7 @@ So there are two things that are important in order to prevent loosing data:
 If you've lost the password of a user and you're still logged in with this user on any device, just make a backup to file, create a new user and import the data from the backup there. Follow these steps:
 * Go to `Manage grids -> More (top right corner) -> Save backup to file`
 * Create a new online user (and note your new password somewhere)
-* Select `Restore backup from file` at the bottom: <div><img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/9333ef5c-899b-458e-8ad5-f142e6c20098" width="400"/></div>
+* Select `Restore backup from file` at the bottom: <div><img src="https://github.com/asterics/Asterics-AAC/assets/2537025/9333ef5c-899b-458e-8ad5-f142e6c20098" width="400"/></div>
 * Continue to use the new online user on other devices
 
 ## The global grid disappeared or the "Home" button doesn't work
@@ -107,7 +107,7 @@ With the OpenHAB editing action opened,
 2. Click on ```Connection secure```
 3. Click on ```Disable protection for now```
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/840d4f6d-20c1-4406-a0c8-0cbd77d5d2f9)
+![image](https://github.com/asterics/Asterics-AAC/assets/4621810/840d4f6d-20c1-4406-a0c8-0cbd77d5d2f9)
 
 ### Allow mixed content Chrome
 With the OpenHAB editing action opened, 
@@ -116,6 +116,6 @@ With the OpenHAB editing action opened,
 2. Click on ```Site settings```
 3. **Allow** ```Insecure contents```
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/8bbe29a5-e5bd-4ece-bd28-ae4bb3c0e0b3)
+![image](https://github.com/asterics/Asterics-AAC/assets/4621810/8bbe29a5-e5bd-4ece-bd28-ae4bb3c0e0b3)
 
 [Back to Overview](README.md)

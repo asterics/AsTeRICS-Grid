@@ -8,7 +8,7 @@ This chapter is about the general structure of the Asterics AAC project:
 [Back to Overview](README.md)
 
 ## Project structure
-The Asterics AAC project is hosted on [GitHub](https://github.com/asterics/AsTeRICS-Grid). These are the main folders and files in the project:
+The Asterics AAC project is hosted on [GitHub](https://github.com/asterics/Asterics-AAC). These are the main folders and files in the project:
 
 * **app/**: folder containing static and built resources for the actual Asterics AAC application. Host this folder in addition to `../index.html` in the root folder on webserver in order to and open the `../index.html` file in order to start Asterics AAC.
 * **docs/**: folder containing various documentation resources, e.g. this manual 
@@ -18,7 +18,7 @@ The Asterics AAC project is hosted on [GitHub](https://github.com/asterics/AsTeR
 * **.gitignore**: file specifying which files to ignore by [Git](https://git-scm.com/) version control
 * **.prettierrc**: config for [Prettier](https://prettier.io/) code formatter
 * **babel.config.js**: configuration for [Babel](https://babeljs.io/) Javascript compiler, only needed for running [Jest](https://jestjs.io/) tests, other Babel configuration is found in `webpack.config.js`
-* **CNAME**: configuration file of GitHub, specifying which alternative domain points to the version that is found on the GitHub [gh-pages branch](https://github.com/asterics/AsTeRICS-Grid/tree/gh-pages). The version on this branch is the version that is delivered when opening [https://grid.asterics.eu/](https://grid.asterics.eu/).
+* **CNAME**: configuration file of GitHub, specifying which alternative domain points to the version that is found on the GitHub [gh-pages branch](https://github.com/asterics/Asterics-AAC/tree/gh-pages). The version on this branch is the version that is delivered when opening [https://grid.asterics.eu/](https://grid.asterics.eu/).
 * **crowdin.yml**: configuration used by [crowdin](https://crowdin.com/project/asterics-grid) translation service
 * **index.html**: entry point of the application, uses resources from the `app/` folder
 * **LICENSE**: file specifying the license of Asterics AAC which is [AGPL3](https://www.gnu.org/licenses/agpl-3.0.de.html).

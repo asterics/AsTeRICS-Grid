@@ -83,12 +83,12 @@
                 importType: c.SELECT_ONLINE,
                 options: [{
                     name: i18nService.t('astericsGridGermanDefault'),
-                    downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_de.json',
+                    downloadUrl: 'https://raw.githubusercontent.com/asterics/Asterics-AAC/master/app/dictionaries/default_de.json',
                     type: c.OPTION_TYPE_PREDEFINED,
                     lang: "de"
                 }, {
                     name: i18nService.t('astericsGridEnglishDefault'),
-                    downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_en.json',
+                    downloadUrl: 'https://raw.githubusercontent.com/asterics/Asterics-AAC/master/app/dictionaries/default_en.json',
                     type: c.OPTION_TYPE_PREDEFINED,
                     lang: "en"
                 }],

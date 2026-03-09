@@ -21,7 +21,7 @@ The shelly plug has a built-in wifi access point or can connect itself to a wifi
 9. Click on ```OK``` to save the action.
 10. Turn off ```Editing mode```
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/56792e15-1162-43ff-a112-f95d0a29d0c0)
+![image](https://github.com/asterics/Asterics-AAC/assets/4621810/56792e15-1162-43ff-a112-f95d0a29d0c0)
 
 Fig 1: HTTP action to toggle Shelly plug.
  

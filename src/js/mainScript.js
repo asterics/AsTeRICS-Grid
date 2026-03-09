@@ -24,7 +24,7 @@ async function init() {
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
     log.info(
-        'Asterics AAC, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
+        'Asterics AAC, release version: https://github.com/asterics/Asterics-AAC/releases/tag/' +
             constants.CURRENT_VERSION
     );
     consoleReService.init();
@@ -152,7 +152,7 @@ function checkAppVersion() {
             translateParams: [constants.CURRENT_VERSION],
             timeout: 30000,
             actionLink: 'moreInformation',
-            actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
+            actionLinkUrl: 'https://github.com/asterics/Asterics-AAC/releases/tag/' + constants.CURRENT_VERSION,
             msgType: 'info'
         });
     }
