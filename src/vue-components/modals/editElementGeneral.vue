@@ -144,7 +144,7 @@
                 GridElement: GridElement,
                 ColorConfig: ColorConfig,
                 colorCategoryNotFitting: false,
-                chosenLocale: i18nService.getAllLanguages().find(lang => lang.code !== i18nService.getContentLang())?.code || 'en',
+                chosenLocale: 'en',
                 selectAllLanguages: true,
                 allLanguages: i18nService.getAllLanguages(),
                 gridLanguages: []
@@ -196,20 +196,9 @@
             },
             findUsedLocales() {
                 this.gridLanguages = gridUtil.getUsedLocales(this.gridData);
-
-                if (this.gridLanguages.length > 1) {
-                    let firstOtherLang = this.gridLanguages.find(lang => lang !== this.currentLang);
-                    if (firstOtherLang) {
-                        this.chosenLocale = firstOtherLang;
-                    }
-                    this.selectAllLanguages = false;
-                } else {
-                    let firstAvailableLang = this.allLanguages.find(lang => lang.code !== this.currentLang);
-                    if (firstAvailableLang) {
-                        this.chosenLocale = firstAvailableLang.code;
-                    }
-                    this.selectAllLanguages = true;
-                }
+                this.selectAllLanguages = this.gridLanguages.length <= 1;
+                let langs = this.gridLanguages.length > 1 ? this.gridLanguages : this.allLanguages.map(l => l.code);
+                this.chosenLocale = langs.find(lang => lang !== this.currentLang) || 'en';
             }
         },
         mounted() {

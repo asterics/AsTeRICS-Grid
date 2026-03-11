@@ -13,6 +13,8 @@ import { gridLayoutUtil } from '../../vue-components/grid-layout/utils/gridLayou
 import { localStorageService } from '../service/data/localStorageService';
 import { util } from './util';
 
+const USED_LOCALES_KEY = 'AG_USED_LOCALES';
+
 let gridUtil = {};
 
 let NAVIGATION_ID_TO_LAST = 'NAVIGATION_ID_TO_LAST';
@@ -888,7 +890,6 @@ function getNavigationIds(grid) {
         .filter((a) => !!a);
 }
 
-let USED_LOCALES_KEY = 'AG_USED_LOCALES';
 gridUtil.getUsedLocales = function (gridData) {
     let currentGridLocales = gridUtil.getGridLangs(gridData);
     let cachedLocales = localStorageService.getJSON(USED_LOCALES_KEY) || [];
