@@ -22,7 +22,7 @@
                     <li>
                         <i18n path="arasaacSupportSocialMedia" tag="span">
                             <template v-slot:instagramLink>
-                                <a href="https://www.instagram.com/asterics_grid/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
+                                <a href="https://www.instagram.com/asterics_aac/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
                             </template>
                             <template v-slot:facebookLink>
                                 <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
