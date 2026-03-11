@@ -15,8 +15,6 @@ import { util } from './util';
 
 const USED_LOCALES_KEY = 'AG_USED_LOCALES';
 
-const USED_LOCALES_KEY = 'AG_USED_LOCALES';
-
 let gridUtil = {};
 
 let NAVIGATION_ID_TO_LAST = 'NAVIGATION_ID_TO_LAST';
