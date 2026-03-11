@@ -36,7 +36,7 @@ if (self.URLS_TO_CACHE && self.URLS_TO_CACHE.length > 0) {
     // Since we don't have a build tool generating hashes use the version constant
     const precacheManifest = self.URLS_TO_CACHE.map(url => ({
         url: url,
-        revision: '#ASTERICS_GRID_VERSION#'
+        revision: 'release-latest-2026-03-11-11.26/+0100'
     }));
 
     workbox.precaching.precacheAndRoute(precacheManifest);
@@ -112,7 +112,7 @@ self.addEventListener('activate', event => {
             activated: true
         });
 
-        console.log('Service Worker active! Version: https://github.com/asterics/Asterics-AAC/releases/tag/#ASTERICS_GRID_VERSION#');
+        console.log('Service Worker active! Version: https://github.com/asterics/Asterics-AAC/releases/tag/release-latest-2026-03-11-11.26/+0100');
     })());
 });
 
