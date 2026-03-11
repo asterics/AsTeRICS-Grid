@@ -46,7 +46,7 @@ On Windows 10 follow these steps to install additional voices:
 2. **Restart the computer**: Afterwards the new offline voices should be available in Asterics AAC
 
 #### Android
-Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dinamic-communicator-asterics-grid-synthesised-voices-tts-android-ios)
+Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dinamic-communicator-asterics-aac-synthesised-voices-tts-android-ios)
 
 #### iOS
 With iOS 15 it was possible to use all voices installed on the device within Asterics AAC. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from Asterics AAC. See this [issue on Github about iOS voices](https://github.com/asterics/Asterics-AAC/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
@@ -57,7 +57,7 @@ With iOS 15 it was possible to use all voices installed on the device within Ast
 We recommend Samsung tablets because Samsung makes available high quality offline Speech Synthesis Voices in their Galaxy Store.
 These voices are offered for the most important languages. Example models are the Galaxy Tab A9 or A9+ (good quality/price ratio) or the more expensive Galaxy Tab S9.
 Generally, all Android tablets support an offline text-to-speech engine (and it is important to have voices available offline.)
-You can read more about the topic in an article by ARASAAC here: https://aulaabierta.arasaac.org/comunicador-dinamico-asterics-grid-voces-sintetizadas-tts-android-ios
+You can read more about the topic in an article by ARASAAC here: https://aulaabierta.arasaac.org/en/dinamic-communicator-asterics-aac-synthesised-voices-tts-android-ios
 We currently don't recommend iOS devcies (iPads) for Asterics AAC because Apple restricted the use of offline voices from web applications (like Asterics AAC).
 
 A list of the voices currently available for each system can be downloaded here: [Overview Voices AG](https://github.com/user-attachments/files/17969149/Overview.Voices.AG.pdf) (last updated: 2024-12)
