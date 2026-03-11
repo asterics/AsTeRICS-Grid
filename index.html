@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en" class="notranslate" translate="no">
 <head>
-    <title>AsTeRICS Grid</title>
+    <title>Asterics AAC</title>
     <meta id="viewPortMeta" name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="UWnxfeRniUm-l7GAbNdqfZQmCCaAU3HB6jGOuEHZ26k" />
 
-    <link rel="shortcut icon" href="app/img/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="app/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="app/img/favicon-no-circle.svg" type="image/svg+xml">
+    <link rel="icon" href="app/img/favicon-no-circle.png" type="image/png">
     <link rel="manifest" href="app/manifest.webmanifest">
 
     <link rel="stylesheet" href="app/css/fontawesome/css/all.css">
@@ -21,7 +21,7 @@
     {{ $t('accessKey1NavigationAccessKey2Main') }}
 </div>
 <div id="app" class="holy-grail">
-    <h1 class="sr-only">AsTeRICS Grid</h1>
+    <h1 class="sr-only">Asterics AAC</h1>
     <div id="touchElement" class="grid-container" style="z-index: 2; display: none; -webkit-touch-callout: none; -webkit-user-select: none;">
     </div>
     <audio style="display: none" id="audioPlayer" src="" preload="none"></audio>
@@ -44,7 +44,7 @@
                 </div>
                 <div class="hide-mobile" style="display: inline-flex">
                     <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
-                    <a tabindex="-1" aria-hidden="true" href="javascript:void(0)" @click="toMain"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon-raw.svg" height="40" width="121" alt="AsTeRICS Grid"/></h1></a>
+                    <a tabindex="-1" aria-hidden="true" href="javascript:void(0)" @click="toMain"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-aac-logo-raw.svg" height="40" alt="Asterics AAC"/></h1></a>
                 </div>
             </div>
 
@@ -197,6 +197,6 @@
 <!--script src="https://code.responsivevoice.org/responsivevoice.js"></script-->
 <script type="text/javascript" src='app/lib/responsive-voice.js'></script>
 
-<script type="module" src="app/build/asterics-grid.bundle.js"></script>
+<script type="module" src="app/build/asterics-aac.bundle.js"></script>
 </body>
 </html>

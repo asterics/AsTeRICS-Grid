@@ -10,14 +10,14 @@ This chapter provides an overview of the basic setup and basic settings:
 
 ## Welcome View
 
-AsTeRICS Grid initially starts with a welcome view giving the choice between:
+Asterics AAC initially starts with a welcome view giving the choice between:
 
-1. **Use AsTeRICS Grid without registration:** choose this option in order to create a local default user (**offline user**) and directly start using AsTeRICS Grid.
+1. **Use Asterics AAC without registration:** choose this option in order to create a local default user (**offline user**) and directly start using Asterics AAC.
 2. **Register now:** choose this option in order to sign up for an **online user**, which makes it possible to synchronize the grids across devices.
 
 ### Users
 
-In AsTeRICS Grid a user in general holds a set of grids which realize a specific solution for this user. A user doesn't necessarily have to be a real person, it's also possible to create a "user" for a specific use case, for instance a specific smart home control interface.
+In Asterics AAC a user in general holds a set of grids which realize a specific solution for this user. A user doesn't necessarily have to be a real person, it's also possible to create a "user" for a specific use case, for instance a specific smart home control interface.
 
 #### Online users
 
@@ -25,14 +25,14 @@ Online users are users whose configuration is automatically synchronized with a 
 
 The following information is important for registering an online user:
 * The only data that is needed are a **username** and a **password**. The username is needed for uniquely identifying a user and the password for securing his account and encrypting the data.
-* If you want to **use AsTeRICS Grid completely anonymously**, just use a username without any relation to your person.
+* If you want to **use Asterics AAC completely anonymously**, just use a username without any relation to your person.
 * Since all data is **end-to-end encrypted** only the user itself can ever see his data and configuration, no server admin or anyone else.
 * End-to-end encryption is great for privacy, however it has the drawback that the **data is lost**, if you logout your online account on all devices and forget your password. In this case there is **no possibility of password recovery**, so **remember your password carefully**. It's also highly recommended to **do backups** of your grids (see [Editing grid set](05_editing-grid-set.md)).
 * Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-16 characters.
 
 #### Offline users
 
-Offline users are users whose configuration is only saved offline in the storage of the currently used browser. This type of user is perfectly suited for use cases where AsTeRICS Grid is only used on a single device.
+Offline users are users whose configuration is only saved offline in the storage of the currently used browser. This type of user is perfectly suited for use cases where Asterics AAC is only used on a single device.
 
 The following information is important regarding offline users:
 * All **data of an offline user never leaves the device**, it's stored in a browser-internal database.
@@ -44,7 +44,7 @@ After logging in for the first time you get to a *Choose how to start* page. Her
 Under `More search options` you can filter the suggestions for languages or single grids.
 Click on `Use it` to import a specific board.
 
-**Info about Open Board Format (OBF)**: OBF is an open format for exchanging grids across different AAC tools and is specified on the [official website](https://www.openboardformat.org/). AsTeRICS Grid supports importing OBF files (`.obf` and `.obz`) using the options `Restore backup from file` or `Import custom data from file`.
+**Info about Open Board Format (OBF)**: OBF is an open format for exchanging grids across different AAC tools and is specified on the [official website](https://www.openboardformat.org/). Asterics AAC supports importing OBF files (`.obf` and `.obz`) using the options `Restore backup from file` or `Import custom data from file`.
 
 ## Basic Settings
 
@@ -71,6 +71,6 @@ Under `Settings -> Input Methods` you can select the following settings:
 
 Under `Settings -> Integrations` you can select the following settings:
 - **ARASAAC**: If you're using the grid set in Spanish, you can activate an automatic grammar correction.
-- **Expternal speech service**: Make additional voices available in the app. This requires technical knowledge how to start and use the [external speech bridge](https://github.com/asterics/AsTeRICS-Grid-Helper?tab=readme-ov-file#speech).
+- **Expternal speech service**: Make additional voices available in the app. This requires technical knowledge how to start and use the [external speech bridge](https://github.com/asterics/Asterics-AAC-Helper?tab=readme-ov-file#speech).
 
 [Back to Overview](README.md)

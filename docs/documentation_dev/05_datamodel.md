@@ -1,5 +1,5 @@
 # Data model
-This chapter is about the data model used in AsTeRICS Grid.
+This chapter is about the data model used in Asterics AAC.
 
 1. [Introduction](05_datamodel.md#introduction)
 1. [Data models saved to database](05_datamodel.md#data-models-saved-to-database)
@@ -11,10 +11,10 @@ This chapter is about the data model used in AsTeRICS Grid.
 
 ## Introduction
 
-The development of AsTeRICS Grid started in 2018 when [TypeScript](https://www.typescriptlang.org/) wasn't the standard choice for type-safety in web development. That's why [ObjectModel](https://objectmodel.js.org/) for the data model of AsTeRICS Grid. It allows to define data models and perform dynamic checks on their validity. At some point `ObjectModel` should be replaced by `TypeScript` or `ES6` classes. Some newer developments already use ES6 classes instead of ObjectModel, e.g. the model [SettingsApp](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/model/SettingsApp.js).
+The development of Asterics AAC started in 2018 when [TypeScript](https://www.typescriptlang.org/) wasn't the standard choice for type-safety in web development. That's why [ObjectModel](https://objectmodel.js.org/) for the data model of Asterics AAC. It allows to define data models and perform dynamic checks on their validity. At some point `ObjectModel` should be replaced by `TypeScript` or `ES6` classes. Some newer developments already use ES6 classes instead of ObjectModel, e.g. the model [SettingsApp](https://github.com/asterics/Asterics-AAC/blob/master/src/js/model/SettingsApp.js).
 
 ## Data models saved to database
-Data models defined for AsTeRICS Grid can be found in the folder [src/js/model](https://github.com/asterics/AsTeRICS-Grid/tree/master/src/js/model). These are the data models which are actually saved to database:
+Data models defined for Asterics AAC can be found in the folder [src/js/model](https://github.com/asterics/Asterics-AAC/tree/master/src/js/model). These are the data models which are actually saved to database:
 
 * **GridData**: model for a grid, containing a list of GridElement objects
 * **MetaData**: model for global data, includes various grid-independent data, e.g. InputConfig, ColorConfig, config about integrations.

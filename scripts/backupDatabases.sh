@@ -6,7 +6,7 @@ BASEDIR=$(dirname "$0")
 if [ $# != 1 ]; then
     echo "Usage: sh $0 backupDestination"
     echo "* backupDestination: destination folder for the backup.tgz file"
-    echo "* example command: sh backupDatabases.sh /c/data/src/AsTeRICS-Grid/backup/"
+    echo "* example command: sh backupDatabases.sh /c/data/src/Asterics-AAC/backup/"
     exit 1
 fi
 

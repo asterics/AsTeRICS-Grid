@@ -1,5 +1,5 @@
 # Data storage
-This chapter is about the data storage concept used in AsTeRICS Grid, meaning where and how user configuration and application data is stored.
+This chapter is about the data storage concept used in Asterics AAC, meaning where and how user configuration and application data is stored.
 
 1. [Introduction](06_data_storage.md#introduction)
 1. [Abstraction layers](06_data_storage.md#data-storage-abstraction-layers)
@@ -10,18 +10,18 @@ This chapter is about the data storage concept used in AsTeRICS Grid, meaning wh
 [Back to Overview](README.md)
 
 ## Introduction
-Since AsTeRICS Grid is designed to work offline, all configuration and user data have to be accessible without internet connection. There are the following possibilities for providing a data storage for an offline web-application:
+Since Asterics AAC is designed to work offline, all configuration and user data have to be accessible without internet connection. There are the following possibilities for providing a data storage for an offline web-application:
 
-1. Any external locally running storage service, e.g. any locally running database like MySQL or MariaDB. This possibility has the downside that users would have to install additional Software in order to use AsTeRICS Grid.
-1. [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), a browser internal storage which is capable to store key-value pairs of string values. However the amount of data is [limited to about 5-10MB](https://dev.to/tommykw/testing-storage-limits-of-localstorage-and-sessionstorage-in-chrome-21ab) in many browsers which is often too little to store all grids in AsTeRICS Grid.
+1. Any external locally running storage service, e.g. any locally running database like MySQL or MariaDB. This possibility has the downside that users would have to install additional Software in order to use Asterics AAC.
+1. [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), a browser internal storage which is capable to store key-value pairs of string values. However the amount of data is [limited to about 5-10MB](https://dev.to/tommykw/testing-storage-limits-of-localstorage-and-sessionstorage-in-chrome-21ab) in many browsers which is often too little to store all grids in Asterics AAC.
 1. [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), a browser internal storage for big amounts of structured data
 
-AsTeRICS Grid uses LocalStorage for temporary or small device-specific data which should not synchronized with the cloud (e.g. last volume set for web-radio playback). IndexedDB is used for the majority of configuration like e.g. data of stored grids. For online users all data that is stored in IndexedDB is synchronized with a remote CouchDB database managed by AsTeRICS Foundation, for offline users (see [Users](../documentation_user/03_basic_setup.md#users)) data is only stored locally on the device.
+Asterics AAC uses LocalStorage for temporary or small device-specific data which should not synchronized with the cloud (e.g. last volume set for web-radio playback). IndexedDB is used for the majority of configuration like e.g. data of stored grids. For online users all data that is stored in IndexedDB is synchronized with a remote CouchDB database managed by AsTeRICS Foundation, for offline users (see [Users](../documentation_user/03_basic_setup.md#users)) data is only stored locally on the device.
 
 For accessing IndexedDB in a more comfortable manner and making synchronization with the remote [CouchDB](http://couchdb.apache.org/) possible, the Javascript library [PouchDB](https://pouchdb.com/) is used.
 
 ## Data storage abstraction layers
-All Javascript modules regarding storage of data in AsTeRICS Grid can be found in the folder [src/js/service/data](https://github.com/asterics/AsTeRICS-Grid/tree/master/src/js/service/data). Figure 1 shows the relevant files and their relationships:
+All Javascript modules regarding storage of data in Asterics AAC can be found in the folder [src/js/service/data](https://github.com/asterics/Asterics-AAC/tree/master/src/js/service/data). Figure 1 shows the relevant files and their relationships:
 
 ![Concept of data storage layers](./img/data_storage_layers_en.png)
 
@@ -39,21 +39,21 @@ These are the responsibilities and functions of the different modules:
 1. **localStorageService.js**: accesses the browser's internal [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) for saving data like the last active user or hashed user passwords - in general data which should not be synchronized to cloud or aren't suitable for a user's database.
 
 ## One database per user
-AsTeRICS Grid implements the idea of [one database per user](https://www.joshmorony.com/creating-a-multiple-user-app-with-pouchdb-couchdb/). For each user a new database is created. Offline users have an own IndexedDB database within the browser and online users have both a local IndexedDB database and an online CouchDB database which are kept in sync by [replication features](https://pouchdb.com/guides/replication.html) of the PouchDB library. Advantages of this approach are:
+Asterics AAC implements the idea of [one database per user](https://www.joshmorony.com/creating-a-multiple-user-app-with-pouchdb-couchdb/). For each user a new database is created. Offline users have an own IndexedDB database within the browser and online users have both a local IndexedDB database and an online CouchDB database which are kept in sync by [replication features](https://pouchdb.com/guides/replication.html) of the PouchDB library. Advantages of this approach are:
 
 * access rights are easy to manage, each user can access their own database and nothing else
 * it's easy to delete all data of a user, just delete their database
 * replication and synchronizing is simple, the whole user database can be replicated on the local device
 
 ## Authentication layer
-The one-database-per-user approach needs a layer for managing user accounts and the corresponding CouchDB user databases (only for online users). For AsTeRICS Grid the framework [couch-auth](https://github.com/perfood/couch-auth) (former "superlogin") is used. It provides an API in order to register and login users and creates the corresponding CouchDB databases in the background.
+The one-database-per-user approach needs a layer for managing user accounts and the corresponding CouchDB user databases (only for online users). For Asterics AAC the framework [couch-auth](https://github.com/perfood/couch-auth) (former "superlogin") is used. It provides an API in order to register and login users and creates the corresponding CouchDB databases in the background.
 
-The file [superlogin/start.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/superlogin/start.js) starts superlogin and contains it's configuration (= server side). The file [loginService.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/service/loginService.js) is the client-side counterpart which uses the library [superlogin-client](https://www.npmjs.com/package/superlogin-client) in order to connect to and make use of the superlogin server.
+The file [superlogin/start.js](https://github.com/asterics/Asterics-AAC/blob/master/superlogin/start.js) starts superlogin and contains it's configuration (= server side). The file [loginService.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/service/loginService.js) is the client-side counterpart which uses the library [superlogin-client](https://www.npmjs.com/package/superlogin-client) in order to connect to and make use of the superlogin server.
 
-In order to start couch-auth the correct parameters of some CouchDB instance have to be inserted in [start.js:38](https://github.com/asterics/AsTeRICS-Grid/blob/master/superlogin/start.js#L38). Then use `npm run start-auth` or `npm run start-auth-ssl` in order to start couch-auth in development or production mode using SSL.
+In order to start couch-auth the correct parameters of some CouchDB instance have to be inserted in [start.js:38](https://github.com/asterics/Asterics-AAC/blob/master/superlogin/start.js#L38). Then use `npm run start-auth` or `npm run start-auth-ssl` in order to start couch-auth in development or production mode using SSL.
 
 ## Inspecting locally saved data
-For examining the locally saved data of AsTeRICS Grid do the following (e.g. in Firefox or Chrome browser):
+For examining the locally saved data of Asterics AAC do the following (e.g. in Firefox or Chrome browser):
 1. open developer tools (`Ctrl + Shift + I` or `right click -> Inspect`)
 1. go to `Application` (Chrome) or `Web-Storage` (Firefox)
 1. open `LocalStorage` or `IndexedDB` to inspect the data saved in these storages

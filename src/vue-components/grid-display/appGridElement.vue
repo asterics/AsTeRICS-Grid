@@ -108,7 +108,7 @@ export default {
             }
 
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {
-                // element.borderColor only used for color mode "both", see https://github.com/asterics/AsTeRICS-Grid/issues/580#issuecomment-3281187917
+                // element.borderColor only used for color mode "both", see https://github.com/asterics/Asterics-AAC/issues/580#issuecomment-3281187917
                 return element.borderColor;
             }
 

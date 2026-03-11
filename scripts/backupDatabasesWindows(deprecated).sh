@@ -3,7 +3,7 @@ if [ $# != 3 ]; then
     echo "* couchdbDataFolder: local data folder of couchdb, e.g. /opt/couchdb/data/ on Linux or /c/CouchDB/data/ on Windows"
     echo "* backupDestination: destination folder for the backup.tgz file"
     echo "* remoteCouchdbAdminPassword: admin password of the remote couchdb that should be mirrored"
-    echo "* example command: sh backupDatabases.sh /c/CouchDB/data/ /c/data/src/AsTeRICS-Grid/backup/ <password>"
+    echo "* example command: sh backupDatabases.sh /c/CouchDB/data/ /c/data/src/Asterics-AAC/backup/ <password>"
     echo ""
     echo "!!! WARNING !!! this script deletes all data from the local couchdb instance and replaces it with the data of the remote couchdb!"
     echo "!!! IMPORTANT !!! stop and restart apache couchdb before running this script! Otherwise maybe not all data is cloned from remote db."

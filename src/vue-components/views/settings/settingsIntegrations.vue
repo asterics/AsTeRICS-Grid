@@ -37,7 +37,7 @@
             <span></span>
             <i18n path="findDetailsAt" tag="span">
                 <template v-slot:link>
-                    <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid-Helper?tab=readme-ov-file#speech">{{ $t('infoAboutExternalSpeechService') }}</a>
+                    <a target="_blank" href="https://github.com/asterics/Asterics-AAC-Helper?tab=readme-ov-file#speech">{{ $t('infoAboutExternalSpeechService') }}</a>
                 </template>
             </i18n>
         </div>

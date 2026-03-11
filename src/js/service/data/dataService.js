@@ -397,7 +397,7 @@ dataService.downloadBackupToFile = async function () {
         exportOnlyCurrentLang: false,
         exportDictionaries: true,
         exportUserSettings: true,
-        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup`
+        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-aac-full-backup`
     });
 };
 
@@ -501,7 +501,7 @@ dataService.downloadToFile = async function (gridIds, options = {}) {
     let filenameBase =
         options.filename ||
         (backupData.grids.length > 1
-            ? `asterics-grid-backup`
+            ? `asterics-aac-backup`
             : i18nService.getTranslation(backupData.grids[0].label));
     let filename = filenameBase + postfix;
     FileSaver.saveAs(blob, filename);
@@ -528,7 +528,7 @@ dataService.convertFileToImportData = async function (file, options = {}) {
             return null;
         }
         if (!importData || (!importData.grids && !importData.metadata && !importData.dictionaries)) {
-            log.warn("data doesn't contain AsTeRICS Grid config");
+            log.warn("data doesn't contain Asterics AAC config");
             return null;
         }
     } else if (fileUtil.isObfFile(file)) {

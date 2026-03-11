@@ -121,7 +121,7 @@ modelUtil.getLatestModelVersion = function () {
 
 /**
  * returns true if the given user has a valid data model version matching the version of the app.
- * exception: transition to version 7 is treated okay if app has version 6 - change in encryption, see https://github.com/asterics/AsTeRICS-Grid/issues/748
+ * exception: transition to version 7 is treated okay if app has version 6 - change in encryption, see https://github.com/asterics/Asterics-AAC/issues/748
  * @param user
  */
 modelUtil.hasValidMajorModelVersion = function(user) {

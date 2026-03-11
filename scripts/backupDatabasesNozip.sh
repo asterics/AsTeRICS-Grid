@@ -4,7 +4,7 @@ set -e
 if [ $# != 1 ]; then
     echo "Usage: sh $0 backupDestination"
     echo "* backupDestination: destination folder"
-    echo "* example command: sh backupDatabasesNozip.sh /c/data/src/AsTeRICS-Grid/backup/"
+    echo "* example command: sh backupDatabasesNozip.sh /c/data/src/Asterics-AAC/backup/"
     exit 1
 fi
 

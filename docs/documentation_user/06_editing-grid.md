@@ -69,7 +69,7 @@ While editing the global grid it's possible to define its height by opening `Mor
 
 ## Home Grid
 
-At the bottom of the `Manage grids` view it's possible to define a `Home grid`. This grid is automatically opened at starting AsTeRICS Grid. If no home grid is defined, the last opened grid is opened.
+At the bottom of the `Manage grids` view it's possible to define a `Home grid`. This grid is automatically opened at starting Asterics AAC. If no home grid is defined, the last opened grid is opened.
 
 `Navigate to home grid after selecting an element` can be selected in order to automatically navigate to the home grid after any element (which doesn't navigate to an other grid) is selected. This can speed up the construction of sentences in more complex communicator interfaces.
 

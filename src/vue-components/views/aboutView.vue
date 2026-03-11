@@ -8,7 +8,7 @@
                     <h3 class="mt-2">{{ $t('generalInformation') }}</h3>
                     <div>
                         {{ $t('astericsGridIsFreeAndOpenSource') }}<br/>
-                        <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid">{{ $t('astericsGridOnGithub') }}</a><br/><br/>
+                        <a target="_blank" href="https://github.com/asterics/Asterics-AAC">{{ $t('astericsGridOnGithub') }}</a><br/><br/>
                     </div>
                     <div>
                         <span>{{ $t('astericsGridWasFundedWithinProjects') }}</span>:
@@ -54,7 +54,7 @@
                     <div>
                         <i18n path="astericsGridLicenseInfo" tag="p">
                             <template v-slot:agplLink>
-                                <a href="https://github.com/asterics/AsTeRICS-Grid/blob/master/LICENSE" target="_blank">AGPLv3</a>
+                                <a href="https://github.com/asterics/Asterics-AAC/blob/master/LICENSE" target="_blank">AGPLv3</a>
                             </template>
                         </i18n>
                         <i18n path="ytTermsInfo" tag="p">
@@ -110,7 +110,7 @@
                 <div class="srow" style="margin-top: 3em">
                     <i18n path="youreUsingAstericsGridVersion" tag="div">
                         <template v-slot:gridVersion>
-                            <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#">#ASTERICS_GRID_VERSION#</a>
+                            <a target="_blank" href="https://github.com/asterics/Asterics-AAC/releases/tag/#ASTERICS_GRID_VERSION#">#ASTERICS_GRID_VERSION#</a>
                         </template>
                     </i18n>
                 </div>

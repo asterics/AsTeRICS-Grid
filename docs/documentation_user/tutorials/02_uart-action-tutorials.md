@@ -4,9 +4,9 @@ These tutorials show specific use cases for [UART actions](../08_actions.md#uart
 
 ## Remote control (Infrared)
 
-The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database (modified version for AsTeRICS Grid).
+The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database (modified version for Asterics AAC).
 
-![AG-puckmote](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/6459d87a-aac6-4456-84a1-00fbcb847e9a)
+![AG-puckmote](https://github.com/asterics/Asterics-AAC/assets/4621810/6459d87a-aac6-4456-84a1-00fbcb847e9a)
 
 *Figure 18: Pasting infrared command into action field and try out of command.*
 
@@ -32,7 +32,7 @@ You can actually send any Javascript command supported by the Puck.js device, se
 
 The following tutorial explains, how to create an accessible battery-powered toy (e.g. disco light, soap bubble machine or duplo train). The [Puck.js](https://www.puck-js.com/) device contains an on-board FET (transistor) and allows you to control medium current devices (up to 200mA) directly from Puck.js, without external components (see [Puck.js+FET tutorial](https://www.espruino.com/Puck.js+FET)).
 
-![AG-puckjs-accessible-toy-FET-action-small](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/136c33c3-027f-40ad-b2b7-bad928901f34)
+![AG-puckjs-accessible-toy-FET-action-small](https://github.com/asterics/Asterics-AAC/assets/4621810/136c33c3-027f-40ad-b2b7-bad928901f34)
 
 *Fig 2: Demo of accessible disco light toy.*
 
@@ -51,11 +51,11 @@ The following tutorial explains, how to create an accessible battery-powered toy
 14. Click on ```OK``` to save the action.
 15. Turn off ```Editing mode```
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/b35856fc-3cbd-4747-a410-353e95bea12b)
+![image](https://github.com/asterics/Asterics-AAC/assets/4621810/b35856fc-3cbd-4747-a410-353e95bea12b)
 
 *Fig 19: Battery interrupter*
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/31e9bafe-f2d1-401b-b601-df5c065ad394)
+![image](https://github.com/asterics/Asterics-AAC/assets/4621810/31e9bafe-f2d1-401b-b601-df5c065ad394)
 
 Fig 20: Wiring of battery interrupter and Puck.js
 

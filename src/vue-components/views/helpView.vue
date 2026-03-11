@@ -22,10 +22,10 @@
                     <li>
                         <i18n path="arasaacSupportSocialMedia" tag="span">
                             <template v-slot:instagramLink>
-                                <a href="https://www.instagram.com/asterics_grid/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
+                                <a href="https://www.instagram.com/asterics_aac/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
                             </template>
                             <template v-slot:facebookLink>
-                                <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
+                                <a href="https://www.facebook.com/asterics.aac.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
                             </template>
                         </i18n>
                         <span>({{ $t('lang.es') }}, {{ $t('lang.en') }}, {{ $t('lang.pt') }})</span>
@@ -41,7 +41,7 @@
                     <li>
                         <i18n path="foundBugReportGithubIssue" tag="span">
                             <template v-slot:githubLink>
-                                <a href="https://github.com/asterics/AsTeRICS-Grid/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
+                                <a href="https://github.com/asterics/Asterics-AAC/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
                             </template>
                         </i18n>
                         <span>({{ $t('lang.en') }})</span>

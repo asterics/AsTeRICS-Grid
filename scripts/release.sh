@@ -1,7 +1,7 @@
 set -e
 
 # ------------------------------------------------------------------
-# AsTeRICS Grid release script
+# Asterics AAC release script
 # ------------------------------------------------------------------
 # releases the committed version on the current branch to gh-pages
 # by performing the following steps:
@@ -21,7 +21,7 @@ do_gh_pages_update () {
     git checkout gh-pages
     git reset --hard $tagname
     rm -rf latest
-    git clone --depth=1 --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
+    git clone --depth=1 --branch $tagname https://github.com/asterics/Asterics-AAC.git latest
     rm -rf latest/.git/
     git add latest
     git commit -m "added tag '$tagname' for beta version in folder latest."

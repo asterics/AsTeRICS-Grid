@@ -2,7 +2,7 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="srow content spaced" @keyup.enter="loginPlain(user, password)">
-            <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('login') }}</span></h2>
+            <h2><span class="show-mobile">Asterics AAC - </span><span>{{ $t('login') }}</span></h2>
             <div class="eleven columns offset-by-one">
                 <div v-show="allUsersList.length > 0">
                     <div class="srow">

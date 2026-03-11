@@ -2,7 +2,7 @@
 
 [Back to Overview](README.md)
 
-AsTeRICS Grid uses voices from these sources:
+Asterics AAC uses voices from these sources:
 * **offline:** voices installed on the operating system (differs depending on platform, Windows has different voices than Android or iOS), e.g. `Microsoft David - English, offline` on a Windows computer
 * **online:** voices vary by operation system and browser. With some of the online voices (those from from [responsivevoice.org](https://responsivevoice.org/), e.g. `Spanish Female, online`) there can be some delay (e.g. 5 seconds or more) until the label is spoken. There are also random errors accessing the voice service.
 
@@ -23,7 +23,7 @@ Here is a breakdown of the options depending on devices:
 **Recommended browser:** Firefox
 
 **General Information**
-- Online and offline voices provided by Apple are listed in the drop-down menu of voices in AsTeRICS Grid.
+- Online and offline voices provided by Apple are listed in the drop-down menu of voices in Asterics AAC.
 - The quality of voices varies.
 - Some voices labeled as "male" might not sound deep, possibly due to errors by Apple or because they are recordings of male teens before voice breaking.
 
@@ -38,8 +38,8 @@ Here is a breakdown of the options depending on devices:
 - It is possible to combine one system voice with online/offline voices from the browser but not to multiple system voices.
 - Third-party voices cannot be installed on the system.
 
-<!-- With iOS 15 it was possible to use all voices installed on the device within AsTeRICS Grid. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from AsTeRICS Grid. With iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for AsTeRICS Grid.
-Due to Apple's ongoing changes to voice availability and the uncertainty surrounding future updates as well as the lack of options to install third-party voices, using an iPad for AsTeRICS Grid is not recommended. -->
+<!-- With iOS 15 it was possible to use all voices installed on the device within Asterics AAC. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from Asterics AAC. With iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for Asterics AAC.
+Due to Apple's ongoing changes to voice availability and the uncertainty surrounding future updates as well as the lack of options to install third-party voices, using an iPad for Asterics AAC is not recommended. -->
 
 #### Table 1: Voices that can be installed in the system (available offline) (updated December 2024)
 
@@ -208,7 +208,7 @@ Due to Apple's ongoing changes to voice availability and the uncertainty surroun
 **Recommended browser:** Microsoft Edge.
 
 **General Information**
-- Microsoft's online and offline voices are listed in the drop-down list of voices in AsTeRICS Grid.
+- Microsoft's online and offline voices are listed in the drop-down list of voices in Asterics AAC.
 - The quality of offline voices is generally lower than that of the online voices. 
 - While Microsoft often offers multiple versions for a language, differentiating by country, the voices do not always reflect the accent or dialect specific to that country!
 - Microsoft does not explicitly label child voices. A few voices with female names sound very young. In the following tables, it was only marked if the voice distinctly sounded like a child. That said, several other "female" voices could also be used as child voices. A few of the voices are listed by Microsoft as "male" but don't sound deep. It might be a mistake by Microsoft or possibly a male teen before voice break.
@@ -432,7 +432,7 @@ Due to Apple's ongoing changes to voice availability and the uncertainty surroun
 **Recommended browser:** Firefox.
 
 **General Information**
-- Android’s online and offline voices are listed in the drop-down list of voices in AsTeRICS GRID. 
+- Android’s online and offline voices are listed in the drop-down list of voices in Asterics AAC. 
 - No voices are listed as offline, although some voices do appear to work offline.
 
 **Installing additional voices**
@@ -749,7 +749,7 @@ The following languages don’t seem to function: Assamese (India), Bodo (India)
 - The (online) voices for Amazon Fire are the same ones as for Android.
 
 ### System voices
-- It’s possible to install more voices in the settings of the tablet. The downloaded voices are listed alphabetically, and AsTeRICS Grid seems to simply use the first one on the list, so only download the voice you want to use.
+- It’s possible to install more voices in the settings of the tablet. The downloaded voices are listed alphabetically, and Asterics AAC seems to simply use the first one on the list, so only download the voice you want to use.
 - Despite that option to install voices in the settings, these voices don’t seem to become available offline!
 
 ## Offline Voices Per System

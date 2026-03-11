@@ -14,8 +14,8 @@ This chapter is about actions that can be performed if a grid element is selecte
 * [AsTeRICS Action](08_actions.md#asterics-action): does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
 * [openHAB Action](08_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
 * [Web radio action](08_actions.md#web-radio-action): controls playback of web radios
-* [YouTube action](08_actions.md#youtube-action): controls playback of YouTube videos within AsTeRICS Grid
-* [Podcast action](08_actions.md#podcast-action): controls playback of podcasts within AsTeRICS Grid
+* [YouTube action](08_actions.md#youtube-action): controls playback of YouTube videos within Asterics AAC
+* [Podcast action](08_actions.md#podcast-action): controls playback of podcasts within Asterics AAC
 * [Change Content Language](08_actions.md#change-content-language): changes the content language (description of grid elements / language of the communicator grid(s)) and the voice
 * [Open webpage in new tab](08_actions.md#open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
 * [HTTP action](08_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
@@ -176,7 +176,7 @@ These are the possibilities while configuring an AsTeRICS action:
 
 ## openHAB Action
 
-AsTeRICS Grid is capable of controlling a local openHAB installation through the browser. This action utilizes the REST
+Asterics AAC is capable of controlling a local openHAB installation through the browser. This action utilizes the REST
 API of openHAB (see [openHAB API documentation](https://www.openhab.org/docs/configuration/restdocs.html)).
 
 Figure 10 shows the configuration possibilities of an openHAB action:
@@ -253,7 +253,7 @@ If the openHAB installation is hosted in the local network, there are two possib
 
 **Video on YouTube:** [Web radio](https://www.youtube.com/watch?v=dKZwan9dZV4&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=23&t=0s) (German, but auto-translated subtitles available)
 
-AsTeRICS Grid is capable of searching and playing web radio stations. The station search capabilities are powered by the API of <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a>.
+Asterics AAC is capable of searching and playing web radio stations. The station search capabilities are powered by the API of <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a>.
 
 Clicking on "Edit" on a "Web radio action" (or creating a new one) shows the following configuration possibilities:
 
@@ -334,7 +334,7 @@ Other ("normal") grid elements can be assigned with the functions listed above a
 
 ## Podcast action
 
-Podcast actions allow to control playback of podcasts within AsTeRICS Grid. The integrated podcast search uses [podcastindex.org](https://podcastindex.org/), a free web service that provides a global index of podcasts and episodes.
+Podcast actions allow to control playback of podcasts within Asterics AAC. The integrated podcast search uses [podcastindex.org](https://podcastindex.org/), a free web service that provides a global index of podcasts and episodes.
 
 Clicking "Edit" on a "Podcast action" (or creating a new one) shows the following configuration possibilities:
 
@@ -423,7 +423,7 @@ This action allows sending commands to microcontrollers using the UART (Serial) 
 
 ### Supported commands
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/a1f3d53c-0237-4342-a85d-90d745d2f0d9)
+![image](https://github.com/asterics/Asterics-AAC/assets/4621810/a1f3d53c-0237-4342-a85d-90d745d2f0d9)
 
 *Figure 17: Configuration of a UART action.*
 
@@ -435,13 +435,13 @@ For tutorials, see [UART action tutorials](tutorials/02_uart-action-tutorials.md
 
 ## System action
 A system action allows to do some action related to the current application state. These are the possible system actions:
-* **System volume up/down/toggle**: allows to increase, decrease or mute the system volume. It affects the volume of all other sounds within AsTeRICS Grid, which are voice volume for speaking elements, webradio volume and YouTube volume.
+* **System volume up/down/toggle**: allows to increase, decrease or mute the system volume. It affects the volume of all other sounds within Asterics AAC, which are voice volume for speaking elements, webradio volume and YouTube volume.
 * **Enter/leave fullscreen**: allows to enter or leave fullscreen
 * **Update live elements**: updates the values of all currently visible live elements
 
 ## Predefined actions
 
-Predefined actions are a special category of actions. They wrap other actions for being able to set them up in a more user-friendly way. The most common use-case is wrapping HTTP actions for devices with a REST API, but also all other actions could be wrapped. The possible predefined actions are defined within the external repository [AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#predefined-actions).
+Predefined actions are a special category of actions. They wrap other actions for being able to set them up in a more user-friendly way. The most common use-case is wrapping HTTP actions for devices with a REST API, but also all other actions could be wrapped. The possible predefined actions are defined within the external repository [Asterics AAC Boards](https://github.com/asterics/Asterics-AAC-Data?tab=readme-ov-file#predefined-actions).
 
 ### Example
 
@@ -454,7 +454,7 @@ To understand the concept, this example shows a comparison between the same acti
 
 ### Browser support
 
-Accessing local APIs at local IP addresses like `192.168.0.10` is not allowed by all browsers. Some allow it only in a secure context (`https`, so using the [main https version of AsTeRICS Grid](https://grid.asterics.eu/)), some allow it only in a insecure context (`http`, so using the [main http version of AsTeRICS Grid](http://grid.asterics-foundation.org/)) and some only if a special setting for allowing `mixed-content` is set. If you want to use local APIs within AsTeRICS Grid, please do your own research about the current situation with internet searches like `<your-browser> <your-operating-system> allow mixed content`, e.g. "Chrome Android allow mixed content". There is also further info in the [FAQ](faq.md#allow-mixed-content-httphttps).
+Accessing local APIs at local IP addresses like `192.168.0.10` is not allowed by all browsers. Some allow it only in a secure context (`https`, so using the [main https version of Asterics AAC](https://grid.asterics.eu/)), some allow it only in a insecure context (`http`, so using the [main http version of Asterics AAC](http://grid.asterics-foundation.org/)) and some only if a special setting for allowing `mixed-content` is set. If you want to use local APIs within Asterics AAC, please do your own research about the current situation with internet searches like `<your-browser> <your-operating-system> allow mixed content`, e.g. "Chrome Android allow mixed content". There is also further info in the [FAQ](faq.md#allow-mixed-content-httphttps).
 
 For tutorials, see [tutorials for predefined actions](tutorials/03_predefined-action-tutorials.md).
 

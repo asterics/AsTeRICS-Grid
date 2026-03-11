@@ -1,11 +1,11 @@
-# Contributing to AsTeRICS Grid
+# Contributing to Asterics AAC
 
 [Back to Overview](README.md)
 
-You can help shape the future of AsTeRICS Grid and ensure it meets the needs of its users. Contribute actively to the development of AsTeRICS Grid by suggesting new features, discussing ideas, and reporting bugs directly on GitHub.
+You can help shape the future of Asterics AAC and ensure it meets the needs of its users. Contribute actively to the development of Asterics AAC by suggesting new features, discussing ideas, and reporting bugs directly on GitHub.
 
 ## GitHub
-AsTeRICS Grid is free and Open Source and the [source code can be found on GitHub](https://github.com/asterics/AsTeRICS-Grid/).
+Asterics AAC is free and Open Source and the [source code can be found on GitHub](https://github.com/asterics/Asterics-AAC/).
 
 Terms related to GitHub:
 * **Repository**: A repository is the place where all the files for a specific project are stored and where discussion about that specific project takes place.
@@ -13,30 +13,30 @@ Terms related to GitHub:
 
 ### Joining GitHub
 - **Sign Up on GitHub**: If you don’t already have an account, [sign up for GitHub here](https://github.com/signup). Provide your email address, choose a username, and create a password. Verify your email address by entering the confirmation code sent to your inbox.  
-- **Access the AsTeRICS Grid Repository**: Once logged in, open the [AsTeRICS Grid repository](https://github.com/asterics/AsTeRICS-Grid/)
+- **Access the Asterics AAC Repository**: Once logged in, open the [Asterics AAC repository](https://github.com/asterics/Asterics-AAC/)
 - **Engage with the Repository**: If you’re not a developer, there are two key features relevant to you:  
      - *Stay updated*: Click the *Watch* button (next to the repository name) and select *Custom*. Then, choose *Issues* and *Releases* to receive notifications about new discussions, bug reports, and updates. This way, you’ll stay informed about the latest developments, which are typically released in monthly updates.  
-     - *The issues tab*: Click on the [Issues tab](https://github.com/asterics/AsTeRICS-Grid/issues) to view existing feature requests, bug reports, and discussions. You can join ongoing conversations, share your thoughts, or create new issues to suggest features or report problems.
+     - *The issues tab*: Click on the [Issues tab](https://github.com/asterics/Asterics-AAC/issues) to view existing feature requests, bug reports, and discussions. You can join ongoing conversations, share your thoughts, or create new issues to suggest features or report problems.
 
 ### Participating on GitHub
 - **One issue per topic**: Create a separate issue for each suggestion you have. This makes it much easier to keep discussions separated and the organization of the issues clear.
 - **Search for open issues**: before creating a new issue, please search for existing open issues about the same topic.
 - **Join existing discussions**: If an issue already exists for the feature you want, contribute to the existing discussion. Add a comment expressing your interest in the feature, explaining why it would be valuable to you, or participating in the conversation about how it could be implemented in the app.
 
-## AsTeRICS Grid Community
+## Asterics AAC Community
 
-While GitHub is the place for discussing bugs and new features in detail, the [AsTeRICS Grid Community on Facebook](https://www.facebook.com/groups/1550700782223677) is an open place for discussing anything related to AsTeRICS Grid and sharing your experiences.
+While GitHub is the place for discussing bugs and new features in detail, the [Asterics AAC Community on Facebook](https://www.facebook.com/groups/1550700782223677) is an open place for discussing anything related to Asterics AAC and sharing your experiences.
 Your input is valuable!
 
 ## Join As a Programmer
 
-Issues labelled with [good first issue](https://github.com/asterics/AsTeRICS-Grid/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) are a good way to get to know the programming. Please also read the [Collaboration guide](../documentation_dev/collaboration.md).
+Issues labelled with [good first issue](https://github.com/asterics/Asterics-AAC/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) are a good way to get to know the programming. Please also read the [Collaboration guide](../documentation_dev/collaboration.md).
 
 ## Translate the Application
 
 **Application language:** the language of the user interface, e.g. labels of buttons or texts within the menus.
 
-The application can be translated via the online service crowdin, see: [AsTeRICS Grid on crowdin](https://crowdin.com/project/asterics-grid). In order to contribute translations on this platform, follow these steps:
+The application can be translated via the online service crowdin, see: [Asterics AAC on crowdin](https://crowdin.com/project/asterics-grid). In order to contribute translations on this platform, follow these steps:
 * Create a user and log in at crowdin
 * Select the language where you want to contribute and click on "Translate all":
   <img src="https://user-images.githubusercontent.com/328325/188637877-e8dce701-189f-4434-a1ae-fefd210cbb36.png" width="650"/>
@@ -46,7 +46,7 @@ The application can be translated via the online service crowdin, see: [AsTeRICS
 ## Translate the Content
 **Grid content language:** the language of the grids, i.e. texts within grid elements or spoken custom texts.
 
-AsTeRICS Grid can offer multilingual as well as monolingual standard grid sets (templates that can be imported). These templates can be imported after creating a new user respectively when using when AsTeRICS Grid the first time.
+Asterics AAC can offer multilingual as well as monolingual standard grid sets (templates that can be imported). These templates can be imported after creating a new user respectively when using when Asterics AAC the first time.
 
 - *Multilingual grid sets* are one configuration which is translated to many languages. This means that the language can be switched by the user, since all translations are included within this configuration. Create this in cases where users should to be able to switch languages, e.g. a configuration used in a hospital which is used by different users speaking different languages.
 
@@ -62,7 +62,7 @@ Follow these steps to publish a translation of an multilingual grid set:
 * Import the grid set you want to translate or start with an empty configuration if you want to build something new
 * Translate the grid set (see [chapter 13](12_multilingual-grid-sets.md))
 * Create a backup with the new language via `Manage grids -> More (right top corner) -> Save backup to file`
-* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can add this translation to the default grid set! Alternatively you can also [directly create a Pull Request at AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#update-the-contents-of-the-boards-of-existing-configuration).
+* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can add this translation to the default grid set! Alternatively you can also [directly create a Pull Request at Asterics AAC Boards](https://github.com/asterics/Asterics-AAC-Data?tab=readme-ov-file#update-the-contents-of-the-boards-of-existing-configuration).
 
 ### Creation of a new monolingual default grid set
 Follow these steps to publish a translation of a monolingual grid set:
@@ -76,6 +76,6 @@ Follow these steps to publish a translation of a monolingual grid set:
    * Uncheck `Export dictionaries`
    * Check `Export global grid`
   <div><img src="https://github.com/user-attachments/assets/6d3adaf4-7041-4303-a715-ee0db5352dfb" width="650"/></div>
-* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can offer it as new default grid set! Alternatively you can also [directly create a Pull Request at AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#add-translated-version-of-monolingual-configuration).
+* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can offer it as new default grid set! Alternatively you can also [directly create a Pull Request at Asterics AAC Boards](https://github.com/asterics/Asterics-AAC-Data?tab=readme-ov-file#add-translated-version-of-monolingual-configuration).
 
 [Back to Overview](README.md)

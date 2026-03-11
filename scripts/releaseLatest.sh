@@ -1,7 +1,7 @@
 set -e
 
 # ------------------------------------------------------------------
-# AsTeRICS Grid latest-release script
+# Asterics AAC latest-release script
 # ------------------------------------------------------------------
 # releases the committed version on the current branch to gh-pages
 # as latest-release by performing the following steps:
@@ -19,7 +19,7 @@ do_gh_pages_update () {
    git fetch origin gh-pages
    git reset --hard origin/gh-pages
    rm -rf latest
-   git clone --depth=1 --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
+   git clone --depth=1 --branch $tagname https://github.com/asterics/Asterics-AAC.git latest
    rm -rf latest/.git/
    git add latest
    git commit -m "added tag '$tagname' for latest version in folder latest."

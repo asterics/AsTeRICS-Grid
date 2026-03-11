@@ -112,7 +112,7 @@ self.addEventListener('activate', event => {
             activated: true
         });
 
-        console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
+        console.log('Service Worker active! Version: https://github.com/asterics/Asterics-AAC/releases/tag/#ASTERICS_GRID_VERSION#');
     })());
 });
 
@@ -195,7 +195,7 @@ function shouldCacheImage(url, request) {
 }
 
 function shouldCacheStaleWhileRevalidate(url, request) {
-    return url.href.startsWith('https://asterics.github.io/AsTeRICS-Grid-Boards');
+    return url.href.startsWith('https://asterics.github.io/Asterics-AAC-Data');
 }
 
 function shouldCacheNormal(url, request) {
