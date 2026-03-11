@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Serie",
   "copyDirectLinkToConfigToClipboard": "Copia o link directo a esta configuración do portapapeis",
   "importantInformation": "Información importante",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 270 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
   "useIt": "Úsao",
   "details": "Detalles",
   "chooseHowToStart": "Elixa cómo comezar",

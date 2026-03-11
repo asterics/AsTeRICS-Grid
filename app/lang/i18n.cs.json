@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Sériová linka",
   "copyDirectLinkToConfigToClipboard": "Zkopírovat přímý odkaz do této konfigurace do schránky",
   "importantInformation": "Důležité informace",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 270 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
   "useIt": "Použít",
   "details": "Podrobnosti",
   "chooseHowToStart": "Zvolte jak začít",

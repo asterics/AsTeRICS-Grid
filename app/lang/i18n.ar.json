@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "الرقم التسلسلي",
   "copyDirectLinkToConfigToClipboard": "نسخ الرابط المباشر لهذا التكوين إلى الحافظة",
   "importantInformation": "معلومات مهمة",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 270 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
   "useIt": "استخدام",
   "details": "التفاصيل",
   "chooseHowToStart": "اختر كيفية البدء",
