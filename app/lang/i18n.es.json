@@ -181,7 +181,7 @@
   "resetToDefaultInputConfiguration": "Restablecer la configuración de entrada por defecto",
   "wrapAroundJumpToFirstElementAfterLastElem": "Bucle (volver al primer elemento después del último elemento)",
   "goToStartPositionAfterSelect": "Ir a la posición inicial después de seleccionar",
-  "ok": "OK",
+  "ok": "Ok",
   "areModel": "Modelo ARE",
   "loadingModelFromAre": "Cargando Modelo desde ARE...",
   "couldNotLoadModelFromAre": "¡No se pudo cargar el Modelo desde ARE!",
