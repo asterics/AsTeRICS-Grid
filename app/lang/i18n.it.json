@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Seriale",
   "copyDirectLinkToConfigToClipboard": "Copia il link diretto a questa configurazione negli appunti",
   "importantInformation": "Informazioni importanti",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Gli utenti verranno <b>eliminati dopo 180 giorni di inattività</b>, quindi esegui un backup delle configurazioni importanti.",
   "useIt": "Usa",
   "details": "Dettagli",
   "chooseHowToStart": "Scegli come iniziare",
