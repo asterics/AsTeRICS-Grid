@@ -25,7 +25,7 @@
                                 <a href="https://www.instagram.com/asterics_aac/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
                             </template>
                             <template v-slot:facebookLink>
-                                <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
+                                <a href="https://www.facebook.com/asterics.aac.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
                             </template>
                         </i18n>
                         <span>({{ $t('lang.es') }}, {{ $t('lang.en') }}, {{ $t('lang.pt') }})</span>

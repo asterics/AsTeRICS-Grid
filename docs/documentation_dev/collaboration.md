@@ -76,7 +76,7 @@ Hello,
 thanks for contacting us. Unfortunately we at the AsTeRICS Foundation cannot provide support in Spanish.
 Please to go our Instagram or Facebook pages maintained by ARASAAC and send them a private message there including your questions:
 https://www.instagram.com/asterics_aac/
-https://www.facebook.com/asterics.grid.y.arasaac
+https://www.facebook.com/asterics.aac.y.arasaac
 
 If you don't use social media you can also write directly to ARASAAC via mail:
 arasaac@aragon.es
