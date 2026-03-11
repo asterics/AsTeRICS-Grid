@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Serielle Schnittstelle",
   "copyDirectLinkToConfigToClipboard": "Direkten Link zu dieser Konfiguration kopieren",
   "importantInformation": "Wichtige Information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "User werden <b>nach 180 Tagen Inaktivität gelöscht</b>, erstelle daher bitte Backups von wichtigen Konfigurationen.",
   "useIt": "Auswählen",
   "details": "Details",
   "chooseHowToStart": "Wie möchten Sie beginnen?",
