@@ -1140,7 +1140,7 @@
   "CONN_TYPE_SERIAL": "Soros port",
   "copyDirectLinkToConfigToClipboard": "A konfigurációra mutató közvetlen link vágólapra másolása",
   "importantInformation": "Fontos információk",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be <b>deleted after 180 days of inactivity</b>, so please back up important configurations.",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "A felhasználók <b>180 nap inaktivitás után törlésre kerülnek</b>, ezért kérjük, készítsen biztonsági mentést a fontos konfigurációkról.",
   "useIt": "Ezt választom",
   "details": "Részletek",
   "chooseHowToStart": "Válasszon egy kezdő konfigurációt",
