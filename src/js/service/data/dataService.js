@@ -125,7 +125,21 @@ dataService.saveGrid = function (gridData, options = {}) {
     }
     gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
     gridData.lastUpdateTime = new Date().getTime();
-    return databaseService.saveObject(GridData, gridData);
+    return databaseService.saveObject(GridData, gridData).then(function (result) {
+        try {
+            let settings = localStorageService.getUserSettings();
+            if (settings.damevozEnabled === true && settings.damevozUser) {
+                fetch('https://damevoz.es/api/sync/' + encodeURIComponent(settings.damevozUser), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(gridData)
+                }).catch(function () {});
+            }
+        } catch (e) {
+            // silently ignore any error
+        }
+        return result;
+    });
 };
 
 /**
