@@ -11,7 +11,7 @@
 
                     <div class="modal-body mt-2" v-if="gridElement">
                         <div v-if="currentTab === TABS.TAB_GENERAL">
-                            <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL || gridElement.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
+                            <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL || gridElement.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="gridElement" :grid-data="gridData" @searchImage="toImageSearch"></edit-element-general>
                             <edit-element-youtube v-if="gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="gridElement"></edit-element-youtube>
                             <edit-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" :grid-element="gridElement"></edit-element-collect>
                             <edit-element-matrix v-if="gridElement.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="gridElement"></edit-element-matrix>

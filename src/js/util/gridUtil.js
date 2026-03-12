@@ -10,7 +10,10 @@ import { constants } from './constants.js';
 import { GridActionARE } from '../model/GridActionARE';
 import { encryptionService } from '../service/data/encryptionService';
 import { gridLayoutUtil } from '../../vue-components/grid-layout/utils/gridLayoutUtil';
+import { localStorageService } from '../service/data/localStorageService';
 import { util } from './util';
+
+const USED_LOCALES_KEY = 'AG_USED_LOCALES';
 
 let gridUtil = {};
 
@@ -886,6 +889,14 @@ function getNavigationIds(grid) {
         })
         .filter((a) => !!a);
 }
+
+gridUtil.getUsedLocales = function (gridData) {
+    let currentGridLocales = gridUtil.getGridLangs(gridData);
+    let cachedLocales = localStorageService.getJSON(USED_LOCALES_KEY) || [];
+    let mergedLocales = [...new Set([...currentGridLocales, ...cachedLocales])];
+    localStorageService.saveJSON(USED_LOCALES_KEY, mergedLocales);
+    return mergedLocales;
+};
 
 function getGridElements(gridDataOrElements) {
     let gridElements = gridDataOrElements.gridElements ? gridDataOrElements.gridElements : gridDataOrElements;
