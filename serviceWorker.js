@@ -21,6 +21,7 @@ constants.SW_CONSOLE = 'SW_CONSOLE';
 constants.ENABLE_REMOTE_DEBUGGING = false;
 constants.KNOWN_IMAGE_APIS = ['https://api.arasaac.org', 'https://d18vdu4p71yql0.cloudfront.net'];
 
+const APP_CACHE_NAME = "app-cache";
 let imageCachePromise = null;
 
 if (!workbox) {
@@ -48,7 +49,7 @@ const cacheablePlugin = new workbox.cacheableResponse.CacheableResponsePlugin({
 });
 
 const strategyNormalCacheFirst = new workbox.strategies.CacheFirst({
-    cacheName: 'app-cache',
+    cacheName: APP_CACHE_NAME,
     plugins: [cacheablePlugin]
 });
 
@@ -101,6 +102,18 @@ workbox.routing.registerRoute(({ url, request, event }) => {
 
 self.addEventListener('install', (event) => {
     console.log('installing service worker ...');
+
+    event.waitUntil((async () => {
+        // update all entries of manual app-cache (containing e.g. translation files)
+        let cache = await caches.open(APP_CACHE_NAME);
+        let keys = await cache.keys();
+        for (let key of keys) {
+            try {
+                await cache.add(key);
+            } catch (e) {
+            }
+        }
+    })());
     event.waitUntil(self.skipWaiting());
 });
 
