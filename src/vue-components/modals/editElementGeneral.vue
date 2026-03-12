@@ -77,7 +77,7 @@
             </accordion>
         </div>
         <div class="srow">
-            <accordion :acc-label="$t('Translation')">
+            <accordion :acc-label="$t('Translations')">
                 <div class="row">
                     <label class="col-sm-2" for="translationLanguage">{{ $t('language') }}</label>
                     <div class="col-sm-5">
