@@ -111,6 +111,9 @@ self.addEventListener('install', (event) => {
             try {
                 await cache.add(key);
             } catch (e) {
+                // if update fails for any reason delete and let it be re-added by next request of app
+                // -> no outdated entry stays in cache
+                await cache.delete(key);
             }
         }
     })());
