@@ -693,7 +693,7 @@
     "hz": "Herero",
     "pi": "Pali",
     "pa": "Panjabi",
-    "ps": "Pashto",
+    "ps": "Pastó",
     "fa": "Persa",
     "pl": "Polaco",
     "pt": "Português",
@@ -751,7 +751,7 @@
     "wa": "Valão",
     "be": "Bielorrusso",
     "fy": "Frísio ocidental",
-    "wo": "Wolof",
+    "wo": "Uólofe",
     "ts": "Tsonga",
     "ii": "Sichuan Yi",
     "yo": "Yoruba",
@@ -1118,8 +1118,8 @@
   "importexportDataTofromAllGrids": "Importar/exportar dados de/para todas as tabelas",
   "pronunciation": "Pronúncia",
   "pronunciationOf": "Pronúncia de \"{0}\"",
-  "testPronunciation": "Test pronunciation",
-  "Translations": "Translations",
+  "testPronunciation": "Teste de pronúncia",
+  "Translations": "Traduções",
   "deleteAll": "Eliminar tudo",
   "toggleInCollectionElementIfAddedMultipleTimes": "Alternar na célula de acumulação se adicionado várias vezes",
   "httpMethod": "Método HTTP",
@@ -1334,6 +1334,6 @@
   "automaticallyAddImages": "Adicionar imagens automaticamente",
   "showAllElements": "mostrar todas as células",
   "firstRowHeightFactor": "Ajuste de altura da primeira linha",
-  "downloadingImagesWithPercent": "Downloading images ... {0}%",
-  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
+  "downloadingImagesWithPercent": "A transferir imagens ... {0}%",
+  "browserNotSupportingOfflineMode": "O seu navegador não suporta o modo offline. Se for necessário, atualize ou use um navegador diferente."
 }
