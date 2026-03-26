@@ -993,7 +993,7 @@
   "space": "spatie",
   "readElementActionsInAdditionToLabel": "Lees de elementacties aanvullend bij het label",
   "generalInputSettings": "Algemene invoerinstellingen",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimale pauze om dezelfde cel meerdere keren achter elkaar te verzamelen en uit te spreken",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Back-up bestand bevat geen rasterconfiguratie!",
   "currentRecording": "Huidige opname",
   "recordingSeconds": "Opnemen... {0}s",
