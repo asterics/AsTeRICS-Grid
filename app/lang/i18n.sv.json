@@ -993,7 +993,7 @@
   "space": "mellanslag",
   "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
   "generalInputSettings": "Allmänna inmatningsinställningar",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!",
   "currentRecording": "Aktuell inspelning",
   "recordingSeconds": "Spelar in... {0}s",
