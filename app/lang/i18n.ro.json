@@ -993,7 +993,7 @@
   "space": "spațiu",
   "readElementActionsInAdditionToLabel": "Citește acțiunile elementului în plus față de etichetă",
   "generalInputSettings": "Setări generale de intrare",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pauză minimă pentru colectarea și rostirea aceleiași celule de mai multe ori la rând",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Fișierul de backup nu conține configurația rețelei!",
   "currentRecording": "Înregistrare curentă",
   "recordingSeconds": "Înregistrare... {0}s",
