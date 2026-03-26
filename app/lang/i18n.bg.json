@@ -993,7 +993,7 @@
   "space": "шпация",
   "readElementActionsInAdditionToLabel": "Прочети действията на елемента в съответствие на етикета",
   "generalInputSettings": "Основни настройки",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Минимална пауза за събиране и изговаряне на една и съща клетка няколко пъти подред",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Архивният файл не съдържа мрежова конфигурация!",
   "currentRecording": "Текущ запис",
   "recordingSeconds": "Запис...{0}с",
