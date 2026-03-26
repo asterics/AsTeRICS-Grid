@@ -993,7 +993,7 @@
   "space": "пробіл",
   "readElementActionsInAdditionToLabel": "Читання дій елемента на додаток до мітки",
   "generalInputSettings": "Загальні параметри введення",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Мінімальна пауза для збору і проговорювання однієї клітинки кілька разів поспіль",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Файл резервної копії не містить конфігурації сітки!",
   "currentRecording": "Поточний запис",
   "recordingSeconds": "Запис... {0}s",
