@@ -993,7 +993,7 @@
   "space": "razmak",
   "readElementActionsInAdditionToLabel": "Čitaj radnje elementa uz oznaku",
   "generalInputSettings": "Opće postavke",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimalna pauza za prikupljanje i izgovaranje iste ćelije nekoliko puta zaredom",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Datoteka sigurnosne kopije ne sadrži konfiguraciju ploče!",
   "currentRecording": "Trenutni zapis",
   "recordingSeconds": "Snimanje... {0}s",
