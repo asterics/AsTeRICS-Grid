@@ -993,7 +993,7 @@
   "space": "tartea",
   "readElementActionsInAdditionToLabel": "Testuaz gain, gelaxkako ekintzak irakurtzea",
   "generalInputSettings": "Sarrerako aukeren konfigurazio orokorra",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Gelditze minimoa, gelaxka bera hainbat aldiz jarraian metatzeko eta adierazteko",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Inportatutako fitxategiak ez du baliozko segurtasun-kopiarik!",
   "currentRecording": "Uneko grabazioa",
   "recordingSeconds": "Grabatzen... {0}s",
