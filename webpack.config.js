@@ -22,7 +22,8 @@ module.exports = env => {
         test: /\.m?js$/,
         include: [
             path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'node_modules/date-fns')
+            path.resolve(__dirname, 'node_modules/date-fns'),
+            path.resolve(__dirname, 'node_modules/@zxing')
         ],
         use: {
             loader: 'babel-loader'
