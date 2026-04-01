@@ -1,0 +1,98 @@
+/* Floating PiP: Kamera + Status als dunkles Band ÜBER dem unteren Bildrand (lesbar auf hellem UI) */
+
+#handheldCodeReaderMount {
+    position: fixed;
+    right: 0.75em;
+    bottom: 0.75em;
+    z-index: 25;
+    width: min(88vw, 340px);
+    max-width: min(88vw, 340px);
+    pointer-events: none;
+}
+
+#handheldCodeReaderMount.handheld-code-reader-mount--hidden {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: none;
+    max-width: 0;
+}
+
+.handheld-code-reader-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Rahmen: Video füllt Fläche, Status liegt darunter (unten) */
+.handheld-code-reader-video-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    max-height: 280px;
+    background: #0a0a0a;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.28);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.handheld-code-reader-video-frame .handheld-code-reader-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    object-fit: contain;
+    object-position: center center;
+    display: block;
+    background: #000;
+}
+
+/* Status: unten im Bild — Schrift */
+.handheld-code-reader-video-frame .handheld-code-reader-status {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    margin: 0;
+    min-height: 2.75em;
+    font-size: clamp(1.05rem, 3.2vw, 1.25rem);
+    font-weight: 700;
+    line-height: 1.35;
+    padding: 0.55em 0.75em;
+    letter-spacing: 0.02em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 0 0 7px 7px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.handheld-code-reader-status--idle {
+    background: rgba(0, 0, 0, 0.58);
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* Kein Text: Leiste ausblenden (nur Kamera sichtbar) */
+.handheld-code-reader-status--idle:empty {
+    display: none;
+}
+
+.handheld-code-reader-status--detected {
+    background: rgba(12, 95, 12, 0.92);
+    color: #efffef;
+}
+
+.handheld-code-reader-status--mismatch {
+    background: rgba(145, 28, 28, 0.92);
+    color: #fff5f5;
+}
