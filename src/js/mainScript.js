@@ -4,6 +4,7 @@ import { Router } from './router.js';
 import { VuePluginManager } from './vue/vuePluginManager';
 import { MainVue } from './vue/mainVue';
 
+import './../css/handheldCodeReader.css';
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
 import './../css/holy-grail.css';
