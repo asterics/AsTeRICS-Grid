@@ -50,7 +50,11 @@ class InputConfig extends Model({
     huffShowNumbers: [Boolean],
     huffColorWholeElement: [Boolean],
     huffTimeout: [Number],
-    huffMarkInactive: [Boolean]
+    huffMarkInactive: [Boolean],
+    handheldCodeReaderEnabled: [Boolean],
+    handheldCodeReaderDeviceId: [String],
+    handheldCodeReaderPreview: [Boolean],
+    handheldCodeReaderLockMs: [Number]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -153,7 +157,11 @@ InputConfig.defaults({
     huffShowNumbers: true,
     huffElementCount: 0,
     huffTimeout: 4000,
-    huffMarkInactive: true
+    huffMarkInactive: true,
+    handheldCodeReaderEnabled: false,
+    handheldCodeReaderDeviceId: '',
+    handheldCodeReaderPreview: true,
+    handheldCodeReaderLockMs: 2000
 });
 
 export { InputConfig };
