@@ -2,10 +2,12 @@ if (!process.argv[2] || !process.argv[3]) {
     console.log('Replicates all databases between two CouchDB servers.')
     console.log("----");
     console.log('USAGE:');
-    console.log(`node couchDBReplicateAllDbs.js <SOURCE_COUCHDB_URL> <TARGET_COUCHDB_URL> [onlynew]`);
+    console.log(`node couchDBReplicateAllDbs.js <SOURCE_COUCHDB_URL> <TARGET_COUCHDB_URL> [onlynew | all] [limit-count]`);
     console.log("----");
-    console.log("Example:");
+    console.log("Examples:");
     console.log(`node couchDBReplicateAllDbs.js https://admin:admin@my.couchdb.org:6984 http://admin:admin@localhost:5984`);
+    console.log(`node couchDBReplicateAllDbs.js https://admin:admin@my.couchdb.org:6984 http://admin:admin@localhost:5984 onlynew`);
+    console.log(`node couchDBReplicateAllDbs.js https://admin:admin@my.couchdb.org:6984 http://admin:admin@localhost:5984 all 100`);
     console.log(`All data is transferred from source to target, no changes in source.`);
     return;
 }
@@ -13,6 +15,7 @@ if (!process.argv[2] || !process.argv[3]) {
 let sourceDBUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
 let targetDBUrl = process.argv[3] || 'http://admin:admin@localhost:5984';
 let onlynew = process.argv[4] === 'onlynew';
+let limitCount = process.argv[5] ? parseInt(process.argv[5]) : null;
 
 sourceDBUrl = sourceDBUrl.trim();
 targetDBUrl = targetDBUrl.trim();
@@ -23,7 +26,9 @@ const PouchDB = require('pouchdb');
 
 let successNames = [];
 let errorNames = [];
-let manualSyncDBs = null;
+let manualSyncDBs = [];
+let excludeDBs = ['_users'];
+let alwaysReplicateDbs = ['accessibility-info-tree', 'accessibility-for-appliances', 'auth-users'];
 
 async function main() {
     if (manualSyncDBs && manualSyncDBs.length > 0) {
@@ -39,14 +44,19 @@ async function main() {
     console.log(`source server has ${sourceDBNames.length} databases.`);
     console.log(`target server has ${targetDBNames.length} databases.`);
 
-    let missingNames = sourceDBNames.filter((name) => !targetDBNames.includes(name));
-    let existingNames = sourceDBNames.filter((name) => targetDBNames.includes(name));
+    let missingNames = sourceDBNames.filter((name) => !targetDBNames.includes(name) && !alwaysReplicateDbs.includes(name) && !excludeDBs.includes(name));
+    let existingNames = sourceDBNames.filter((name) => targetDBNames.includes(name) &&  !alwaysReplicateDbs.includes(name) && !excludeDBs.includes(name));
     console.log(`replicating ${missingNames.length} missing databases to target...`);
+    if (limitCount && limitCount > 0) {
+        console.log(`only taking the first ${limitCount} databases because of 'limit-count' option..`);
+        missingNames = missingNames.slice(0, limitCount);
+    }
     await replicateDBs(missingNames);
 
+    console.log(`updating databases which are defined as "always replicate" to target...`);
+    await replicateDBs(alwaysReplicateDbs);
+
     if (onlynew) {
-        console.log(`updating auth-users database to target...`);
-        await replicateDBs(['accessibility-info-tree', 'accessibility-for-appliances', 'auth-users'], true);
         return;
     }
 

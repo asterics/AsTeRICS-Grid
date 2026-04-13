@@ -9,6 +9,7 @@ jest.mock('../../model/EncryptedObject');
 jest.mock('./localStorageService');
 //jest.mock('../../util/dataUtil');
 jest.mock('../../util/log');
+jest.mock('../../util/util');
 
 let ID = 'ID';
 let REV = 'REV';

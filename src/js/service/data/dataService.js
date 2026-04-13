@@ -304,7 +304,7 @@ dataService.getMetadata = function () {
             } else {
                 returnValue = result;
             }
-            returnValue = returnValue || metadataFallback;
+            returnValue = returnValue || JSON.parse(JSON.stringify(metadataFallback));
             if (!localStorageService.getAppSettings().syncNavigation) {
                 let localMetadata = localStorageService.getUserSettings().metadata;
                 if (localMetadata) {

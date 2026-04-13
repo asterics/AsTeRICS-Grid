@@ -19,8 +19,6 @@ let _voiceLangIsTextLang = false;
 let allVoices = [];
 
 let currentSpeakArray = [];
-let lastSpeakText = null;
-let lastSpeakTime = 0;
 let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
 let voiceSortBackList = ['com.apple.eloquence'];
 let hasSpoken = false;
@@ -55,7 +53,6 @@ let _waitingSpeakOptions = {};
  * @param options.speakSecondary (optional) if true, spoken text is repeated using the secondary language
  * @param options.useStandardRatePitch (optional) if true, the standard values for rate/pitch are used (1)
  * @param options.rate (optional) rate value to use
- * @param options.minEqualPause (optional) minimum pause between 2 times speaking the same text
  * @param options.progressFn (optional) function where boundary events of the spoken phrase are sent to
  */
 speechService.speak = function (textOrOject, options = {}) {
@@ -91,12 +88,7 @@ speechService.speak = function (textOrOject, options = {}) {
     ) {
         preferredVoiceId = null; // use auto voice for language
     }
-    if (text === lastSpeakText && new Date().getTime() - lastSpeakTime < options.minEqualPause) {
-        return;
-    }
     $(document).trigger(constants.EVENT_SPEAKING_TEXT, [text]);
-    lastSpeakText = text;
-    lastSpeakTime = new Date().getTime();
     if (!options.dontStop) {
         speechService.stopSpeaking();
     }

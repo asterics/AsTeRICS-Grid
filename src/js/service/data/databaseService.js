@@ -227,7 +227,7 @@ databaseService.registerForUser = function (username, hashedUserPassword, userDa
         return Promise.resolve();
     }
     return pouchDbService.createDatabase(username, userDatabaseURL, onlyRemote).then(() => {
-        return initInternal(hashedUserPassword, username, isLocalUser);
+        return initInternal(hashedUserPassword, username, isLocalUser, true);
     });
 };
 
@@ -260,7 +260,7 @@ databaseService.getCurrentUsedDatabase = function () {
     return pouchDbService.getOpenedDatabaseName();
 };
 
-function initInternal(hashedUserPassword, username, isLocalUser) {
+function initInternal(hashedUserPassword, username, isLocalUser, isNewRegistration = false) {
     _initPromise = Promise.resolve()
         .then(() => {
             //reset DB if specified by URL
@@ -273,11 +273,16 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
         .then(() => {
             return pouchDbService.allArray(MetaData.getIdPrefix());
         })
-        .then((metadataObjects) => {
+        .then(async (metadataObjects) => {
             metadataObjects = metadataObjects || [];
             metadataObjects.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
             let metadataIds = metadataObjects.map((o) => o.id);
             encryptionService.setEncryptionProperties(hashedUserPassword, metadataIds, isLocalUser);
+            if (isNewRegistration && metadataObjects.length === 0) {
+                log.info("creating new metadata object for new user...");
+                let metadata = new MetaData();
+                await applyFiltersAndSave(MetaData.getIdPrefix(), metadata);
+            }
             if (metadataObjects.length && metadataObjects.length > 1) {
                 log.warn('found duplicated metadata!');
             }

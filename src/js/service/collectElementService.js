@@ -39,10 +39,6 @@ let convertToLowercaseIfKeyboard = true;
 let convertMode = null;
 let activateARASAACGrammarAPI = false;
 
-let duplicatedCollectPause = 0;
-let lastCollectId = null;
-let lastCollectTime = 0;
-
 let imgDimensionsCache = new MapCache();
 let _localMetadata = null;
 let _useCrossorignAttribute = true;
@@ -583,12 +579,6 @@ function addTextElem(text) {
 }
 
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
-    if (lastCollectId === element.id && new Date().getTime() - lastCollectTime < duplicatedCollectPause) {
-        return;
-    }
-    lastCollectId = element.id;
-    lastCollectTime = new Date().getTime();
-
     if (element.type === GridElement.ELEMENT_TYPE_COLLECT) {
         return;
     }
@@ -680,7 +670,6 @@ function triggerPredict() {
 
 async function getMetadataConfig() {
     _localMetadata = await dataService.getMetadata();
-    duplicatedCollectPause = _localMetadata.inputConfig.globalMinPauseCollectSpeak || 0;
     convertMode = _localMetadata.textConfig.convertMode;
     activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
 }

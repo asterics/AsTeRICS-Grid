@@ -993,7 +993,7 @@
   "space": "Leerzeichen",
   "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen",
   "generalInputSettings": "Allgemeine Eingabeoptionen",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimale Pause um dasselbe Element mehrmals hintereinander zu sammeln / auszusprechen",
+  "minimumPauseForDoingActionsOfSameElem": "Minimale Pause um Aktionen desselben Elements mehrmals hintereinander auszuführen",
   "backupFileDoesntContainData": "Backup-Datei enthält keine Grid-Konfiguration!",
   "currentRecording": "Aktuelle Aufnahme",
   "recordingSeconds": "Wird aufgenommen... {0}s",

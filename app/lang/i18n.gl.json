@@ -993,7 +993,7 @@
   "space": "espazo",
   "readElementActionsInAdditionToLabel": "Ler accións da cela ademais do texto",
   "generalInputSettings": "Configuración xeral das Opcións de entrada",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pausa mínima para acumular e locutar a mesma cela varias veces seguidas",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "O arquivo importado non contén unha copia de seguridade válida!",
   "currentRecording": "Gravación actual",
   "recordingSeconds": "Gravando... {0}s",

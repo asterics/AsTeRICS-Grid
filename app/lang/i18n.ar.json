@@ -993,7 +993,7 @@
   "space": "مسافة",
   "readElementActionsInAdditionToLabel": "قراءة إجراءات العنصر بالإضافة إلى التسمية",
   "generalInputSettings": "إعدادات الإدخال العامة",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "الحد الأدنى من الإيقاف المؤقت لجمع وتكلم نفس الخلية عدة مرات متتالية",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "ملف النسخ الاحتياطي لا يحتوي على تكوين شبكة!",
   "currentRecording": "التسجيل الحالي",
   "recordingSeconds": "تسجيل... {0}ثانية",

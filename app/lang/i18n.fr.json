@@ -993,7 +993,7 @@
   "space": "espace",
   "readElementActionsInAdditionToLabel": "Lire les actions de l'élément en plus du libellé",
   "generalInputSettings": "Paramètres généraux de saisie",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pause minimale pour collecter et parler la même cellule plusieurs fois de suite",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Le fichier de sauvegarde ne contient pas la configuration de la grille !",
   "currentRecording": "Enregistrement en cours",
   "recordingSeconds": "Enregistrement... {0}s",

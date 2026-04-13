@@ -41,13 +41,20 @@ let METADATA_URL_ACTIONS = constants.IS_ENVIRONMENT_PROD ? constants.BOARDS_REPO
 let METADATA_URL_REQUESTS = constants.IS_ENVIRONMENT_PROD ? constants.BOARDS_REPO_BASE_URL + "live_predefined_requests.json" : constants.BOARDS_REPO_BASE_URL + "live_predefined_requests_beta.json";
 let predefinedActionsData = {};
 
-let minPauseSpeak = 0;
+let minActionPauseMs = 0;
 let metadata = null;
+let lastActionElementId = null;
+let lastActionTime = 0;
 
 actionService.doAction = async function (gridIdOrObject, gridElementId) {
     if (!gridIdOrObject || !gridElementId) {
         return;
     }
+    if (minActionPauseMs && lastActionElementId === gridElementId && new Date().getTime() - lastActionTime < minActionPauseMs) {
+        return;
+    }
+    lastActionTime = new Date().getTime();
+    lastActionElementId = gridElementId;
     let gridData = gridIdOrObject.gridElements ? gridIdOrObject : (await dataService.getGrid(gridIdOrObject, false, true));
     let gridElement = JSON.parse(JSON.stringify(gridData.gridElements.find(e => e.id === gridElementId)));
 
@@ -151,8 +158,7 @@ async function doAction(gridElement, action, options = {}) {
             }
             speechService.speak(speakTexts, {
                 lang: action.speakLanguage,
-                speakSecondary: true,
-                minEqualPause: minPauseSpeak
+                speakSecondary: true
             });
             break;
         case 'GridActionSpeakCustom':
@@ -164,8 +170,7 @@ async function doAction(gridElement, action, options = {}) {
                 }
                 speechService.speak(text, {
                     lang: action.speakLanguage,
-                    speakSecondary: true,
-                    minEqualPause: minPauseSpeak
+                    speakSecondary: true
                 });
             }
             break;
@@ -344,7 +349,7 @@ function doAREAction(action, gridData) {
 
 async function getMetadataConfig() {
     metadata = await dataService.getMetadata();
-    minPauseSpeak = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
+    minActionPauseMs = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
 }
 
 async function getPredefinedInfos(url) {

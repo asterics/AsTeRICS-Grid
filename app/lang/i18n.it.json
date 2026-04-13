@@ -993,7 +993,7 @@
   "space": "spazio",
   "readElementActionsInAdditionToLabel": "Leggi le azioni degli elementi in aggiunta all'etichetta",
   "generalInputSettings": "Impostazioni generali di input",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pausa minima per raccogliere e pronunciare la stessa cella più volte di seguito",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Il backup non contiene la configurazione della griglia!",
   "currentRecording": "Registrazione corrente",
   "recordingSeconds": "Registrazione... {0}s",

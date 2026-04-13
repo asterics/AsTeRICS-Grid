@@ -993,7 +993,7 @@
   "space": "presledek",
   "readElementActionsInAdditionToLabel": "Preberi akcije elementov glede na oznako",
   "generalInputSettings": "Splošne nastavitve za vnos",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Najmanjši premor za izbor in izgovor iste celice večkrat zapored",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Varnostna kopija ne vsebuje konfiguracije mreže!",
   "currentRecording": "Trenutni posnetek",
   "recordingSeconds": "Snemanje... {0}s",

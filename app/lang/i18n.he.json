@@ -993,7 +993,7 @@
   "space": "רווח",
   "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
   "generalInputSettings": "הגדרות כלליות",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "קובץ הגיבוי לא מכיל תצורת גריד!",
   "currentRecording": "הקלטה נוכחית",
   "recordingSeconds": "מקליט...{0} שניות",

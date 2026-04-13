@@ -314,7 +314,8 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                                 limit: 1,
                                 descending: true
                             });
-                            setupLiveSync(changes.results[0].seq);
+                            let seq = changes && changes.results && changes.results[0] ? changes.results[0].seq : undefined;
+                            setupLiveSync(seq);
                             $(document).trigger(constants.EVENT_DB_INITIAL_SYNC_COMPLETE);
                         }
                     });

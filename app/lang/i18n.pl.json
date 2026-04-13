@@ -993,7 +993,7 @@
   "space": "spacja",
   "readElementActionsInAdditionToLabel": "Odczytaj działania elementu oprócz etykiety",
   "generalInputSettings": "Ogólne ustawienia początkowe",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimalna przerwa na pobranie i wypowiedzenie tej samej komórki kilka razy z rzędu",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Plik kopii zapasowej nie zawiera konfiguracji sieci!",
   "currentRecording": "Aktualne nagranie",
   "recordingSeconds": "Nagrywanie... {0}sekund",

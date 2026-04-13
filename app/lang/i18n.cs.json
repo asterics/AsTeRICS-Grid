@@ -993,7 +993,7 @@
   "space": "mezera",
   "readElementActionsInAdditionToLabel": "Čtení akcí prvku kromě štítku",
   "generalInputSettings": "Obecná nastavení vstupu",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimální pauza pro sběr a vyslovení stejné buňky několikrát za sebou",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "Zálohovaný soubor neobsahuje nastavení tabulky!",
   "currentRecording": "Aktuální záznam",
   "recordingSeconds": "Nahrávání... {0}s",

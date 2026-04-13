@@ -993,7 +993,7 @@
   "space": "szóköz",
   "readElementActionsInAdditionToLabel": "Kártyaműveletek felolvasása a cimke mellett",
   "generalInputSettings": "Általános beviteli beállítások",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimális várakozás ugyanazon elem egymás után történő felolvasása között",
+  "minimumPauseForDoingActionsOfSameElem": "Minimum pause for doing actions of the same element several times in a row",
   "backupFileDoesntContainData": "A biztonsági mentés nem tartalmaz táblakonfigurációkat!",
   "currentRecording": "Jelenlegi felvétel",
   "recordingSeconds": "Felvétel folyamatban... {0}s",
