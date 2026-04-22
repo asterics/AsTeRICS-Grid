@@ -492,7 +492,7 @@
   "editName": "bewerk naam",
   "cancelEditName": "annuleer bewerk naam",
   "resetToDefaultGridset": "Terug naar standaard raster",
-  "doYouReallyWantDeleteAllGrids": "Wilt u echt alle rasters verwijderen? Deze bewerking kan niet ongedaan worden gemaakt!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Wil je het globale raster terugzetten naar de standaardinstellingen?",
   "detailsForGridX": "Details van het raster {0}",
   "connectXWithThisGrid": "Verbind \"{0}\" met dit raster",
