@@ -492,7 +492,7 @@
   "editName": "upravit jméno",
   "cancelEditName": "zrušit úpravu názvu",
   "resetToDefaultGridset": "Obnovit výchozí sadu tabulek",
-  "doYouReallyWantDeleteAllGrids": "Opravdu chcete odstranit všechny tabulky? Tato akce je nevratná!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Opravdu chcete obnovit globální tabulku na výchozí hodnoty?",
   "detailsForGridX": "Podrobnosti o tabulce {0}",
   "connectXWithThisGrid": "Propojit \"{0}\" s touto tabulkou",
