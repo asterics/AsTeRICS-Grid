@@ -492,7 +492,7 @@
   "editName": "redigera namn",
   "cancelEditName": "cancel edit name",
   "resetToDefaultGridset": "Reset to default gridset",
-  "doYouReallyWantDeleteAllGrids": "Do you really want to delete all grids? This operation cannot be undone!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Do you really want to reset the global grid to default?",
   "detailsForGridX": "Details for grid {0}",
   "connectXWithThisGrid": "Connect \"{0}\" with this grid",
