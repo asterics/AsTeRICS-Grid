@@ -492,7 +492,7 @@
   "editName": "editar nome",
   "cancelEditName": "cancelar edição do nome",
   "resetToDefaultGridset": "Repor tabelas predefinidas",
-  "doYouReallyWantDeleteAllGrids": "Quer mesmo apagar todas as tabelas? Não pode voltar atrás!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Quer mesmo repor a tabela global predefinida?",
   "detailsForGridX": "Detalhes para a tabela {0}",
   "connectXWithThisGrid": "Ligue \"{0}\" com esta tabela",
