@@ -492,7 +492,7 @@
   "editName": "редактировать имя",
   "cancelEditName": "отменить редактирование имени",
   "resetToDefaultGridset": "Сброс к сетке по умолчанию",
-  "doYouReallyWantDeleteAllGrids": "Вы действительно хотите удалить все сетки? Эта операция не может быть отменена!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Вы действительно хотите сбросить глобальную сетку до значений по умолчанию?",
   "detailsForGridX": "Подробности для сетки {0}",
   "connectXWithThisGrid": "Соедините \"{0}\" с этой сеткой",
