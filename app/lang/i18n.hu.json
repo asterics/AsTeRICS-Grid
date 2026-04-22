@@ -492,7 +492,7 @@
   "editName": "név szerkesztés",
   "cancelEditName": "név szerkesztés megszakítása",
   "resetToDefaultGridset": "Alapértelmezett tábla visszaállítása",
-  "doYouReallyWantDeleteAllGrids": "Biztosan törölni kívánja az összes táblát? A műveletet nem tudja visszavonni!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Biztosan alaphelyzetbe állítod a rögzített kártyákat?",
   "detailsForGridX": "{0} tábla részletei",
   "connectXWithThisGrid": "\"{0}\" csatolása ehez a táblához",
