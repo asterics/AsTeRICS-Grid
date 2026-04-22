@@ -492,7 +492,7 @@
   "editName": "editar nombre",
   "cancelEditName": "cancelar la edición del nombre",
   "resetToDefaultGridset": "Restablecer tableros por defecto",
-  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
+  "doYouReallyWantToResetConfig": "¿Realmente desea restablecer la configuración del usuario actual? Esta operación devolverá la cuenta a su estado inicial tras su creación borrando todos los tableros, diccionarios y configuraciones. ¡Esta operación no se puede deshacer!",
   "doYouReallyWantResetGlobalGrid": "¿Realmente desea restablecer el tablero global por defecto?",
   "detailsForGridX": "Detalles del tablero {0}",
   "connectXWithThisGrid": "Enlazar \"{0}\" con este tablero",
