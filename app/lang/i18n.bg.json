@@ -492,7 +492,7 @@
   "editName": "Редактиране на име",
   "cancelEditName": "Отказ на редактирането на име",
   "resetToDefaultGridset": "Нулиране към решетъчната мрежа по подразбиране",
-  "doYouReallyWantDeleteAllGrids": "Наистина ли искате да изтриете всички решетки?  Това действие неможе да бъде поправено!!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Наистина ли искате да нулирате глобалната решетка?",
   "detailsForGridX": "Детайли за решетка {0}",
   "connectXWithThisGrid": "Свързване на \"{0}\" с тази решетка",
