@@ -492,7 +492,7 @@
   "editName": "modifier le nom",
   "cancelEditName": "annuler modifier le nom",
   "resetToDefaultGridset": "Réinitialiser à l'ensemble de grille par défaut",
-  "doYouReallyWantDeleteAllGrids": "Voulez-vous vraiment supprimer toutes les grilles ?\nCette action est irréversible !",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Voulez-vous vraiment réinitialiser la grille globale par défaut ?",
   "detailsForGridX": "Détails de la grille {0}",
   "connectXWithThisGrid": "Connecter «{0}» avec cette grille",
