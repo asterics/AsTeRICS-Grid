@@ -492,7 +492,7 @@
   "editName": "ערוך שם",
   "cancelEditName": "בטל עריכת שם",
   "resetToDefaultGridset": "אפס לברירת המחדש של הלוח",
-  "doYouReallyWantDeleteAllGrids": "באם תרצו למחוק את כל הלוחות? אי אפשר לבטל פעולה זו!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "האם באמת תרצו לאפס את הלוח הכללי לברירת המחדל?",
   "detailsForGridX": "פרטים ללוח {0}",
   "connectXWithThisGrid": "חבר \"{0}\" ללוח זה",
