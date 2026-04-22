@@ -492,7 +492,7 @@
   "editName": "izena editatu",
   "cancelEditName": "izenaren edizioa ezeztatu",
   "resetToDefaultGridset": "Lehenetsitako taulak berrezarri",
-  "doYouReallyWantDeleteAllGrids": "Taula guztiak desegin nahi dituzu benetan? Eragiketa hau ezin da desegin!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Taula orokorra berrezarri nahi duzu benetan?",
   "detailsForGridX": "{0} taularen xehetasunak",
   "connectXWithThisGrid": "Lotu \"{0}\" taula honekin",
