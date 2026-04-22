@@ -492,7 +492,7 @@
   "editName": "editar nom",
   "cancelEditName": "cancel·lar l'edició del nom",
   "resetToDefaultGridset": "Restablir taulers per defecte",
-  "doYouReallyWantDeleteAllGrids": "Està segur d' eliminar tots els taulers? Aquesta operació no es pot desfer!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Desitja restablir el tauler global per defecte?",
   "detailsForGridX": "Detalls del tauler {0}",
   "connectXWithThisGrid": "Enllaçar \"{0}\" amb aquest tauler",
