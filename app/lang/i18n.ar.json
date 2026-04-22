@@ -492,7 +492,7 @@
   "editName": "تعديل الاسم",
   "cancelEditName": "إلغاء تعديل الاسم",
   "resetToDefaultGridset": "إعادة تعيين إلى الشبكة الافتراضية",
-  "doYouReallyWantDeleteAllGrids": "هل تريد حقاً حذف جميع الشبكات؟ لا يمكن التراجع عن هذه العملية!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "هل تريد حقاً إعادة تعيين الشبكة العامة إلى الافتراضي؟",
   "detailsForGridX": "تفاصيل عن الشبكة {0}",
   "connectXWithThisGrid": "قم بتوصيل \"{0}\" بهذه الشبكة",
