@@ -492,7 +492,7 @@
   "editName": "modifică numele",
   "cancelEditName": "anulează numele editat",
   "resetToDefaultGridset": "Resetare la grila implicită",
-  "doYouReallyWantDeleteAllGrids": "Chiar doriți să ștergeți toate grilele?",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Doriți cu adevărat să resetați grila globală la valoarea implicită?",
   "detailsForGridX": "Detalii pentru grila {0}",
   "connectXWithThisGrid": "Conectează \"{0}\" cu această grilă",
