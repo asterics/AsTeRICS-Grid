@@ -492,7 +492,7 @@
   "editName": "uredi ime",
   "cancelEditName": "otkaži uređivanje imena",
   "resetToDefaultGridset": "Vrati na zadanu ploču",
-  "doYouReallyWantDeleteAllGrids": "Sigurno želiš obrisati sve ploče? Ova akcija se ne može poništiti!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Želite li stvarno vratiti globalnu ploču na zadano?",
   "detailsForGridX": "Pojedinosti za ploču {0}",
   "connectXWithThisGrid": "Povežite \"{0}\" s ovom pločom",
