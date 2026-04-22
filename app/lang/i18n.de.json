@@ -492,7 +492,7 @@
   "editName": "Name bearbeiten",
   "cancelEditName": "Name bearbeiten abbrechen",
   "resetToDefaultGridset": "Zurücksetzen auf Standard-Gridset",
-  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
+  "doYouReallyWantToResetConfig": "Möchten Sie die Konfiguration des aktuellen Benutzers wirklich zurücksetzen? Dieser Vorgang kann nicht rückgängig gemacht werden!",
   "doYouReallyWantResetGlobalGrid": "Möchten Sie das globale Grid wirklich zurücksetzen?",
   "detailsForGridX": "Details für Grid {0}",
   "connectXWithThisGrid": "Verbinde \"{0}\" mit diesem Grid",
