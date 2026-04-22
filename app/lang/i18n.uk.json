@@ -492,7 +492,7 @@
   "editName": "редагувати ім'я",
   "cancelEditName": "скасувати редагування імені",
   "resetToDefaultGridset": "Відновити сітку за замовчуванням",
-  "doYouReallyWantDeleteAllGrids": "Ви дійсно хочете видалити всі сітки? Цю операцію неможливо скасувати!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Ви дійсно хочете скинути глобальну сітку до стандартної?",
   "detailsForGridX": "Подробиці для сітки {0}",
   "connectXWithThisGrid": "З'єднати \"{0}\" із цією сіткою",
