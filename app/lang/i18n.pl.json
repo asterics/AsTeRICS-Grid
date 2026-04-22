@@ -492,7 +492,7 @@
   "editName": "edytuj nazwę",
   "cancelEditName": "anuluj edycję nazwy",
   "resetToDefaultGridset": "Przywróć domyślny zestaw siatki",
-  "doYouReallyWantDeleteAllGrids": "Czy na pewno chcesz usunąć wszystkie siatki? Tej operacji nie można cofnąć!",
+  "doYouReallyWantToResetConfig": "Do you really want to reset the configuration of the current user? This operation cannot be undone!",
   "doYouReallyWantResetGlobalGrid": "Czy na pewno chcesz przywrócić domyślną globalną siatkę?",
   "detailsForGridX": "Szczegóły siatki {0}",
   "connectXWithThisGrid": "Połącz \"{0}\" z tą siatką",
