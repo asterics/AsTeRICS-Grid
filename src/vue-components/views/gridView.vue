@@ -31,6 +31,7 @@
         <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reloadInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reloadInputMethods();"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reloadInputMethods();"/>
+        <handheld-code-reader-modal v-if="showModal === modalTypes.MODAL_HANDHELD_CODE_READER" @close="showModal = null; reloadInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
         <div class="srow content spaced" v-if="renderGridData && renderGridData.gridElements.length === 0">
@@ -45,6 +46,7 @@
         <div class="srow content d-flex" v-if="showGrid && renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
             <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
+        <div id="handheldCodeReaderMount" class="handheld-code-reader-mount--hidden" aria-hidden="true"></div>
     </div>
 </template>
 
@@ -64,6 +66,7 @@
     import {HuffmanInput} from "../../js/input/huffmanInput";
     import {DirectionInput} from "../../js/input/directionInput";
     import {SequentialInput} from "../../js/input/sequentialInput";
+    import {HandheldCodeReader} from "../../js/input/handheldCodeReader";
 
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {constants} from "../../js/util/constants";
@@ -74,6 +77,7 @@
     import DirectionInputModal from "../modals/input/directionInputModal.vue";
     import HuffmanInputModal from "../modals/input/huffmanInputModal.vue";
     import SequentialInputModal from "../modals/input/sequentialInputModal.vue";
+    import HandheldCodeReaderModal from "../modals/input/handheldCodeReaderModal.vue";
     import {speechService} from "../../js/service/speechService";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {imageUtil} from "../../js/util/imageUtil";
@@ -97,6 +101,7 @@
         MODAL_DIRECTION: 'MODAL_DIRECTION',
         MODAL_HUFFMAN: 'MODAL_HUFFMAN',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
+        MODAL_HANDHELD_CODE_READER: 'MODAL_HANDHELD_CODE_READER',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
 
@@ -118,6 +123,7 @@
                 directionInput: null,
                 seqInput: null,
                 huffmanInput: null,
+                handheldCodeReader: null,
                 inputMethodsInitialized: false,
                 showModal: null,
                 modalTypes: modalTypes,
@@ -137,7 +143,8 @@
             HuffmanInputModal,
             DirectionInputModal,
             MouseModal,
-            ScanningModal, HeaderIcon
+            ScanningModal, HeaderIcon,
+            HandheldCodeReaderModal
         },
         methods: {
             openModal(modalType) {
@@ -278,6 +285,16 @@
                     thiz.clicker.setSelectionListener(selectionListener);
                     thiz.clicker.startClickcontrol();
                 }
+
+                if (inputConfig.handheldCodeReaderEnabled) {
+                    thiz.handheldCodeReader = new HandheldCodeReader();
+                    thiz.handheldCodeReader.start({
+                        inputConfig,
+                        getGridData: () => thiz.renderGridData,
+                        previewContainer: document.getElementById('handheldCodeReaderMount')
+                    });
+                }
+
                 this.inputMethodsInitialized = true;
             },
             async onNavigateEvent(event, gridData, params) {
@@ -552,6 +569,10 @@
         if (vueApp.directionInput) vueApp.directionInput.destroy();
         if (vueApp.huffmanInput) vueApp.huffmanInput.destroy();
         if (vueApp.seqInput) vueApp.seqInput.destroy();
+        if (vueApp.handheldCodeReader) {
+            vueApp.handheldCodeReader.destroy();
+            vueApp.handheldCodeReader = null;
+        }
         vueApp.inputMethodsInitialized = false;
     }
 
@@ -562,6 +583,7 @@
         let CONTEXT_DIRECTION = "CONTEXT_DIRECTION";
         let CONTEXT_HUFFMAN = "CONTEXT_HUFFMAN";
         let CONTEXT_SEQUENTIAL = "CONTEXT_SEQUENTIAL";
+        let CONTEXT_HANDHELD = "CONTEXT_HANDHELD";
 
         function getName(i18nKey, isActive) {
             let translated = i18nService.t(i18nKey);
@@ -596,6 +618,11 @@
                 name: getName('sequentialInput', inputConfig.seqEnabled),
                 icon: "fas fa-arrow-right",
                 className: inputConfig.seqEnabled ? 'boldFont' : ''
+            },
+            CONTEXT_HANDHELD: {
+                name: getName('handheldCodeReader', inputConfig.handheldCodeReaderEnabled),
+                icon: 'fas fa-qrcode',
+                className: inputConfig.handheldCodeReaderEnabled ? 'boldFont' : ''
             }
         };
 
@@ -630,6 +657,10 @@
                 }
                 case CONTEXT_SEQUENTIAL: {
                     vueApp.openModal(modalTypes.MODAL_SEQUENTIAL);
+                    break;
+                }
+                case CONTEXT_HANDHELD: {
+                    vueApp.openModal(modalTypes.MODAL_HANDHELD_CODE_READER);
                     break;
                 }
             }
