@@ -196,7 +196,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
-            helpService.setHelpLocation('04_input_options', '#sequential-input');
+            helpService.setHelpLocationInputOptions("#sequential-input");
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

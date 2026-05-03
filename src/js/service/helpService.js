@@ -42,6 +42,14 @@ helpService.revertToLastLocation = function () {
 };
 
 /**
+ * sets help location to `09_input-options`
+ * @param {("#mouse-touch-input" | "#scanning" | "#direction-input" | "#huffman-input" | "#sequential-input")} hash
+ */
+helpService.setHelpLocationInputOptions = function (hash) {
+    helpService.setHelpLocation('09_input-options', hash);
+};
+
+/**
  * opens help in a new tab
  */
 helpService.openHelp = function () {
