@@ -204,7 +204,7 @@
                 this.predictionary.loadDictionary(dict.data);
                 this.totalWords = this.predictionary.getWords().length;
                 this.inputSearchWord('');
-                helpService.setHelpLocation('07_dictionaries', '#edit-dictionaries');
+                helpService.setHelpLocationDictonaries('#edit-dictionaries');
             },
             editFinished() {
                 this.editId = null;

@@ -66,6 +66,14 @@ helpService.setHelpLocationActions = function (hash) {
 };
 
 /**
+ * sets help location to `10_dictionaries`
+ * @param {("#add-words" | "#edit-dictionaries")} hash
+ */
+helpService.setHelpLocationDictonaries = function (hash) {
+    helpService.setHelpLocation('10_dictionaries', hash);
+};
+
+/**
  * opens help in a new tab
  */
 helpService.openHelp = function () {
