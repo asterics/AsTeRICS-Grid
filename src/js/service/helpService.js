@@ -50,6 +50,22 @@ helpService.setHelpLocationInputOptions = function (hash) {
 };
 
 /**
+ * sets help location to `07_grid-elements`
+ * @param {("#tab-actions")} hash
+ */
+helpService.setHelpLocationGridElement = function (hash) {
+    helpService.setHelpLocation('07_grid-elements', hash);
+};
+
+/**
+ * sets help location to `08_actions`
+ * @param {("#asterics-action")} hash
+ */
+helpService.setHelpLocationActions = function (hash) {
+    helpService.setHelpLocation('08_actions', hash);
+};
+
+/**
  * opens help in a new tab
  */
 helpService.openHelp = function () {
