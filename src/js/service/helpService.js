@@ -59,10 +59,18 @@ helpService.setHelpLocationInputOptions = function (hash) {
 
 /**
  * sets help location to `07_grid-elements`
- * @param {("#tab-actions")} hash
+ * @param {("#tab-general" | "#tab-image" | "#tab-actions")} hash
  */
 helpService.setHelpLocationGridElement = function (hash) {
     helpService.setHelpLocation('07_grid-elements', hash);
+};
+
+/**
+ * sets help location to `07a_word-forms`
+ * @param {("#general")} hash
+ */
+helpService.setHelpLocationGridElementWordForm = function (hash) {
+    helpService.setHelpLocation('07a_word-forms', hash);
 };
 
 /**
