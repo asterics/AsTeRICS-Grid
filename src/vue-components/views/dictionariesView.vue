@@ -209,7 +209,7 @@
             editFinished() {
                 this.editId = null;
                 this.searchWord = "";
-                helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
+                helpService.setHelpLocationDictonaries('#dictionaries');
             },
             inputSearchWord(input) {
                 let thiz = this;

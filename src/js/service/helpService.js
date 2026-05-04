@@ -43,7 +43,7 @@ helpService.revertToLastLocation = function () {
 
 /**
  * sets help location to `04_navigation-overview`
- * @param {("#add-offline-user" | "#add-online-user")} hash
+ * @param {("#navigation-overview" | "#add-offline-user" | "#add-online-user" | "#change-user")} hash
  */
 helpService.setHelpLocationNavigation = function (hash) {
     helpService.setHelpLocation('04_navigation-overview', hash);
@@ -56,6 +56,14 @@ helpService.setHelpLocationNavigation = function (hash) {
 helpService.setHelpLocationInputOptions = function (hash) {
     helpService.setHelpLocation('09_input-options', hash);
 };
+
+/**
+ * sets help location to `06_editing-grid`
+ * @param {("#edit-view" | "#manage-grids-view")} hash 
+ */
+helpService.setHelpLocationEditGrid = function (hash) {
+    helpService.setHelpLocation('06_editing-grid', hash);
+}
 
 /**
  * sets help location to `07_grid-elements`
@@ -83,7 +91,7 @@ helpService.setHelpLocationActions = function (hash) {
 
 /**
  * sets help location to `10_dictionaries`
- * @param {("#add-words" | "#edit-dictionaries")} hash
+ * @param {("#dictionaries" | "#add-words" | "#edit-dictionaries")} hash
  */
 helpService.setHelpLocationDictonaries = function (hash) {
     helpService.setHelpLocation('10_dictionaries', hash);

@@ -121,7 +121,7 @@
             helpService.setHelpLocationGridElement('#tab-actions');
         },
         beforeDestroy() {
-            helpService.setHelpLocation('02_navigation', '#edit-view');
+            helpService.setHelpLocationEditGrid('#edit-view');
         }
     }
 </script>
