@@ -50,14 +50,6 @@ helpService.setHelpLocationNavigation = function (hash) {
 };
 
 /**
- * sets help location to `09_input-options`
- * @param {("#mouse-touch-input" | "#scanning" | "#direction-input" | "#huffman-input" | "#sequential-input")} hash
- */
-helpService.setHelpLocationInputOptions = function (hash) {
-    helpService.setHelpLocation('09_input-options', hash);
-};
-
-/**
  * sets help location to `06_editing-grid`
  * @param {("#edit-view" | "#manage-grids-view")} hash 
  */
@@ -87,6 +79,14 @@ helpService.setHelpLocationGridElementWordForm = function (hash) {
  */
 helpService.setHelpLocationActions = function (hash) {
     helpService.setHelpLocation('08_actions', hash);
+};
+
+/**
+ * sets help location to `09_input-options`
+ * @param {("#mouse-touch-input" | "#scanning" | "#direction-input" | "#huffman-input" | "#sequential-input")} hash
+ */
+helpService.setHelpLocationInputOptions = function (hash) {
+    helpService.setHelpLocation('09_input-options', hash);
 };
 
 /**
