@@ -42,6 +42,14 @@ helpService.revertToLastLocation = function () {
 };
 
 /**
+ * sets help location to `04_navigation-overview`
+ * @param {("#add-offline-user" | "#add-online-user")} hash
+ */
+helpService.setHelpLocationNavigation = function (hash) {
+    helpService.setHelpLocation('04_navigation-overview', hash);
+};
+
+/**
  * sets help location to `09_input-options`
  * @param {("#mouse-touch-input" | "#scanning" | "#direction-input" | "#huffman-input" | "#sequential-input")} hash
  */

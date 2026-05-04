@@ -96,11 +96,11 @@ Router.init = function (injectIdParam, initialHash) {
             loadVueView(LoginView);
         },
         register: function () {
-            helpService.setHelpLocation('06_users', '#online-users');
+            helpService.setHelpLocationNavigation('#add-online-user');
             loadVueView(RegisterView);
         },
         add: function () {
-            helpService.setHelpLocation('06_users', '#offline-users');
+            helpService.setHelpLocationNavigation('#add-offline-user');
             loadVueView(AddOfflineView);
         },
         welcome: function () {
