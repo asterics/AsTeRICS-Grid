@@ -1209,6 +1209,7 @@
   "copy": "Kopírovat",
   "cut": "Vyjmout",
   "paste": "Vložit",
+  "pasteFromClipboard": "Paste from clipboard",
   "mutedBracket": "(ztlumeno)",
   "displayMode": "Zobrazovací mód",
   "dateTimeFormat": "Formát data / času",
