@@ -1209,6 +1209,7 @@
   "copy": "Másolás",
   "cut": "Kivágás",
   "paste": "Beillesztés",
+  "pasteFromClipboard": "Paste from clipboard",
   "mutedBracket": "(némítva)",
   "displayMode": "Megjelenítési mód",
   "dateTimeFormat": "Dátum / idő formátum",
