@@ -1209,6 +1209,7 @@
   "copy": "Kopyala",
   "cut": "Kes",
   "paste": "Yapıştır",
+  "pasteFromClipboard": "Paste from clipboard",
   "mutedBracket": "(muted)",
   "displayMode": "Display mode",
   "dateTimeFormat": "Date / time format",
