@@ -1209,6 +1209,7 @@
   "copy": "Kopieren",
   "cut": "Ausschneiden",
   "paste": "Einfügen",
+  "pasteFromClipboard": "Paste from clipboard",
   "mutedBracket": "(stumm)",
   "displayMode": "Anzeigemodus",
   "dateTimeFormat": "Datums- und Zeitformat",
