@@ -1209,6 +1209,7 @@
   "copy": "Копіювати",
   "cut": "Вирізати",
   "paste": "Вставити",
+  "pasteFromClipboard": "Paste from clipboard",
   "mutedBracket": "(заглушено)",
   "displayMode": "Режим відображення",
   "dateTimeFormat": "Формат дати / часу",
