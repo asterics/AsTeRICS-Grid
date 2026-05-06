@@ -1209,6 +1209,7 @@
   "copy": "Kopiera",
   "cut": "Klipp ut",
   "paste": "Klistra in",
+  "pasteFromClipboard": "Paste from clipboard",
   "mutedBracket": "(tystad)",
   "displayMode": "Visningsläge",
   "dateTimeFormat": "Datum/tidsformat",
