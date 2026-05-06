@@ -1209,7 +1209,7 @@
   "copy": "Copiar",
   "cut": "Cortar",
   "paste": "Pegar",
-  "pasteFromClipboard": "Paste from clipboard",
+  "pasteFromClipboard": "Pegar desde portapapeles",
   "mutedBracket": "(silenciado)",
   "displayMode": "Mostrar",
   "dateTimeFormat": "Formato fecha / hora",
