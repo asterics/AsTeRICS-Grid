@@ -1209,6 +1209,7 @@
   "copy": "نسخ",
   "cut": "قطع",
   "paste": "لصق",
+  "pasteFromClipboard": "Paste from clipboard",
   "mutedBracket": "(كتم)",
   "displayMode": "حدد الشبكة العامة",
   "dateTimeFormat": "تنسيق التاريخ / الوقت",
