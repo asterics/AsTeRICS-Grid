@@ -54,6 +54,7 @@
     import {GridData} from "../../js/model/GridData";
     import EditAreAction from "./editActionsSub/editAREAction.vue";
     import EditOpenHabAction from "./editActionsSub/editOpenHABAction.vue";
+    import EditHomeAssistantAction from "./editActionsSub/editHomeAssistantAction.vue";
     import {helpService} from "../../js/service/helpService";
     import Accordion from "../components/accordion.vue";
     import RadioListSelector from "../components/radioListSelector.vue";
@@ -83,6 +84,7 @@
             Accordion,
             EditAreAction,
             EditOpenHabAction,
+            EditHomeAssistantAction,
             EditHttpAction
         },
         methods: {

@@ -81,6 +81,9 @@
     <div v-if="action.modelName === 'GridActionOpenHAB'">
         <edit-open-hab-action :action="action" :grid-data="gridData"/>
     </div>
+    <div v-if="action.modelName === 'GridActionHomeAssistant'">
+        <edit-home-assistant-action :action="action" :grid-data="gridData"/>
+    </div>
     <div v-if="action.modelName === 'GridActionHTTP'">
       <edit-http-action :action="action"/>
     </div>
@@ -330,6 +333,7 @@
     import {GridElement} from "../../js/model/GridElement";
     import EditAreAction from "./editActionsSub/editAREAction.vue";
     import EditOpenHabAction from "./editActionsSub/editOpenHABAction.vue";
+    import EditHomeAssistantAction from "./editActionsSub/editHomeAssistantAction.vue";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement";
     import {GridActionWebradio} from "../../js/model/GridActionWebradio";
     import Accordion from "../components/accordion.vue";
@@ -385,6 +389,7 @@
             Accordion,
             EditAreAction,
             EditOpenHabAction,
+            EditHomeAssistantAction,
             EditHttpAction
         },
         methods: {

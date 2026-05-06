@@ -13,6 +13,7 @@ import { webradioService } from './webradioService';
 import { i18nService } from './i18nService';
 import { youtubeService } from './youtubeService';
 import { GridActionNavigate } from '../model/GridActionNavigate.js';
+import { GridActionHomeAssistant } from '../model/GridActionHomeAssistant.js';
 import { GridActionChangeLang } from '../model/GridActionChangeLang.js';
 import $ from '../externals/jquery.js';
 import { GridActionAudio } from '../model/GridActionAudio.js';
@@ -34,6 +35,7 @@ import { GridActionWebradio } from '../model/GridActionWebradio';
 import { matrixAppService } from './matrixMessenger/matrixAppService';
 import { podcastService } from './podcastService';
 import { GridActionVocabLevelToggle } from '../model/GridActionVocabLevelToggle';
+import { homeAssistantService } from './homeAssistantService';
 
 let actionService = {};
 
@@ -234,6 +236,10 @@ async function doAction(gridElement, action, options = {}) {
         case 'GridActionOpenHAB':
             log.debug('action openHAB');
             openHABService.sendAction(action);
+            break;
+        case 'GridActionHomeAssistant':
+            log.debug('action Home Assistant');
+            homeAssistantService.sendAction(action);
             break;
         case 'GridActionHTTP':
             log.debug('action HTTP');
