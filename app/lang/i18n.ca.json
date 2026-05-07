@@ -1311,7 +1311,7 @@
   "ifNoUserCreateMatrixAccount": "Si no tens un compte  a Matrix Messenger, pots registrar-te seguint aquest enllaç {link}. (IMPORTANT) Has de registrar-te utilitzant un nom d'usuari i una contrasenya. No utilitzar registre mitjançant botó de Google.",
   "newMatrixConversation": "Nou xat a Matrix Messenger",
   "newDynamicGridPlaceholder": "Nou marcador de posició de quadrícula dinàmica",
-  "dynamicGrid": "Dynamic Grid",
+  "dynamicGrid": "Graella dinàmica",
   "GridActionMatrix": "Acció de Matrix Messenger",
   "MATRIX_SEND_COLLECTED": "Enviar frase acumulada (text + imatge)",
   "MATRIX_SEND_COLLECTED_TEXT": "Enviar frase acumulada (text + imatge)",
@@ -1334,7 +1334,7 @@
   "hideKeyboards": "Amagar teclats",
   "automaticallyAddImages": "Afegir imatges automàticament",
   "showAllElements": "Mostrar totes les cel·les",
-  "firstRowHeightFactor": "Height factor for first row",
-  "downloadingImagesWithPercent": "Downloading images ... {0}%",
-  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
+  "firstRowHeightFactor": "Factor d'alçada per a la primera fila",
+  "downloadingImagesWithPercent": "Descarregant imatges... {0}%",
+  "browserNotSupportingOfflineMode": "El vostre navegador no admet el mode fora de línia. Si el necessiteu, actualitzeu-lo o utilitzeu un navegador diferent."
 }
