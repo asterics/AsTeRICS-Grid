@@ -1128,6 +1128,7 @@
   "restActionFailed": "HTTP action failed! Reason: {0}",
   "httpAuthUser": "HTTP Authentication User",
   "httpAuthPw": "HTTP Authentication Password",
+  "httpAddHeader": "HTTP Additional Headers",
   "externalSpeechUrl": "External speech service URL",
   "externalSpeechService": "External speech service",
   "infoAboutExternalSpeechService": "information about external speech service",

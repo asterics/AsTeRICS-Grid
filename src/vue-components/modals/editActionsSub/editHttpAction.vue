@@ -54,6 +54,12 @@
                 <input id="auth-pw" v-model="action.authPw" class="col-12" type="password" :placeholder="$t('optionalBracket')"/>
             </div>
         </div>
+        <div class="row">
+            <label class="col-12 col-md-4 normal-text" for="httpAddHeader">{{ $t('httpAddHeader') }}</label>
+            <div class="col-12 col-md-7">
+                <textarea id="httpAddHeader" v-model="action.additionalHeaders" class="col-12" placeholder="(optional JSON object)"></textarea>
+            </div>
+        </div>
         <div class="row" v-if="action.isLiveAction">
             <div class="col-12">
                 <input id="useCorsProxy" v-model="action.useCorsProxy" type="checkbox"/>

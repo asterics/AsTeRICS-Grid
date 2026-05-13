@@ -37,12 +37,21 @@ async function doActionInternal(action) {
         if (!['GET', 'HEAD'].includes(requestOptions.method)) {
             requestOptions.body = action.body;
         }
-
         if (action.authUser || action.authPw) {
             let authStringBase64 = util.stringToBase64(`${action.authUser}:${action.authPw}`);
             requestOptions.headers["Authorization"] = `Basic ${authStringBase64}`;
         }
         requestOptions.mode = action.noCorsMode ? 'no-cors' : undefined;
+        if (action.additionalHeaders) {
+            const additionalHeaders = JSON.parse(action.additionalHeaders);
+            const existingHeaderKeys = Object.keys(requestOptions.headers).map((k) => k.toLowerCase());
+            for (let h in additionalHeaders) {
+                if (!existingHeaderKeys.includes(h.toLowerCase())) {
+                    requestOptions.headers[h] = additionalHeaders[h];
+                }
+            }
+        }
+        
         let url = new URL(action.restUrl);
         if (action.useCorsProxy) {
             url = new URL('https://proxy.asterics-foundation.org/proxy_nofilter.php');
