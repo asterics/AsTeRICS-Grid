@@ -57,7 +57,7 @@
         <div class="row">
             <label class="col-12 col-md-4 normal-text" for="httpAddHeader">{{ $t('httpAddHeader') }}</label>
             <div class="col-12 col-md-7">
-                <textarea id="httpAddHeader" v-model="action.additionalHeaders" class="col-12" placeholder="(optional JSON object)"></textarea>
+                <textarea id="httpAddHeader" v-model="action.additionalHeaders" class="col-12" placeholder='e.g. {"Accept": "application/json", "Content-Type": "text/plain"}'></textarea>
             </div>
         </div>
         <div class="row" v-if="action.isLiveAction">
