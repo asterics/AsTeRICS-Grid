@@ -35,7 +35,7 @@
                        placeholder="text/plain | application/json | ..." spellcheck="false" autocomplete="true" type="text"/>
             </div>
         </div>
-        <div class="row" v-if="action.isLiveAction">
+        <div class="row hide-row" v-if="action.isLiveAction">
             <label class="col-12 col-md-4 normal-text" for="acceptHeader">HTTP Accept Header</label>
             <div class="col-12 col-md-7">
                 <input id="acceptHeader" v-model="action.acceptHeader" class="col-12"
