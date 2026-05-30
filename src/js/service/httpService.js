@@ -41,7 +41,9 @@ async function doActionInternal(action) {
             let authStringBase64 = util.stringToBase64(`${action.authUser}:${action.authPw}`);
             requestOptions.headers["Authorization"] = `Basic ${authStringBase64}`;
         }
-        requestOptions.mode = action.noCorsMode ? 'no-cors' : undefined;
+        if (action.noCorsMode) {
+            requestOptions.mode = "no-cors";
+        }
         if (action.additionalHeaders) {
             const additionalHeaders = JSON.parse(action.additionalHeaders);
             const existingHeaderKeys = Object.keys(requestOptions.headers).map((k) => k.toLowerCase());
