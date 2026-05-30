@@ -28,7 +28,7 @@
                 </select>
             </div>
         </div>
-        <div class="row">
+        <div class="row hide-row">
             <label class="col-12 col-md-4 normal-text" for="content-type">HTTP Content-Type</label>
             <div class="col-12 col-md-7">
                 <input id="content-type" v-model="action.contentType" class="col-12"
@@ -89,5 +89,9 @@ export default {
 
 .row {
     margin-bottom: 1em;
+}
+
+.hide-row {
+    display: none;
 }
 </style>
