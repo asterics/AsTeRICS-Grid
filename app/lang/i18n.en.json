@@ -1239,6 +1239,7 @@
   "PODCAST_CURRENT_EPISODE": "Current episode title",
   "PODCAST_PLAY_TIME": "Playback time",
   "PODCAST_REMAINING_TIME": "Remaining time",
+  "noCorsMode": "Use no-cors mode",
   "useCorsProxy": "Use CORS proxy",
   "canIncludePlaceholderLike": "can include placeholder {0}, e.g. \"Data: {0}\"",
   "valuesToChooseFrom": "Values to choose from",

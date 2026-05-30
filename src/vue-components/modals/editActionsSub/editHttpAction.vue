@@ -60,6 +60,12 @@
                 <textarea id="httpAddHeader" v-model="action.additionalHeaders" class="col-12" placeholder='e.g. {"Accept": "application/json", "Content-Type": "text/plain"}'></textarea>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <input id="noCorsMode" v-model="action.noCorsMode" type="checkbox"/>
+                <label class="normal-text" for="noCorsMode">{{ $t('noCorsMode') }}</label>
+            </div>
+        </div>
         <div class="row" v-if="action.isLiveAction">
             <div class="col-12">
                 <input id="useCorsProxy" v-model="action.useCorsProxy" type="checkbox"/>
