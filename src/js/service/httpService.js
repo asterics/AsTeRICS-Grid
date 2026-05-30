@@ -46,11 +46,8 @@ async function doActionInternal(action) {
         }
         if (action.additionalHeaders) {
             const additionalHeaders = JSON.parse(action.additionalHeaders);
-            const existingHeaderKeys = Object.keys(requestOptions.headers).map((k) => k.toLowerCase());
             for (let h in additionalHeaders) {
-                if (!existingHeaderKeys.includes(h.toLowerCase())) {
                     requestOptions.headers[h] = additionalHeaders[h];
-                }
             }
         }
         
