@@ -20,7 +20,7 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
-        <handheld-code-reader-bar v-if="metadata && metadata.inputConfig && metadata.inputConfig.codeReaderEnabled" :grid-data="renderGridData" :input-config="metadata.inputConfig"/>
+        <handheld-code-reader-bar v-if="metadata && metadata.inputConfig && metadata.inputConfig.codeReaderEnabled" :grid-data="renderGridData" :input-config="metadata.inputConfig" @deactivate="deactivateCodeReader()"/>
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
@@ -198,6 +198,12 @@
             },
             reloadInputMethods() {
                 this.initInputMethods({reload: true});
+            },
+            deactivateCodeReader() {
+                this.metadata.inputConfig.codeReaderEnabled = false;
+                dataService.saveMetadata(this.metadata).then(() => {
+                    this.reloadInputMethods();
+                });
             },
             async initInputMethods(options = {}) {
                 options.continueInputMethods = options.continueInputMethods || false;

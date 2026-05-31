@@ -26,6 +26,10 @@
             </template>
 
             <span class="cr-status" :class="'cr-status-' + statusType" aria-live="polite">{{ statusMessage }}</span>
+
+            <button class="cr-btn cr-btn-deactivate" @click="deactivate()" :title="$t('codeReaderDeactivate')">
+                <i class="fas fa-power-off" aria-hidden="true"></i> <span>{{ $t('codeReaderDeactivate') }}</span>
+            </button>
         </div>
 
         <!--
@@ -180,6 +184,16 @@
                     this.statusType = 'noMatch';
                     this.statusArg = text;
                 }
+            },
+            deactivate() {
+                if (!confirm(i18nService.t('codeReaderDeactivateConfirm'))) {
+                    return;
+                }
+                if (this.running) {
+                    handheldCodeReaderService.stop();
+                    this.running = false;
+                }
+                this.$emit('deactivate');
             }
         },
         mounted() {
@@ -234,6 +248,10 @@
         margin: 0;
         padding: 0.2em 0.6em;
         min-height: 0;
+    }
+
+    .cr-btn-deactivate {
+        margin-left: auto;
     }
 
     .cr-status {

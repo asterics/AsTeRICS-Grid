@@ -1356,6 +1356,8 @@
   "codeReaderStop": "Stoppen",
   "codeReaderShowPreview": "Kameravorschau anzeigen",
   "codeReaderHidePreview": "Kameravorschau ausblenden",
+  "codeReaderDeactivate": "Deaktivieren",
+  "codeReaderDeactivateConfirm": "Handheld-Code-Reader ausschalten? Sie können ihn später in den Eingabe-Einstellungen wieder einschalten.",
   "codeReaderStatusReady": "Bereit",
   "codeReaderStatusActive": "Lese … Karte vor die Kamera halten",
   "codeReaderStatusMatch": "Erkannt: {0}",
