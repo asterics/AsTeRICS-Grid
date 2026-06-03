@@ -83,7 +83,7 @@ printService.gridsToPdf = async function (gridsData, options) {
     // load correct font
     let fontFamily = metadata.textConfig.fontFamily || TextConfig.FONT_ARIAL;
     let fontFilename = TextConfig.FONT_TO_FILENAME[fontFamily];
-    options.fontPath = `/app/fonts/ttf/${fontFilename}.ttf`;
+    options.fontPath = `./app/fonts/ttf/${fontFilename}.ttf`;
     await loadFont(options.fontPath, doc);
 
     options.pages = gridsData.length;
