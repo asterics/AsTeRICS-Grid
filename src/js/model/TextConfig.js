@@ -35,7 +35,23 @@ TextConfig.TOO_LONG_AUTO= 'AUTO';
 TextConfig.TOO_LONG_TRUNCATE = 'TRUNCATE';
 TextConfig.TOO_LONG_ELLIPSIS = 'ELLIPSIS';
 
-TextConfig.FONTS = ["Arial", "Jost-400-Book", "OpenDyslexic-Regular", "Prima-Bold", "Prima-BoldCursive", "Roboto-Regular", "Times"];
+TextConfig.FONT_ARIAL = "Arial";
+TextConfig.FONT_JOST_400_BOOK = "Jost-400-Book";
+TextConfig.FONT_OPEN_DYSLEXIC_REGULAR = "OpenDyslexic-Regular";
+TextConfig.FONT_PRIMA_BOLD = "Prima-Bold";
+TextConfig.FONT_PRIMA_BOLD_CURSIVE = "Prima-BoldCursive";
+TextConfig.FONT_ROBOTO_REGULAR = "Roboto-Regular";
+TextConfig.FONT_TIMES = "Times";
+
+TextConfig.FONTS = [TextConfig.FONT_ARIAL, TextConfig.FONT_JOST_400_BOOK, TextConfig.FONT_OPEN_DYSLEXIC_REGULAR, TextConfig.FONT_PRIMA_BOLD, TextConfig.FONT_PRIMA_BOLD_CURSIVE, TextConfig.FONT_ROBOTO_REGULAR, TextConfig.FONT_TIMES];
+TextConfig.FONT_TO_FILENAME = {};
+TextConfig.FONT_TO_FILENAME[TextConfig.FONT_ARIAL] = "Arimo-Regular";
+TextConfig.FONT_TO_FILENAME[TextConfig.FONT_JOST_400_BOOK] = "Jost-400-Book";
+TextConfig.FONT_TO_FILENAME[TextConfig.FONT_OPEN_DYSLEXIC_REGULAR] = "OpenDyslexic-Regular";
+TextConfig.FONT_TO_FILENAME[TextConfig.FONT_PRIMA_BOLD] = "Primae-Bold";
+TextConfig.FONT_TO_FILENAME[TextConfig.FONT_PRIMA_BOLD_CURSIVE] = "Primae-BoldCursive";
+TextConfig.FONT_TO_FILENAME[TextConfig.FONT_ROBOTO_REGULAR] = "Roboto-Regular";
+TextConfig.FONT_TO_FILENAME[TextConfig.FONT_TIMES] = "Tinos-Regular";
 
 TextConfig.defaults({
     modelName: TextConfig.getModelName(),
