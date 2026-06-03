@@ -24,13 +24,6 @@ let pdfOptions = {
 };
 let convertMode = null;
 
-let patternFontMappings = [
-    {
-        pattern: /^[\u0400-\u04FF]+$/,
-        font: '/app/fonts/Arimo-Regular-Cyrillic.ttf'
-    }
-];
-
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
         $('#grid-container').width('27.7cm');
@@ -80,21 +73,18 @@ printService.gridsToPdf = async function (gridsData, options) {
                 options.idParentsMap[nav] = options.idParentsMap[nav] || [];
                 options.idParentsMap[nav].push(options.idPageMap[grid.id]);
             }
-            let label = gridUtil.getDisplayLabel(element);
-            for (let elem of patternFontMappings) {
-                if (elem.pattern && elem.pattern.test && elem.pattern.test(label)) {
-                    options.fontPath = elem.font;
-                }
-            }
         }
     }
     const doc = new jsPDF.jsPDF({
         orientation: 'landscape',
         compress: true
     });
-    if (options.fontPath) {
-        await loadFont(options.fontPath, doc);
-    }
+
+    // load correct font
+    let fontFamily = metadata.textConfig.fontFamily || TextConfig.FONT_ARIAL;
+    let fontFilename = TextConfig.FONT_TO_FILENAME[fontFamily];
+    options.fontPath = `/app/fonts/${fontFilename}.ttf`;
+    await loadFont(options.fontPath, doc);
 
     options.pages = gridsData.length;
     for (let i = 0; i < gridsData.length && !options.abort; i++) {
