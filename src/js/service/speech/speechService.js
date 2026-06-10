@@ -3,14 +3,14 @@ import { constants } from '../../util/constants';
 import { util } from '../../util/util.js';
 import $ from '../../externals/jquery.js';
 import { audioUtil } from '../../util/audioUtil.js';
-import { speechServiceExternal } from './speechServiceExternal.js';
 import { localStorageService } from '../data/localStorageService.js';
 import { i18nService } from '../i18nService.js';
-import voiceUtil from '../../util/voiceUtil.js';
-import { speechServiceAzure } from './speechServiceAzure.js';
+import { SpeechProviderWebSpeech } from './provider/SpeechProviderWebSpeech.js';
+import { SpeechProviderCustom } from "./provider/SpeechProviderCustom";
 
 let speechService = {};
 
+let _providers = [];
 let _preferredVoiceId = null;
 let _secondVoiceId = null;
 let _voicePitch = 1;
@@ -19,10 +19,8 @@ let _voiceLangIsTextLang = false;
 let allVoices = [];
 
 let currentSpeakArray = [];
-let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
 let voiceSortBackList = ['com.apple.eloquence'];
 let hasSpoken = false;
-let isSpeakingNative = false;
 
 let _initPromiseResolveFn;
 let initPromise = new Promise(resolve => {
@@ -30,6 +28,23 @@ let initPromise = new Promise(resolve => {
 });
 
 let _waitingSpeakOptions = {};
+
+async function init() {
+    _providers = [
+        new SpeechProviderWebSpeech(),
+        new SpeechProviderCustom()
+    ];
+
+    for (let provider of _providers) {
+        await provider.init();
+        provider.registerVoiceChangeHandler(speechService.updateVoicesForProvider);
+        let voices = await provider.getVoices();
+        allVoices = allVoices.concat(voices)
+    }
+    allVoices.sort(speechService.voiceSortFn);
+    _initPromiseResolveFn();
+}
+init();
 
 /**
  * speaks given text.
@@ -94,32 +109,17 @@ speechService.speak = function (textOrOject, options = {}) {
     }
     let voices = getVoicesById(preferredVoiceId) || getVoicesByLang(langToUse);
     let voiceToUse = voices[0] || {};
-    if (speechService.nativeSpeechSupported() && voiceToUse.type === constants.VOICE_TYPE_NATIVE) {
-        var msg = new SpeechSynthesisUtterance(text);
-        msg.voice = voiceToUse.ref;
+    let provider = voiceToUse._provider;
+    if (provider) {
         let isSelectedVoice = voiceToUse.id === preferredVoiceId;
-        msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
-        msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
-        msg.volume = userSettings.systemVolume / 100.0;
-        log.debug("speak volume", userSettings.systemVolume);
-        if (options.progressFn) {
-            msg.addEventListener('boundary', options.progressFn);
-            msg.addEventListener('end', options.progressFn);
-        }
-        window.speechSynthesis.speak(msg);
-        msg.addEventListener('start', () => {
-            hasSpoken = true;
-            isSpeakingNative = true;
-        });
-        msg.addEventListener('end', () => {
-            isSpeakingNative = false;
-        })
-    } else if (voiceToUse.type === constants.VOICE_TYPE_MS_AZURE) {
-        speechServiceAzure.speak(text, voiceToUse.id);
+        let speakOptions = {
+            pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1,
+            rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1),
+            volume: userSettings.systemVolume / 100.0,
+            progressFn: options.progressFn
+        };
+        provider.speak(text, voiceToUse, speakOptions);
         hasSpoken = true;
-    } else if (voiceToUse.type === constants.VOICE_TYPE_EXTERNAL_DATA ||
-        voiceToUse.type === constants.VOICE_TYPE_EXTERNAL_PLAYING) {
-        speechServiceExternal.speak(text, voiceToUse.ref.providerId, voiceToUse);
     }
     testIsSpeaking();
     setTimeout(() => {
@@ -194,19 +194,18 @@ speechService.speakArray = async function (array, progressFn, index) {
 
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
-    isSpeakingNative = false;
-    if (speechService.nativeSpeechSupported()) {
-        window.speechSynthesis.cancel();
+    for (let provider of _providers) {
+        provider.stop();
     }
-    speechServiceExternal.stop();
-    speechServiceAzure.stop();
 };
 
 speechService.isSpeaking = async function () {
-    if (isSpeakingNative) {
-        return true;
+    for (let provider of _providers) {
+        if (await provider.isSpeaking()) {
+            return true;
+        }
     }
-    return (await speechServiceExternal.isSpeaking()) || (await speechServiceAzure.isSpeaking());
+    return false;
 };
 
 speechService.doAfterFinishedSpeaking = async function (fn) {
@@ -360,6 +359,15 @@ speechService.getExternalVoice = function (voiceId) {
     return externalVoices[0];
 }
 
+speechService.getProvider = function (voiceId) {
+    let voices = getVoicesById(voiceId) || [];
+    return voices[0]?._provider || null;
+}
+
+speechService.getProviders = function () {
+    return _providers;
+}
+
 /**
  * reloads all voices
  * @return {Promise<void>}
@@ -367,6 +375,16 @@ speechService.getExternalVoice = function (voiceId) {
 speechService.reinit = async function () {
     allVoices = [];
     await init();
+};
+
+speechService.updateVoicesForProvider = async function (provider) {
+    if (!provider || !provider.getVoices) {
+        return;
+    }
+    let newVoices = await provider.getVoices();
+    allVoices = allVoices.filter(v => v._provider !== provider);
+    allVoices = allVoices.concat(newVoices);
+    allVoices.sort(speechService.voiceSortFn);
 };
 
 function getVoicesByLang(lang) {
@@ -388,59 +406,6 @@ function getVoicesById(voiceId) {
     }
     return voices.length > 0 ? voices : null;
 }
-
-function addVoice(voiceId, voiceName, voiceLang, voiceType, localVoice, originalReference) {
-    voiceLang = voiceLang || 'en';
-    if (voiceIgnoreList.some((ignore) => voiceId.includes(ignore))) {
-        return;
-    }
-    if (allVoices.map((voice) => voice.id).indexOf(voiceId) !== -1) {
-        return;
-    }
-    let existingNameIndex = allVoices.map((voice) => voice.name).indexOf(voiceName);
-    if (existingNameIndex !== -1) {
-        voiceName = `${voiceName} (${voiceLang})`;
-        let existingVoice = allVoices[existingNameIndex];
-        existingVoice.name = `${existingVoice.name} (${existingVoice.langFull})`;
-    }
-    allVoices.push({
-        id: voiceId,
-        name: voiceName,
-        lang: i18nService.getBaseLang(voiceLang).toLowerCase(),
-        langFull: voiceLang.toLowerCase(),
-        type: voiceType,
-        ref: originalReference,
-        local: voiceUtil.isVoiceOffline(voiceId, voiceName, localVoice)
-    });
-}
-
-async function registerVoices(arrayNativeVoices) {
-    arrayNativeVoices.forEach((voice) => {
-        addVoice(voice.voiceURI, voice.name, voice.lang, constants.VOICE_TYPE_NATIVE, voice.localService, voice);
-    });
-}
-
-async function init() {
-    if (speechService.nativeSpeechSupported()) {
-        await registerVoices(window.speechSynthesis.getVoices());
-        window.speechSynthesis.onvoiceschanged = function () {
-            registerVoices(window.speechSynthesis.getVoices());
-        };
-    }
-    addVoice(constants.VOICE_DEVICE_DEFAULT, await i18nService.tLoad("defaultDeviceVoice"), i18nService.getBrowserLang(), constants.VOICE_TYPE_NATIVE, true, undefined);
-
-    await speechServiceExternal.init();
-    let externalVoices = await speechServiceExternal.getVoices();
-    let azureVoices = await speechServiceAzure.getVoices();
-    for (let voice of externalVoices.concat(azureVoices)) {
-        addVoice(voice.id, voice.name, voice.lang, voice.type, voice.local || false, voice);
-    }
-    allVoices.sort(speechService.voiceSortFn);
-    _initPromiseResolveFn();
-    let voices = await speechServiceAzure.getVoices();
-    log.warn(voices);
-}
-init();
 
 function updateSettings() {
     let userSettings = localStorageService.getUserSettings();
