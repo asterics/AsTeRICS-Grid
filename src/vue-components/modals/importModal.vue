@@ -131,8 +131,7 @@
                         header: i18nService.t('importDataFromFile'),
                         text: i18nService.t('deletingGrids')
                     });
-                    await dataService.deleteAllGrids();
-                    await dataService.deleteAllDictionaries();
+                    await dataService.resetUserData();
                 }
                 MainVue.showProgressBar(20, {
                     header: i18nService.t('importDataFromFile'),

@@ -112,6 +112,14 @@ constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
 
+constants.MAX_BASE64_IMAGE_SIZE_KB = 200;
+constants.MIME_TYPE_PNG = 'image/png';
+constants.MIME_TYPE_JPEG = 'image/jpeg';
+constants.MIME_TYPE_SVG = 'image/svg+xml';
+constants.MIME_TYPE_WEBP = 'image/webp';
+constants.MIME_TYPE_GIF = 'image/gif';
+constants.ALLOWED_IMG_MIME_TYPES = [constants.MIME_TYPE_PNG, constants.MIME_TYPE_JPEG, constants.MIME_TYPE_SVG, constants.MIME_TYPE_WEBP, constants.MIME_TYPE_GIF];
+
 constants.COLORS = {
     WHITE: '#ffffff',
     WHITESMOKE: '#f5f5f5',

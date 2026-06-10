@@ -135,8 +135,10 @@ gridLayoutUtil.moveAsPossible = function(allElements = [], moveElements = [], di
     for (let element of moveElements) {
         let otherElements = allElements.filter(el => el.id !== element.id);
         let step;
-
-        for (step = 1; step <= (options.maxMove || gridLayoutUtil.MAX_GRID_SIZE); step++) {
+        let maxMove = options.outOfBounds ?
+            Math.max(gridLayoutUtil.getHeight(allElements), gridLayoutUtil.getWidth(allElements)) :
+            (options.maxMove || gridLayoutUtil.MAX_GRID_SIZE);
+        for (step = 1; step <= maxMove; step++) {
             if (!gridLayoutUtil.isFreeSpace(otherElements, element.x + xyDiff.x * step, element.y + xyDiff.y * step, element.width, element.height, options)) {
                 break;
             }

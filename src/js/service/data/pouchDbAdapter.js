@@ -24,7 +24,6 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     let _syncState = constants.DB_SYNC_STATE_FAIL;
     let _closed = false;
     let _openLocalPromise = null;
-    let _revisionMap = {}; //Map ID -> latest seen revision number
 
     /**
      * inits the class, opens databases, sets up synchronization.
@@ -88,11 +87,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @return {IDBRequest<IDBValidKey> | Promise<void>}
      */
     thiz.put = function (data) {
-        let promise = thiz.getDbToUse().put(data);
-        promise.then((result) => {
-            updateRevisions([result]);
-        });
-        return promise;
+        return thiz.getDbToUse().put(data);
     };
 
     /**
@@ -101,11 +96,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @return {IDBRequest<IDBValidKey> | Promise<void>}
      */
     thiz.bulkDocs = function (dataList) {
-        let promise = thiz.getDbToUse().bulkDocs(dataList);
-        promise.then((result) => {
-            updateRevisions([result]);
-        });
-        return promise;
+        return thiz.getDbToUse().bulkDocs(dataList);
     };
 
     /**
@@ -285,7 +276,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                     .sync(_remoteDb, {
                         live: false,
                         retry: false,
-                        style: 'main_only',
+                        style: 'all_docs',
                         doc_ids: syncIds
                     })
                     .on('active', function (info) {
@@ -310,7 +301,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                             log.debug('initial sync took: ' + (new Date().getTime() - starttime) + 'ms');
                             _useLocalDb = true;
                             let changes = await _remoteDb.changes({
-                                style: 'main_only',
+                                style: 'all_docs',
                                 limit: 1,
                                 descending: true
                             });
@@ -333,7 +324,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                     .sync(_remoteDb, {
                         live: true,
                         retry: false,
-                        style: 'main_only',
+                        style: 'all_docs',
                         pull: {
                             since: sinceSeq ? sinceSeq : undefined
                         }
@@ -400,17 +391,12 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             log.debug(info);
             let changedIds = [];
             let changedDocsEncrypted = [];
-            updateRevisions(info.change ? info.change.docs : null);
             if (info.direction && info.direction === 'pull') {
                 if (info.change && info.change.docs && info.change.docs.length > 0) {
-                    changedDocsEncrypted = info.change.docs.filter((doc) => !!getId(doc) && !isOutdatedRevision(doc));
+                    changedDocsEncrypted = info.change.docs.filter((doc) => !!getId(doc));
                     changedIds = changedDocsEncrypted.map((doc) => getId(doc));
                 }
-                if (info.change.docs.length > 0 && changedIds.length === 0) {
-                    log.info('ignoring pull because of outdated revision');
-                } else {
-                    log.info('pouchdb pulled updates...');
-                }
+                log.info('pouchdb pulled updates...');
             } else if (info.direction) {
                 log.info('pouchdb pushed updates...');
             } else if (!info.direction && info.id) {
@@ -428,37 +414,8 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         }
     }
 
-    function updateRevisions(docs) {
-        if (docs && docs.length > 0) {
-            docs.forEach((doc) => {
-                let id = getId(doc);
-                let nr = getRevNumber(doc);
-                if (!_revisionMap[id] || _revisionMap[id] < nr) {
-                    _revisionMap[id] = nr;
-                }
-            });
-        }
-    }
-
-    function getRevNumber(doc) {
-        try {
-            let revString = getRev(doc);
-            return Number.parseInt(revString.substring(0, revString.indexOf('-')));
-        } catch (e) {
-            return 0;
-        }
-    }
-
-    function isOutdatedRevision(doc) {
-        return _revisionMap[getId(doc)] && getRevNumber(doc) < _revisionMap[getId(doc)];
-    }
-
     function getId(doc) {
         return doc._id || doc.id;
-    }
-
-    function getRev(doc) {
-        return doc._rev || doc.rev;
     }
 }
 

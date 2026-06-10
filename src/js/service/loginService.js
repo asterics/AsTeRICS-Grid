@@ -256,13 +256,13 @@ loginService.stopAutoRetryLogin = function () {
     }
 };
 
-loginService.deleteOnlineUser = async function(user, password) {
+loginService.deleteOnlineUser = async function(user = '', password) {
     let session = superlogin.getSession();
-    if (!session || user !== session.user_id) {
+    if (!session || user.toLowerCase() !== session.user_id) {
         log.warn("couldn't delete user - not logged in with the user to delete:", user)
         return loginService.DELETE_FAILED_GENERAL;
     }
-    let hashedUserPassword = localStorageService.getUserSettings(session.user_id).password;
+    let hashedUserPassword = localStorageService.getUserSettings(user).password;
     if (password !== DELETE_USER_DEFAULT_PASSWORD && encryptionService.getUserPasswordHash(password) !== hashedUserPassword) {
         return loginService.DELETE_FAILED_WRONG_PASSWORD;
     }

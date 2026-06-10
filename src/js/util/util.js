@@ -216,6 +216,45 @@ util.getGridElementsFromClipboard = async function() {
     return elements;
 };
 
+util.getClipboardImageAsBase64 = async function () {
+    if (!navigator.clipboard || !navigator.clipboard.read) {
+        log.warn('Clipboard API (read) not supported.');
+        return null;
+    }
+
+    try {
+        const clipboardItems = await navigator.clipboard.read();
+
+        for (const item of clipboardItems) {
+            // Check if any of the available types are images
+            const imageType = item.types.find(type => type.startsWith('image/'));
+
+            if (imageType && constants.ALLOWED_IMG_MIME_TYPES.includes(imageType)) {
+                const blob = await item.getType(imageType);
+                return await blobToBase64(blob);
+            }
+        }
+
+        log.info('No image found in clipboard.');
+        return null;
+    } catch (err) {
+        log.warn('Failed to read clipboard image:', err);
+        return null;
+    }
+};
+
+/**
+ * Helper to convert a Blob to a Base64 string
+ */
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
 /**
  * gets an element by given x/y coordinates in the current window
  *

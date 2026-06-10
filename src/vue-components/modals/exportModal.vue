@@ -118,9 +118,9 @@
                 allChildren: null,
                 options: {
                     exportConnected: true,
-                    exportDictionaries: true,
-                    exportUserSettings: true,
-                    exportGlobalGrid: true,
+                    exportDictionaries: false,
+                    exportUserSettings: false,
+                    exportGlobalGrid: false,
                     exportOBZ: false,
                     exportLang: constants.LANG_EXPORT_ALL,
                     exportLangOptions: [constants.LANG_EXPORT_ALL, constants.LANG_EXPORT_CURRENT]

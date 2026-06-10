@@ -368,7 +368,8 @@
                 let hasUpdatedGlobalGrid = updatedDocs.filter(doc => (this.metadata && doc.id === this.metadata.globalGridId)).length > 0;
                 this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
                 if (updatedGridDoc) {
-                    vueApp.loadGrid(updatedGridDoc, { continueInputMethods: true, forceReload: true });
+                    let gridDoc = await dataService.getGrid(updatedGridDoc.id); // get again in order to be sure to have correct revision on conflicts
+                    vueApp.loadGrid(gridDoc, { continueInputMethods: true, forceReload: true });
                 } else if (hasUpdatedGlobalGrid) {
                     let gridData = await dataService.getGrid(vueApp.renderGridData.id, false, true);
                     this.globalGridData = await dataService.getGlobalGrid();

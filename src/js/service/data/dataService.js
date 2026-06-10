@@ -167,36 +167,22 @@ dataService.deleteGrid = function (gridId) {
 };
 
 /**
- * Deletes all grids.
- *
- * @return {Promise}
+ * deletes all grids, all dictionaries and all duplicated metadata objects of the current user
+ * @return {Promise<*>}
  */
-dataService.deleteAllGrids = function () {
+dataService.resetUserData = async function () {
     $(document).trigger(constants.EVENT_CONFIG_RESET);
-    return dataService
-        .getGrids()
-        .then((grids) => {
-            if (!grids || grids.length === 0) {
-                return Promise.resolve();
-            }
-            return databaseService.bulkDelete(grids);
-        })
-        .then(() => {
-            localStorageService.saveUserSettings({originGridsetFilename: '', isEmpty: true}, localStorageService.getAutologinUser());
-            return saveGlobalGridId('');
-        });
-};
+    let deleteGrids = await databaseService.getObjectsForDeletion(GridData);
+    let deleteDicts = await databaseService.getObjectsForDeletion(Dictionary);
+    let currentMetadata = await dataService.getMetadata();
+    let allMetadataObjects = await databaseService.getObjectsForDeletion(MetaData);
+    let deleteMetadata = allMetadataObjects.filter(metadataObject => metadataObject.id !== currentMetadata.id);
+    let allDeleteObjects = deleteGrids.concat(deleteDicts).concat(deleteMetadata);
 
-/**
- * deletes all dictionaries
- * @return {Promise<void>}
- */
-dataService.deleteAllDictionaries = async function () {
-    let dicts = await dataService.getDictionaries();
-    if (dicts && dicts.length > 0) {
-        await databaseService.bulkDelete(dicts);
-    }
-};
+    await databaseService.bulkDelete(allDeleteObjects);
+    localStorageService.saveUserSettings({originGridsetFilename: '', isEmpty: true}, localStorageService.getAutologinUser());
+    return saveGlobalGridId('');
+}
 
 /**
  * Gets a single element of a grid.
@@ -639,8 +625,7 @@ dataService.importBackupData = async function (importData, options) {
     options.filename = options.filename || '';
     if (!options.skipDelete) {
         options.progressFn(20, i18nService.t('deletingGrids'));
-        await dataService.deleteAllGrids();
-        await dataService.deleteAllDictionaries();
+        await dataService.resetUserData();
     }
     localStorageService.saveUserSettings({originGridsetFilename: options.filename, isEmpty: false}, localStorageService.getAutologinUser());
     options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));

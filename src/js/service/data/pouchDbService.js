@@ -62,23 +62,28 @@ pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, on
 /**
  * returns all docs that are stored in pouchDb, can be limited by parameters
  * @param idPrefix (optional) only return docs where IDs have the given prefix
- * @param id (optional) only return doc with this ID
+ * @param id (optional) only return doc with this
+ * @param queryOptions
+ * @param queryOptions.includeConflicts if yes, conflicts are included in the result
  * @return {Promise<unknown>}
  */
-pouchDbService.all = function (idPrefix, id) {
-    if (id && _documentCache.has(id)) {
-        log.debug('using cache for retrieving id: ' + id);
-        return _documentCache.getAsPromise(id);
-    } else if (!id && idPrefix && _documentCache.has(idPrefix)) {
-        log.debug('using cache for retrieving bulk with id-prefix: ' + idPrefix);
-        return _documentCache.getAsPromise(idPrefix);
+pouchDbService.all = function (idPrefix, id, queryOptions = {}) {
+    if (!queryOptions.includeConflicts) {
+        if (id && _documentCache.has(id)) {
+            log.debug('using cache for retrieving id: ' + id);
+            return _documentCache.getAsPromise(id);
+        } else if (!id && idPrefix && _documentCache.has(idPrefix)) {
+            log.debug('using cache for retrieving bulk with id-prefix: ' + idPrefix);
+            return _documentCache.getAsPromise(idPrefix);
+        }
     }
     let dbToUse = getDbToUse();
     cancelSyncInternal();
     return new Promise((resolve, reject) => {
         let options = {
             include_docs: true,
-            attachments: false
+            attachments: false,
+            conflicts: queryOptions.includeConflicts
         };
         if (id) {
             options.key = id;
@@ -106,6 +111,22 @@ pouchDbService.all = function (idPrefix, id) {
             });
     });
 };
+
+/**
+ * returns one or more documents as array, same as .all(), but result is guaranteed to be an array
+ * @param idPrefix
+ * @param id
+ * @param options
+ * @param options.includeConflicts if yes, conflicts are included in the result
+ * @return {Promise<any[]|*[]|*[]>}
+ */
+pouchDbService.allAsArray = async function (idPrefix, id = null, options = {}) {
+    let result = await pouchDbService.all(idPrefix, id, options);
+    if (Array.isArray(result)) {
+        return result;
+    }
+    return result ? [result] : [];
+}
 
 /**
  * returns all docs that are stored in pouchDb, can be limited by parameters, always returns Array
@@ -379,7 +400,7 @@ function changeHandler(changedIds, changedDocsEncrypted) {
         if (doc._deleted) {
             _documentCache.clearAll();
         } else {
-            _documentCache.set(doc.id, doc);
+            _documentCache.clear(doc.id);
             _documentCache.clear(MetaData.getIdPrefix());
             _documentCache.clear(GridData.getIdPrefix());
         }

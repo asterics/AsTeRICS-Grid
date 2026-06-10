@@ -69,6 +69,34 @@ databaseService.getSingleObject = function (objectType, id, onlyShortVersion) {
 };
 
 /**
+ * returns all objects of a given object type or id as array, in raw format (encrypted).
+ * Conflicts are included, as separate documents without body like {id: 123, _id: 123, _rev: <conflict-rev>},
+ * because they are needed for clean deletion.
+ * Deleting all the returned docs with bulk delete results in a clean deletion of all instances of the document(s).
+ *
+ * @param objectType
+ * @param id
+ * @return {Promise<any[]|[*]|[]|*[]>}
+ */
+databaseService.getObjectsForDeletion = async function (objectType = null, id = null) {
+    let prefix = objectType && objectType.getIdPrefix ? objectType.getIdPrefix() : null;
+    let resultDocs = await pouchDbService.allAsArray(prefix, id, {includeConflicts: true});
+
+    // also get info for all conflicts to also delete them
+    // otherwise they will become alive again, after deleting the current winning doc
+    let conflictDocs = [];
+    for (let deleteObject of resultDocs) {
+        let conflictRevs = deleteObject._conflicts || [];
+        let docs = conflictRevs.map(rev => {
+            return {id: deleteObject.id, _id: deleteObject.id, _rev: rev};
+        });
+        conflictDocs = conflictDocs.concat(docs);
+    }
+
+    return resultDocs.concat(conflictDocs);
+}
+
+/**
  * Saves an object to database.
  *
  * @param objectType the objectType to save, e.g. "GridData"
@@ -157,7 +185,7 @@ databaseService.bulkSave = function (objectList) {
 /**
  * deletes a list of objects/documents in one action
  * @param objectList
- * @return {Promise<never>}
+ * @return {Promise<void>}
  */
 databaseService.bulkDelete = function (objectList) {
     if (!objectList || objectList.length === 0) {
@@ -177,8 +205,9 @@ databaseService.bulkDelete = function (objectList) {
  * @param id ID of the object to delete.
  * @return {Promise} promise that resolves if operation finished
  */
-databaseService.removeObject = function (id) {
-    return pouchDbService.remove(id);
+databaseService.removeObject = async function (id) {
+    let docsToDelete = await databaseService.getObjectsForDeletion(null, id);
+    return databaseService.bulkDelete(docsToDelete);
 };
 
 /**

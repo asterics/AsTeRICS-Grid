@@ -3,7 +3,7 @@
         <div class="srow">
             <label for="inputImg" class="two columns">{{ $t('image') }}</label>
             <button onclick="document.getElementById('inputImg').click();" class="three columns file-input">
-                <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/*"/>
+                <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/png, image/jpeg, image/webp, image/svg+xml, image/gif"/>
                 <span><i class="fas fa-file-upload"/> <span>{{ $t('chooseFile') }}</span></span>
             </button>
             <button class="three columns" @click="searchText = gridElement.label[i18nService.getContentLang()]; searchInput(0);">
@@ -12,17 +12,23 @@
             </button>
             <button class="three columns" v-show="hasImage" @click="clearImage"><i class="fas fa-times"/> <span>{{ $t('clearImage') }}</span></button>
         </div>
-        <div class="srow">
-            <div class="img-preview offset-by-two four columns">
-                <span class="show-mobile" v-show="!hasImage"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
-                <span class="hide-mobile" v-show="!hasImage"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
+        <div class="srow d-flex align-items-center">
+            <div class="offset-by-two five columns">
+                <div class="drop-placeholder" v-show="!hasImage">
+                    <span class="show-mobile"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
+                    <span class="hide-mobile"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
+                    <button @click="pasteImage()" :title="$t('pasteFromClipboard')" class="paste-btn"><i class="far fa-clipboard"/></button>
+                </div>
                 <img v-if="hasImage" id="imgPreview" :src="gridElement.image.data || gridElement.image.url"/>
                 <div v-if="gridElement.image.author">
                     {{ $t('by') }} <a :href="gridElement.image.authorURL" target="_blank">{{gridElement.image.author}}</a>
                 </div>
             </div>
-            <div class="img-preview five columns hide-mobile" v-show="hasImage" style="margin-top: 50px;">
-                <span><i class="fas fa-arrow-down"/> <span>{{ $t('dropNewImageHere') }}</span></span>
+            <div class="four columns hide-mobile" v-show="hasImage">
+                <div class="drop-placeholder">
+                  <span><i class="fas fa-arrow-down"/> <span>{{ $t('dropNewImageHere') }}</span></span>
+                  <button @click="pasteImage()" :title="$t('pasteFromClipboard')" class="paste-btn"><i class="far fa-clipboard"/></button>
+                </div>
             </div>
         </div>
         <div class="srow">
@@ -170,39 +176,62 @@
                     thiz.setBase64(base64);
                 });
             },
+            async pasteImage() {
+                let base64 = await util.getClipboardImageAsBase64();
+                this.setBase64(base64);
+            },
             imageDropped(event) {
                 let thiz = this;
                 event.preventDefault();
                 this.clearImage();
                 if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-                    $('#inputImg')[0].files = event.dataTransfer.files;
-                    this.changedImg();
+                    let file = event.dataTransfer.files[0];
+                    if (constants.ALLOWED_IMG_MIME_TYPES.includes(file.type)) {
+                      $('#inputImg')[0].files = event.dataTransfer.files;
+                      this.changedImg();
+                    } else {
+                      console.warn("Unsupported file type dropped:", file.type);
+                    }
                 } else {
                     let url = event.dataTransfer.getData('URL');
                     imageUtil.urlToBase64(url).then(resultBase64 => {
-                        thiz.setBase64(resultBase64);
+                        let mimeType = imageUtil.getMimeTypeFromBase64(resultBase64);
+                        if (constants.ALLOWED_IMG_MIME_TYPES.includes(mimeType)) {
+                          thiz.setBase64(resultBase64);
+                        } else {
+                          console.warn("Unsupported image type from URL:", mimeType);
+                        }
                     });
                 }
             },
-            setBase64(base64) {
+            async setBase64(base64) {
                 if (!base64) {
                     return;
                 }
-                let thiz = this;
-                if (base64.length > 50 * 1024) {
-                    imageUtil.convertBase64(base64, 2 * thiz.elementW).then(newData => {
-                        if (newData.length < base64.length) {
-                            log.info(`converted image from ${Math.round(base64.length / 1024)}kB to ${Math.round(newData.length / 1024)}kB`);
-                            thiz.gridElement.image.data = newData;
-                        } else {
-                            log.info(`converting resulted in bigger image (${Math.round(newData.length / 1024)}kB), using old image with ${Math.round(base64.length / 1024)}kB`);
-                            thiz.gridElement.image.data = base64;
-                        }
-                    })
+                let originalKb = Math.round(base64.length / 1024);
+                if (originalKb > constants.MAX_BASE64_IMAGE_SIZE_KB) {
+                    try {
+                      let maxWidth = Math.max(2 * this.elementW, 200);
+                      let compressed = await imageUtil.compressToSize(base64, maxWidth, constants.MAX_BASE64_IMAGE_SIZE_KB);
+                      if (compressed && compressed.length < base64.length) {
+                        log.info(`compressed image from ${originalKb}kB to ${Math.round(compressed.length / 1024)}kB`);
+                        this.setValidatedBase64(compressed);
+                      } else {
+                        log.info(`converting not reduced size (now ${Math.round(compressed.length / 1024)}kB), using old image with ${originalKb}kB`);
+                        this.setValidatedBase64(base64);
+                      }
+                    } catch(e) {
+                      log.warn(`couldn't compress image below ${constants.MAX_BASE64_IMAGE_SIZE_KB}kB!`);
+                      this.clearImage();
+                    }
                 } else {
-                    log.debug(`image size is ${Math.round(base64.length / 1024)}kB`);
-                    thiz.gridElement.image.data = base64;
+                    log.info(`image size is ${Math.round(base64.length / 1024)}kB`);
+                    this.setValidatedBase64(base64);
                 }
+            },
+            setValidatedBase64(base64) {
+                this.clearImage();
+                this.gridElement.image.data = base64;
             },
             clearImage() {
                 this.gridElement.image = JSON.parse(JSON.stringify(new GridImage()));
@@ -287,10 +316,19 @@
 </script>
 
 <style scoped>
-    .img-preview > span {
+    .drop-placeholder {
         border: 1px solid lightgray;
-        padding: 0.3em;
-        width: 150px;
+        padding: 1em;
+        margin-top: 2.5em;
+        margin-bottom: 2.5em;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .paste-btn {
+      padding: 0 0.25em;
+      margin-bottom: 0;
     }
 
     #imgPreview {
