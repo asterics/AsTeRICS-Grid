@@ -99,7 +99,6 @@
     import {dataService} from "../../../js/service/data/dataService";
     import {localStorageService} from "../../../js/service/data/localStorageService";
     import {speechService} from "../../../js/service/speech/speechService";
-    import {speechServiceExternal} from "../../../js/service/speech/speechServiceExternal.js";
     import {util} from "../../../js/util/util";
     import { gridUtil } from '../../../js/util/gridUtil';
     import {constants} from "../../../js/util/constants.js";
@@ -218,9 +217,12 @@
             async cacheAll() {
                 let allGrids = await dataService.getGrids();
                 let externalVoice = speechService.getExternalVoice(this.userSettingsLocal.voiceConfig.preferredVoice);
-                speechServiceExternal.cacheAll(allGrids, externalVoice, (progress) => {
-                    this.externalVoiceCacheProgress = progress;
-                });
+                let provider = speechService.getProvider(this.userSettingsLocal.voiceConfig.preferredVoice);
+                if (provider && provider.cacheAll) {
+                    provider.cacheAll(allGrids, externalVoice, (progress) => {
+                        this.externalVoiceCacheProgress = progress;
+                    });
+                }
             }
         },
         async mounted() {
