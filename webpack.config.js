@@ -1,4 +1,5 @@
 let path = require('path');
+const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = env => {
@@ -34,7 +35,12 @@ module.exports = env => {
         mode: mode,
         devtool: mode === 'production' ? false : 'eval-source-map', // Enable source maps in development
         entry: entryScript,
-        plugins: [new VueLoaderPlugin()],
+        plugins: [
+            new VueLoaderPlugin(),
+            new webpack.DefinePlugin({
+                __DBS_NODES__: getDbsNodesDefinition()
+            })
+        ],
         output: {
             path: path.resolve(__dirname, buildDir),
             publicPath: publicPath,
@@ -69,3 +75,15 @@ module.exports = env => {
         }
     };
 };
+
+function getDbsNodesDefinition() {
+    if (process.env.DBS_NODES) {
+        return JSON.stringify(
+            process.env.DBS_NODES.split(',').map(s => s.trim()).filter(Boolean)
+        );
+    }
+    if (process.env.BACKEND_URL) {
+        return JSON.stringify([process.env.BACKEND_URL]);
+    }
+    return 'null';
+}

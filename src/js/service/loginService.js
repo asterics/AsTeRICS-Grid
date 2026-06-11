@@ -26,9 +26,7 @@ let _loginInProgress = false;
 
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
-let _serverUrl = (constants.IS_ENVIRONMENT_PROD || constants.FORCE_CONNECT_DB)
-    ? 'https://login1.couchdb.asterics-foundation.org'
-    : `http://${location.hostname}:3000`;
+let _serverUrl = getServerUrl();
 loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
 
 loginService.ERROR_CODE_LOCKED = 'ERROR_CODE_LOCKED';
@@ -155,6 +153,7 @@ loginService.logout = function () {
     MainVue.clearTooltip();
     databaseService.closeCurrentDatabase();
     if (_loggedInUser) {
+        localStorage.removeItem('dbs-sticky-node:' + _loggedInUser);
         superlogin.logout(_loggedInUser);
     }
     _loggedInUser = null;
@@ -182,7 +181,6 @@ loginService.register = function (user, plainPassword, saveUser = true) {
     return superlogin
         .register({
             username: user,
-            email: new Date().getTime() + '.' + Math.random() + '@norealmail.org',
             password: password,
             confirmPassword: password
         })
@@ -236,8 +234,14 @@ loginService.validateUsername = function (username) {
         }
         fetch(`${_serverUrl}/user/validate-username/${username}`)
             .then(async (response) => {
-                let valid = await response.json();
-                resolve(valid ? constants.VALIDATION_VALID : constants.VALIDATION_ERROR_EXISTING);
+                if (!response.ok) {
+                    resolve(constants.VALIDATION_ERROR_EXISTING);
+                    return;
+                }
+                let result = await response.json();
+                // dbs-proxy returns { available: true/false }, couch-auth returns { ok: true }.
+                let isAvailable = result.available !== undefined ? result.available : !!result.ok;
+                resolve(isAvailable ? constants.VALIDATION_VALID : constants.VALIDATION_ERROR_EXISTING);
             })
             .catch((e) => {
                 log.warn("couldn't check username");
@@ -310,6 +314,7 @@ function loginInternal(user, hashedPassword, saveUser) {
             loginService.stopAutoRetryLogin();
             _loginInfo = info;
             _loggedInUser = user;
+            localStorage.setItem('dbs-sticky-node:' + user, _serverUrl);
             localStorageService.setLastActiveUser(user);
             localStorageService.setAutologinUser(saveUser ? user : '');
             if (saveUser) {
@@ -412,6 +417,21 @@ function getConfig() {
         // Default is 0, meaning it won't timeout.
         timeout: 0
     };
+}
+
+function getServerUrl() {
+    const dbsNodes = typeof __DBS_NODES__ === 'undefined' ? null : __DBS_NODES__;
+    if (!Array.isArray(dbsNodes) || dbsNodes.length === 0) {
+        return typeof location === 'undefined' ? '' : location.origin;
+    }
+    const lastUser = localStorageService.getAutologinOrActiveUser();
+    if (lastUser) {
+        const sticky = localStorage.getItem('dbs-sticky-node:' + lastUser);
+        if (sticky && dbsNodes.includes(sticky)) {
+            return sticky;
+        }
+    }
+    return dbsNodes[Math.floor(Math.random() * dbsNodes.length)];
 }
 
 function init() {
