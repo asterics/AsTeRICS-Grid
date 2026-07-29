@@ -1,0 +1,77 @@
+name: Asterics-AAC for development environment
+
+services:
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    depends_on:
+      database:
+        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+      - COUCHDB_URL=${DB_SERVER_PROTOCOL:-http://}${DB_SERVER_USER:-admin}:${DB_SERVER_PASSWORD:-admin}@database:5984
+      - DB_SERVER_PUBLIC_URL=${DB_SERVER_PROTOCOL:-http://}localhost:5984
+      - DB_SERVER_PROTOCOL=${DB_SERVER_PROTOCOL:-http://}
+      - DB_SERVER_HOST=database:5984
+      - DB_SERVER_USER=${DB_SERVER_USER:-admin}
+      - DB_SERVER_PASSWORD=${DB_SERVER_PASSWORD:-admin}
+      - CAUTH_USER_DB=${CAUTH_USER_DB:-auth-users}
+      - CAUTH_COUCH_AUTH_DB=${CAUTH_COUCH_AUTH_DB:-_users}
+    env_file: .env
+    ports:
+      - '3000:3000/tcp'
+      - '9095:9095/tcp'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  database:
+    image: couchdb:3
+    volumes:
+      - database_dev_data:/opt/couchdb/data
+      - ./container/dev/couchdb.ini:/opt/couchdb/etc/local.d/10-custom.ini
+    environment:
+      - COUCHDB_USER=${DB_SERVER_USER:-admin}
+      - COUCHDB_PASSWORD=${DB_SERVER_PASSWORD:-admin}
+    env_file: .env
+    ports:
+      - '5984:5984/tcp'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984/_up"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  database-init:
+    image: curlimages/curl:latest
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - COUCHDB_USER=${DB_SERVER_USER:-admin}
+      - COUCHDB_PASSWORD=${DB_SERVER_PASSWORD:-admin}
+    env_file: .env
+    command:
+      - |
+        curl -s -u "$$COUCHDB_USER:$$COUCHDB_PASSWORD" -X PUT http://database:5984/_users
+        curl -s -u "$$COUCHDB_USER:$$COUCHDB_PASSWORD" -X PUT http://database:5984/_replicator
+        curl -s -u "$$COUCHDB_USER:$$COUCHDB_PASSWORD" -X PUT http://database:5984/_global_changes
+        curl -s -u "$$COUCHDB_USER:$$COUCHDB_PASSWORD" -X PUT http://database:5984/auth-users
+        curl -s -u "$$COUCHDB_USER:$$COUCHDB_PASSWORD" -X PUT http://database:5984/auth-users/_design/views \
+          -H 'Content-Type: application/json' \
+          -d '{"views":{"view-usernames":{"map":"function (doc) { if (doc.name) { emit(doc.name, null); } }"}}}'
+        echo 'Database CouchDB initialized.'
+    entrypoint: ["sh", "-c"]
+    restart: "no"
+
+volumes:
+  database_dev_data:
