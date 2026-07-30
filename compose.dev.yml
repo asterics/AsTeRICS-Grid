@@ -22,7 +22,9 @@ services:
       - DB_SERVER_PASSWORD=${DB_SERVER_PASSWORD:-admin}
       - CAUTH_USER_DB=${CAUTH_USER_DB:-auth-users}
       - CAUTH_COUCH_AUTH_DB=${CAUTH_COUCH_AUTH_DB:-_users}
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
     ports:
       - '3000:3000/tcp'
       - '9095:9095/tcp'
@@ -41,7 +43,9 @@ services:
     environment:
       - COUCHDB_USER=${DB_SERVER_USER:-admin}
       - COUCHDB_PASSWORD=${DB_SERVER_PASSWORD:-admin}
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
     ports:
       - '5984:5984/tcp'
     restart: unless-stopped
@@ -59,7 +63,9 @@ services:
     environment:
       - COUCHDB_USER=${DB_SERVER_USER:-admin}
       - COUCHDB_PASSWORD=${DB_SERVER_PASSWORD:-admin}
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
     command:
       - |
         curl -s -u "$$COUCHDB_USER:$$COUCHDB_PASSWORD" -X PUT http://database:5984/_users
