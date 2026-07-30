@@ -78,15 +78,15 @@ After `yarn install` the following commands are available:
 
 You can access the container shell, for example to run Npm scripts, using the following commands :
 
-- `docker exec -it asterics-aacfordevelopmentenvironment-application-1 /bin/sh` --> Asterics AAC container.
-- `docker exec -it asterics-aacfordevelopmentenvironment-database-1 /bin/sh` --> CouchDB container.
+- `docker exec -it asterics-aac-development-application-1 /bin/sh` --> Asterics AAC container.
+- `docker exec -it asterics-aac-development-database-1 /bin/sh` --> CouchDB container.
 
 You can also run the commands directly from the host machine :
 
-- `docker exec -it asterics-aacfordevelopmentenvironment-application-1 npm run build`
-- `docker exec -it asterics-aacfordevelopmentenvironment-application-1 npm run release`
-- `docker exec -it asterics-aacfordevelopmentenvironment-application-1 npm run release-latest`
-- `docker exec -it asterics-aacfordevelopmentenvironment-application-1 npm run test`
+- `docker exec -it asterics-aac-development-application-1 npm run build`
+- `docker exec -it asterics-aac-development-application-1 npm run release`
+- `docker exec -it asterics-aac-development-application-1 npm run release-latest`
+- `docker exec -it asterics-aac-development-application-1 npm run test`
 
 ## Support us
 While development is currently funded within research projects (see below), the non-profit [AsTeRICS Foundation](https://www.asterics-foundation.org/) pays for the running server costs. If you want to contribute to these costs, you're very welcome to donate:

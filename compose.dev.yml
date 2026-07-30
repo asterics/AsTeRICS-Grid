@@ -1,4 +1,4 @@
-name: Asterics-AAC for development environment
+name: asterics-aac-development
 
 services:
   application:
