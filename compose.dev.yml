@@ -29,11 +29,6 @@ services:
       - '3000:3000/tcp'
       - '9095:9095/tcp'
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   database:
     image: couchdb:3
