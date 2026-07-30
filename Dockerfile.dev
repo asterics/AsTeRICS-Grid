@@ -1,5 +1,8 @@
 FROM node:lts-alpine
 
+LABEL version="0.1"
+LABEL description="Developer environnement for Asterics-AAC"
+
 ENV HOST=0.0.0.0
 ENV NODE_ENV=development
 
