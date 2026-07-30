@@ -71,17 +71,20 @@ After `yarn install` the following commands are available:
 
 ## Run project locally with Docker for developers
 
-1. go to the directory of the cloned project
-1. `docker compose -f ./compose.dev.yml build` --> build the container image.
-2. `docker compose -f ./compose.dev.yml up` --> start the application.
-3. `docker compose -f ./compose.dev.yml down` --> stop the application.
+1. clone the project `git clone git@github.com:asterics/Asterics-AAC.git`
+2. go to the directory of the cloned project
+3. build the container image `docker compose -f ./compose.dev.yml build`
+4. start the application `docker compose -f ./compose.dev.yml up`
+5. stop the application `docker compose -f ./compose.dev.yml down`
+
+Asterics AAC will be accessible  at `http://localhost:9095` with CouchDB configured.
 
 You can access the container shell, for example to run Npm scripts, using the following commands :
 
 - `docker exec -it asterics-aac-development-application-1 /bin/sh` --> Asterics AAC container.
 - `docker exec -it asterics-aac-development-database-1 /bin/sh` --> CouchDB container.
 
-You can also run the commands directly from the host machine :
+You can also run commands directly from the host machine :
 
 - `docker exec -it asterics-aac-development-application-1 npm run build`
 - `docker exec -it asterics-aac-development-application-1 npm run release`
