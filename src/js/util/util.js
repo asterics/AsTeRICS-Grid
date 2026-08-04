@@ -301,7 +301,7 @@ util.openFullscreen = function () {
 };
 
 util.closeFullscreen = function () {
-    if (!document.fullscreenElement) {
+    if (!util.isFullscreen()) {
         return;
     }
     let closeFn =
@@ -313,6 +313,13 @@ util.closeFullscreen = function () {
         closeFn.call(document);
     }
 };
+
+util.isFullscreen = function () {
+    return !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement
+    );
+}
 
 /**
  * converts HEX or CSS RGB string to RGB array
