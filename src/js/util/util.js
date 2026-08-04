@@ -70,10 +70,21 @@ util.throttle = function (fn, args, minPauseMs, key) {
  * copies the given text to clipboard
  * @param text
  */
-util.copyToClipboard = function copyTextToClipboard(text) {
+util.copyToClipboard = async function (text) {
     if (!text) {
         return;
     }
+    lastClipboardData = text;
+    try {
+        // Try the modern Async Clipboard API first
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+            return;
+        }
+    } catch (err) {
+        log.warn('Clipboard API failed, falling back to execCommand.');
+    }
+
     let textArea = document.createElement('textarea');
     textArea.value = text;
     document.body.appendChild(textArea);
@@ -86,7 +97,6 @@ util.copyToClipboard = function copyTextToClipboard(text) {
     } catch (err) {
         log.warn('Unable to copy to clipboard.');
     }
-    lastClipboardData = text;
     document.body.removeChild(textArea);
 };
 
