@@ -69,6 +69,10 @@
                             <input id="voiceLangIsTextLang" type="checkbox" v-model="userSettingsLocal.voiceConfig.voiceLangIsTextLang" @change="saveUserSettings()"/>
                             <label for="voiceLangIsTextLang">{{ $t('linkVoiceLanguageToTranslationLanguageOfSpokenText') }}</label>
                         </div>
+                        <div class="srow">
+                            <input id="waitForSpeechToFinish" type="checkbox" v-model="userSettingsLocal.voiceConfig.waitForSpeechToFinish" @change="saveUserSettings()"/>
+                            <label for="waitForSpeechToFinish">{{ $t('waitForSpeechToFinish') }}</label>
+                        </div>
                         <div class="srow" v-show="!!speechService.getExternalVoice(userSettingsLocal.voiceConfig.preferredVoice)">
                             <button @click="cacheAll()" :disabled="externalVoiceCacheProgress !== undefined && externalVoiceCacheProgress !== 100">{{ $t('cacheAllTextsOfCurrentConfigurationExternalVoice') }}</button>
                             <span v-show="externalVoiceCacheProgress !== undefined"> ... {{ externalVoiceCacheProgress }}%</span>
