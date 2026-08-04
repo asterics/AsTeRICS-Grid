@@ -71,6 +71,7 @@ function Constructor() {
         document.addEventListener('keydown', keyDownListener);
         document.addEventListener('keyup', keyUpListener);
         document.addEventListener('fullscreenchange', fullscreenChangeListener);
+        document.addEventListener('webkitfullscreenchange', fullscreenChangeListener);
         _touchElement.addEventListener('touchmove', touchMoveListener, { passive: false });
         _touchElement.addEventListener('touchstart', touchStartListener);
         _touchElement.addEventListener('touchend', touchEndListener);
@@ -88,6 +89,7 @@ function Constructor() {
         document.removeEventListener('keydown', keyDownListener);
         document.removeEventListener('keyup', keyUpListener);
         document.removeEventListener('fullscreenchange', fullscreenChangeListener);
+        document.removeEventListener('webkitfullscreenchange', fullscreenChangeListener);
         _touchElement.removeEventListener('touchmove', touchMoveListener);
         _touchElement.removeEventListener('touchstart', touchStartListener);
         _touchElement.removeEventListener('touchend', touchEndListener);
@@ -429,7 +431,7 @@ function Constructor() {
     }
 
     function fullscreenChangeListener() {
-        if (!document.fullscreenElement) {
+        if (!util.isFullscreen()) {
             callHandlers(exitFullscreenHandlers);
         }
     }

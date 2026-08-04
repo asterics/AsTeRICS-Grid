@@ -5,6 +5,7 @@ import { localStorageService } from './data/localStorageService';
 import { inputEventHandler } from '../input/inputEventHandler';
 import { MainVue } from '../vue/mainVue';
 import { i18nService } from './i18nService';
+import {util} from "../util/util";
 
 let youtubeService = {};
 
@@ -287,14 +288,7 @@ youtubeService.enterFullscreen = function () {
 };
 
 youtubeService.exitFullscreen = function () {
-    let exitFullscreen =
-        document.exitFullscreen ||
-        document.mozCancelFullScreen ||
-        document.webkitExitFullscreen ||
-        document.msExitFullscreen;
-    if (exitFullscreen) {
-        exitFullscreen.bind(document)();
-    }
+    util.closeFullscreen();
     inputEventHandler.global.off(youtubeService.exitFullscreen);
 };
 
