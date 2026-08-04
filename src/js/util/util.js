@@ -69,20 +69,30 @@ util.throttle = function (fn, args, minPauseMs, key) {
 /**
  * copies the given text to clipboard
  * @param text
+ * @param skipPermissionCheck if true, manual permission query is skipped
  */
-util.copyToClipboard = async function (text) {
+util.copyToClipboard = async function (text, skipPermissionCheck = false) {
     if (!text) {
         return;
     }
     lastClipboardData = text;
-    try {
-        // Try the modern Async Clipboard API first
-        if (navigator.clipboard && navigator.clipboard.writeText) {
+
+    // 1. Try modern Async Clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
             await navigator.clipboard.writeText(text);
-            return;
+            return true;
+        } catch (err) {
+            // 2. If permission check hasn't been skipped yet, query permission and retry recursively
+            if (!skipPermissionCheck) {
+                log.info('Checking permissions before retrying copy...');
+                const hasPermission = await util.checkPermission('clipboard-write');
+                if (hasPermission) {
+                    // Recursive call with skipPermissionCheck = true to avoid infinite loops
+                    return await util.copyToClipboard(text, true);
+                }
+            }
         }
-    } catch (err) {
-        log.warn('Clipboard API failed, falling back to execCommand.');
     }
 
     let textArea = document.createElement('textarea');
@@ -250,6 +260,26 @@ util.getClipboardImageAsBase64 = async function () {
     } catch (err) {
         log.warn('Failed to read clipboard image:', err);
         return null;
+    }
+};
+
+/**
+ * Safely checks a permission status using navigator.permissions.query.
+ * @param {string} name - The permission name to check (e.g., 'clipboard-write', 'notifications').
+ * @returns {Promise<boolean>} Resolves to true if granted or promptable, false if denied or unsupported.
+ */
+util.checkPermission = async function (name) {
+    if (!navigator.permissions || typeof navigator.permissions.query !== 'function') {
+        return false;
+    }
+
+    try {
+        const permissionStatus = await navigator.permissions.query({ name: name });
+        return permissionStatus.state === 'granted' || permissionStatus.state === 'prompt';
+    } catch (err) {
+        // Catches TypeError in Firefox/Safari when query name is unsupported
+        log.warn(`Permission query for '${name}' is unsupported or failed.`);
+        return false;
     }
 };
 
