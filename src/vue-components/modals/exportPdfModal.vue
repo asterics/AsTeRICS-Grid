@@ -71,7 +71,7 @@
     import {MainVue} from "../../js/vue/mainVue";
 
     export default {
-        props: ['gridsData', 'printGridId'],
+        props: ['gridsData', 'printGridId', 'metadata'],
         data: function () {
             return {
                 selectedGrid: null,
@@ -109,6 +109,16 @@
                     }
                 }).then((grids) => {
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
+                    let homeGridId = this.metadata.homeGridId;
+                    grids = grids.sort((a, b) => {
+                        if (a.id === homeGridId) {
+                            return -1;
+                        }
+                        if (b.id === homeGridId) {
+                            return 1;
+                        }
+                        return i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label));
+                    });
                     printService.gridsToPdf(grids, {
                         printBackground: this.options.printBackground,
                         showLinks: this.options.showLinks,
