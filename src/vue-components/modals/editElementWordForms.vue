@@ -263,7 +263,7 @@
                     let baseStrings = this.getBaseStringsFromWordForms(forms);
                     let baseFormsString = baseStrings.join(";");
                     for (let form of forms) {
-                        let tags = JSON.stringify(form.tags).replaceAll('"', '').replaceAll("'", "").replaceAll("[", "").replaceAll("]", "").replaceAll(",", ", ");
+                        let tags = JSON.stringify(form.tags).replaceAll('"', '').replaceAll("[", "").replaceAll("]", "").replaceAll(",", ", ");
                         let lang = form.lang || '';
                         let pronunciation = form.pronunciation || '';
                         let key = baseFormsString + tags + lang;
