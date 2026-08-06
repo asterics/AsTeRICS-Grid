@@ -909,6 +909,23 @@ gridUtil.hasDynamicGridPlaceholder = function(globalGrid) {
     return !!globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
 };
 
+/**
+ * returns the ID of the grid the given elements navigates to
+ * @param element the element to check
+ * @param homeGridId the ID of the home grid in the current configuration
+ * @return {[String | StringConstructor]|*|null} the ID of the grid the element navigates to or null
+ */
+gridUtil.getNavigateGridId = function (element, homeGridId) {
+    let navAction = element.actions.find((action) => action.modelName === GridActionNavigate.getModelName());
+    if (!navAction) {
+        return null;
+    }
+    if (navAction.navType === GridActionNavigate.NAV_TYPES.TO_HOME) {
+        return homeGridId;
+    }
+    return navAction.toGridId;
+}
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);
