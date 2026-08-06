@@ -123,7 +123,7 @@
     import {dataService} from "../../js/service/data/dataService.js";
     import {MetaData} from "../../js/model/MetaData.js";
     import {gridUtil} from "../../js/util/gridUtil.js";
-    import {speechService} from "../../js/service/speechService";
+    import {speechService} from "../../js/service/speech/speechService";
     import Accordion from '../components/accordion.vue';
     import SliderInput from './input/sliderInput.vue';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';

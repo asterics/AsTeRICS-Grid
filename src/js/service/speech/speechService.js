@@ -1,36 +1,50 @@
-import { stateService } from './stateService';
-import { constants } from '../util/constants';
-import { util } from '../util/util.js';
-import $ from '../externals/jquery.js';
-import { audioUtil } from '../util/audioUtil.js';
-import { speechServiceExternal } from './speechServiceExternal.js';
-import { localStorageService } from './data/localStorageService.js';
-import { i18nService } from './i18nService';
-import voiceUtil from '../util/voiceUtil';
+import { stateService } from '../stateService';
+import { constants } from '../../util/constants';
+import { util } from '../../util/util.js';
+import $ from '../../externals/jquery.js';
+import { audioUtil } from '../../util/audioUtil.js';
+import { localStorageService } from '../data/localStorageService.js';
+import { i18nService } from '../i18nService.js';
+import { SpeechProviderWebSpeech } from './provider/SpeechProviderWebSpeech.js';
+import { SpeechProviderCustom } from "./provider/SpeechProviderCustom";
 
 let speechService = {};
 
+let _providers = [];
 let _preferredVoiceId = null;
 let _secondVoiceId = null;
 let _voicePitch = 1;
 let _voiceRate = 1;
 let _voiceLangIsTextLang = false;
 let allVoices = [];
-let responsiveVoiceVoices = JSON.parse(
-    '[{"name":"UK English Female","lang":"en-GB"},{"name":"UK English Male","lang":"en-GB"},{"name":"US English Female","lang":"en-US"},{"name":"US English Male","lang":"en-US"},{"name":"Arabic Male","lang":"ar-SA"},{"name":"Arabic Female","lang":"ar-SA"},{"name":"Armenian Male","lang":"hy-AM"},{"name":"Australian Female","lang":"en-AU"},{"name":"Australian Male","lang":"en-AU"},{"name":"Bangla Bangladesh Female","lang":"bn-BD"},{"name":"Bangla Bangladesh Male","lang":"bn-BD"},{"name":"Bangla India Female","lang":"bn-IN"},{"name":"Bangla India Male","lang":"bn-IN"},{"name":"Brazilian Portuguese Female","lang":"pt-BR"},{"name":"Chinese Female","lang":"zh-CN"},{"name":"Chinese Male","lang":"zh-CN"},{"name":"Chinese (Hong Kong) Female","lang":"zh-HK"},{"name":"Chinese (Hong Kong) Male","lang":"zh-HK"},{"name":"Chinese Taiwan Female","lang":"zh-TW"},{"name":"Chinese Taiwan Male","lang":"zh-TW"},{"name":"Czech Female","lang":"cs-CZ"},{"name":"Danish Female","lang":"da-DK"},{"name":"Deutsch Female","lang":"de-DE"},{"name":"Deutsch Male","lang":"de-DE"},{"name":"Dutch Female","lang":"nl-NL"},{"name":"Dutch Male","lang":"nl-NL"},{"name":"Estonian Male","lang":"et-EE"},{"name":"Filipino Female","lang":"fil-PH"},{"name":"Finnish Female","lang":"fi-FI"},{"name":"French Female","lang":"fr-FR"},{"name":"French Male","lang":"fr-FR"},{"name":"French Canadian Female","lang":"fr-CA"},{"name":"French Canadian Male","lang":"fr-CA"},{"name":"Greek Female","lang":"el-GR"},{"name":"Hindi Female","lang":"hi-IN"},{"name":"Hindi Male","lang":"hi-IN"},{"name":"Hungarian Female","lang":"hu-HU"},{"name":"Indonesian Female","lang":"id-ID"},{"name":"Indonesian Male","lang":"id-ID"},{"name":"Italian Female","lang":"it-IT"},{"name":"Italian Male","lang":"it-IT"},{"name":"Japanese Female","lang":"ja-JP"},{"name":"Japanese Male","lang":"ja-JP"},{"name":"Korean Female","lang":"ko-KR"},{"name":"Korean Male","lang":"ko-KR"},{"name":"Latin Male","lang":"la"},{"name":"Nepali","lang":"ne-NP"},{"name":"Norwegian Female","lang":"nb-NO"},{"name":"Norwegian Male","lang":"nb-NO"},{"name":"Polish Female","lang":"pl-PL"},{"name":"Polish Male","lang":"pl-PL"},{"name":"Portuguese Female","lang":"pt-BR"},{"name":"Portuguese Male","lang":"pt-BR"},{"name":"Romanian Female","lang":"ro-RO"},{"name":"Russian Female","lang":"ru-RU"},{"name":"Sinhala","lang":"si-LK"},{"name":"Slovak Female","lang":"sk-SK"},{"name":"Spanish Female","lang":"es-ES"},{"name":"Spanish Latin American Female","lang":"es-MX"},{"name":"Spanish Latin American Male","lang":"es-MX"},{"name":"Swedish Female","lang":"sv-SE"},{"name":"Swedish Male","lang":"sv-SE"},{"name":"Tamil Female","lang":"hi-IN"},{"name":"Tamil Male","lang":"hi-IN"},{"name":"Thai Female","lang":"th-TH"},{"name":"Thai Male","lang":"th-TH"},{"name":"Turkish Female","lang":"tr-TR"},{"name":"Turkish Male","lang":"tr-TR"},{"name":"Ukrainian Female","lang":"uk-UA"},{"name":"Vietnamese Female","lang":"vi-VN"},{"name":"Vietnamese Male","lang":"vi-VN"},{"name":"Afrikaans Male","lang":"af-ZA"},{"name":"Albanian Male","lang":"sq-AL"},{"name":"Bosnian Male","lang":"bs"},{"name":"Catalan Male","lang":"ca-ES"},{"name":"Croatian Male","lang":"hr-HR"},{"name":"Esperanto Male","lang":"eo"},{"name":"Icelandic Male","lang":"is-IS"},{"name":"Latvian Male","lang":"lv-LV"},{"name":"Macedonian Male","lang":"mk-MK"},{"name":"Moldavian Female","lang":"md"},{"name":"Montenegrin Male","lang":"me"},{"name":"Serbian Male","lang":"sr-RS"},{"name":"Serbo-Croatian Male","lang":"hr-HR"},{"name":"Swahili Male","lang":"sw-KE"},{"name":"Welsh Male","lang":"cy"},{"name":"Fallback UK Female","lang":"en-GB"}]'
-);
+
 let currentSpeakArray = [];
-let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
 let voiceSortBackList = ['com.apple.eloquence'];
 let hasSpoken = false;
-let isSpeakingNative = false;
-let startedSpeakingRV = false;
+
 let _initPromiseResolveFn;
 let initPromise = new Promise(resolve => {
     _initPromiseResolveFn = resolve;
 });
 
 let _waitingSpeakOptions = {};
+
+async function init() {
+    _providers = [
+        new SpeechProviderWebSpeech(),
+        new SpeechProviderCustom()
+    ];
+
+    for (let provider of _providers) {
+        await provider.init();
+        provider.registerVoiceChangeHandler(speechService.updateVoicesForProvider);
+        let voices = await provider.getVoices();
+        allVoices = allVoices.concat(voices)
+    }
+    allVoices.sort(speechService.voiceSortFn);
+    _initPromiseResolveFn();
+}
+init();
 
 /**
  * speaks given text.
@@ -82,7 +96,6 @@ speechService.speak = function (textOrOject, options = {}) {
     if (!text) {
         return;
     }
-    text = text.toLowerCase();
     if (options.voiceLangIsTextLang &&
         preferredVoiceId &&
         i18nService.getBaseLang(prefVoiceLang) !== i18nService.getBaseLang(langToUse) &&
@@ -95,39 +108,18 @@ speechService.speak = function (textOrOject, options = {}) {
         speechService.stopSpeaking();
     }
     let voices = getVoicesById(preferredVoiceId) || getVoicesByLang(langToUse);
-    let nativeVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_NATIVE);
-    let responsiveVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_RESPONSIVEVOICE);
-    let externalVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING || voice.type === constants.VOICE_TYPE_EXTERNAL_DATA);
-    if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
-        var msg = new SpeechSynthesisUtterance(text);
-        msg.voice = nativeVoices[0].ref;
-        let isSelectedVoice = nativeVoices[0].id === preferredVoiceId;
-        msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
-        msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
-        msg.volume = userSettings.systemVolume / 100.0;
-        log.debug("speak volume", userSettings.systemVolume);
-        if (options.progressFn) {
-            msg.addEventListener('boundary', options.progressFn);
-            msg.addEventListener('end', options.progressFn);
-        }
-        window.speechSynthesis.speak(msg);
-        msg.addEventListener('start', () => {
-            hasSpoken = true;
-            isSpeakingNative = true;
-        });
-        msg.addEventListener('end', () => {
-            isSpeakingNative = false;
-        })
-    } else if (responsiveVoices.length > 0) {
-        let isSelectedVoice = responsiveVoices[0].id === preferredVoiceId;
-        responsiveVoice.speak(text, responsiveVoices[0].name, {
+    let voiceToUse = voices[0] || {};
+    let provider = voiceToUse._provider;
+    if (provider) {
+        let isSelectedVoice = voiceToUse.id === preferredVoiceId;
+        let speakOptions = {
+            pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1,
             rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1),
-            pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
-        });
-        startedSpeakingRV = true;
+            volume: userSettings.systemVolume / 100.0,
+            progressFn: options.progressFn
+        };
+        provider.speak(text, voiceToUse, speakOptions);
         hasSpoken = true;
-    } else if (externalVoices.length > 0) {
-        speechServiceExternal.speak(text, externalVoices[0].ref.providerId, externalVoices[0]);
     }
     testIsSpeaking();
     setTimeout(() => {
@@ -202,21 +194,18 @@ speechService.speakArray = async function (array, progressFn, index) {
 
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
-    isSpeakingNative = false;
-    startedSpeakingRV = false;
-    if (speechService.nativeSpeechSupported()) {
-        window.speechSynthesis.cancel();
+    for (let provider of _providers) {
+        provider.stop();
     }
-    responsiveVoice.cancel();
-    speechServiceExternal.stop();
 };
 
 speechService.isSpeaking = async function () {
-    let isSpeakingRV = startedSpeakingRV && responsiveVoice.isPlaying();
-    if (isSpeakingNative || isSpeakingRV) {
-        return true;
+    for (let provider of _providers) {
+        if (await provider.isSpeaking()) {
+            return true;
+        }
     }
-    return await speechServiceExternal.isSpeaking();
+    return false;
 };
 
 speechService.doAfterFinishedSpeaking = async function (fn) {
@@ -288,6 +277,14 @@ speechService.getVoicesInitialized = async function () {
 }
 
 speechService.voiceSortFn = function (a, b) {
+    if (!constants.IS_IOS) {
+        if (a.id === constants.VOICE_DEVICE_DEFAULT) {
+            return 1;
+        }
+        if (b.id === constants.VOICE_DEVICE_DEFAULT) {
+            return -1;
+        }
+    }
     if (a.lang !== b.lang) {
         let lang1 = i18nService.te(`lang.${a.lang}`) ? i18nService.t(`lang.${a.lang}`) : a.langFull;
         let lang2 = i18nService.te(`lang.${b.lang}`) ? i18nService.t(`lang.${b.lang}`) : b.langFull;
@@ -362,6 +359,15 @@ speechService.getExternalVoice = function (voiceId) {
     return externalVoices[0];
 }
 
+speechService.getProvider = function (voiceId) {
+    let voices = getVoicesById(voiceId) || [];
+    return voices[0]?._provider || null;
+}
+
+speechService.getProviders = function () {
+    return _providers;
+}
+
 /**
  * reloads all voices
  * @return {Promise<void>}
@@ -369,6 +375,16 @@ speechService.getExternalVoice = function (voiceId) {
 speechService.reinit = async function () {
     allVoices = [];
     await init();
+};
+
+speechService.updateVoicesForProvider = async function (provider) {
+    if (!provider || !provider.getVoices) {
+        return;
+    }
+    let newVoices = await provider.getVoices();
+    allVoices = allVoices.filter(v => v._provider !== provider);
+    allVoices = allVoices.concat(newVoices);
+    allVoices.sort(speechService.voiceSortFn);
 };
 
 function getVoicesByLang(lang) {
@@ -390,57 +406,6 @@ function getVoicesById(voiceId) {
     }
     return voices.length > 0 ? voices : null;
 }
-
-function addVoice(voiceId, voiceName, voiceLang, voiceType, localVoice, originalReference) {
-    voiceLang = voiceLang || 'en';
-    if (voiceIgnoreList.some((ignore) => voiceId.includes(ignore))) {
-        return;
-    }
-    if (allVoices.map((voice) => voice.id).indexOf(voiceId) !== -1) {
-        return;
-    }
-    let existingNameIndex = allVoices.map((voice) => voice.name).indexOf(voiceName);
-    if (existingNameIndex !== -1) {
-        voiceName = `${voiceName} (${voiceLang})`;
-        let existingVoice = allVoices[existingNameIndex];
-        existingVoice.name = `${existingVoice.name} (${existingVoice.langFull})`;
-    }
-    allVoices.push({
-        id: voiceId,
-        name: voiceName,
-        lang: i18nService.getBaseLang(voiceLang).toLowerCase(),
-        langFull: voiceLang.toLowerCase(),
-        type: voiceType,
-        ref: originalReference,
-        local: voiceUtil.isVoiceOffline(voiceId, voiceName, localVoice)
-    });
-}
-
-async function registerVoices(arrayNativeVoices) {
-    arrayNativeVoices.forEach((voice) => {
-        addVoice(voice.voiceURI, voice.name, voice.lang, constants.VOICE_TYPE_NATIVE, voice.localService, voice);
-    });
-}
-
-async function init() {
-    if (speechService.nativeSpeechSupported()) {
-        await registerVoices(window.speechSynthesis.getVoices());
-        window.speechSynthesis.onvoiceschanged = function () {
-            registerVoices(window.speechSynthesis.getVoices());
-        };
-    }
-    addVoice(constants.VOICE_DEVICE_DEFAULT, await i18nService.tLoad("defaultDeviceVoice"), i18nService.getBrowserLang(), constants.VOICE_TYPE_NATIVE, true, undefined);
-    responsiveVoiceVoices.forEach((voice) => {
-        addVoice(voice.name, voice.name, voice.lang, constants.VOICE_TYPE_RESPONSIVEVOICE, false, voice);
-    });
-
-    let externalVoices = await speechServiceExternal.getVoices();
-    for (let voice of externalVoices) {
-        addVoice(voice.id, voice.name, voice.lang, voice.type, voice.local || false, voice);
-    }
-    _initPromiseResolveFn();
-}
-init();
 
 function updateSettings() {
     let userSettings = localStorageService.getUserSettings();

@@ -10,11 +10,23 @@ urlParamService.params = {
     PARAM_USE_GRIDSET_URL: 'gridset_url',
     PARAM_ELEMENT_HIGHLIGHT_IDS: "highlightIds",
     PARAM_LOCKED: "locked",
-    PARAM_FULLSCREEN: "fullscreen"
+    PARAM_FULLSCREEN: "fullscreen",
+    PARAM_AZURE_REGION: "azureRegion",
+    PARAM_AZURE_KEY: "azureKey"
 };
 
 let _demoMode = false;
 let _alreadyResetted = false;
+
+//TODO remove
+urlParamService.getAzureCredentials = function() {
+    if(hasParam(urlParamService.params.PARAM_AZURE_KEY)) {
+        window.azureKey = getParam(urlParamService.params.PARAM_AZURE_KEY);
+        window.azureRegion = getParam(urlParamService.params.PARAM_AZURE_REGION);
+        removeParam(urlParamService.params.PARAM_AZURE_KEY);
+        removeParam(urlParamService.params.PARAM_AZURE_REGION);
+    }
+}
 
 /**
  * sets many params to search params in the current URL

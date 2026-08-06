@@ -74,7 +74,7 @@
     import DirectionInputModal from "../modals/input/directionInputModal.vue";
     import HuffmanInputModal from "../modals/input/huffmanInputModal.vue";
     import SequentialInputModal from "../modals/input/sequentialInputModal.vue";
-    import {speechService} from "../../js/service/speechService";
+    import {speechService} from "../../js/service/speech/speechService";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {imageUtil} from "../../js/util/imageUtil";
     import {audioUtil} from "../../js/util/audioUtil.js";

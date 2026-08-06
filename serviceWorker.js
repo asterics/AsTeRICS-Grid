@@ -100,6 +100,18 @@ workbox.routing.registerRoute(({ url, request, event }) => {
     return shouldCacheImage(url, request);
 }, dynamicImageHandler);
 
+workbox.routing.registerRoute(({url, request, event}) => {
+    return shouldCacheSpeech(url, request);
+}, new workbox.strategies.CacheFirst({
+    cacheName: 'speech-cache',
+    plugins: [
+        new workbox.expiration.ExpirationPlugin({
+            maxEntries: 1000,
+            purgeOnQuotaError: true
+        })
+    ]
+}));
+
 self.addEventListener('install', (event) => {
     console.log('installing service worker ...');
 
@@ -211,12 +223,16 @@ function shouldCacheImage(url, request) {
 }
 
 function shouldCacheStaleWhileRevalidate(url, request) {
-    return url.href.startsWith('https://asterics.github.io/Asterics-AAC-Data');
+    return url.href.startsWith('https://asterics.github.io/Asterics-AAC-Data') || url.href.endsWith('tts.speech.microsoft.com/cognitiveservices/voices/list');
 }
 
 function shouldCacheNormal(url, request) {
     let isOwnHost = url.hostname === self.location.hostname;
     return isOwnHost && !shouldCacheImage(url, request) && !shouldCacheStaleWhileRevalidate(url);
+}
+
+function shouldCacheSpeech(url, request) {
+    return url.href.endsWith('tts.speech.microsoft.com/cognitiveservices/v1');
 }
 
 function sendToClients(msg) {

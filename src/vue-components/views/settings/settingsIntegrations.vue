@@ -53,10 +53,10 @@
     import { i18nService } from '../../../js/service/i18nService';
     import { util } from '../../../js/util/util';
     import { arasaacService } from '../../../js/service/pictograms/arasaacService';
-    import { speechServiceExternal } from '../../../js/service/speechServiceExternal';
-    import { speechService } from '../../../js/service/speechService';
+    import { speechService } from '../../../js/service/speech/speechService';
     import { settingsSaveMixin } from './settingsSaveMixin';
     import ConfigureMatrix from '../../modals/matrix-messenger/configure-matrix.vue';
+    import {SpeechProviderCustom} from "../../../js/service/speech/provider/SpeechProviderCustom";
 
     const MODAL_MATRIX = 'MODAL_MATRIX';
     const MODALS = { MODAL_MATRIX };
@@ -80,12 +80,13 @@
                 let savedSomething = await this.saveAppSettings(this.appSettings);
                 if (savedSomething) {
                     this.urlValid = undefined;
-                    this.urlValid = await speechServiceExternal.validateUrl(this.appSettings.externalSpeechServiceUrl);
+                    let providerCustom = speechService.getProviders().find(p => p instanceof SpeechProviderCustom);
+                    this.urlValid = providerCustom ? await providerCustom.validateUrl(this.appSettings.externalSpeechServiceUrl) : false;
                     this.urlValid = this.appSettings.externalSpeechServiceUrl ? this.urlValid : null;
-                    let timeout = this.urlValid ? 0 : 3000;
-                    util.debounce(async () => {
-                        await speechService.reinit();
-                    }, timeout, 'REINIT_SPEECH');
+                    if (this.urlValid || !this.appSettings.externalSpeechServiceUrl) {
+                        providerCustom.setUrl(this.appSettings.externalSpeechServiceUrl);
+                        await speechService.updateVoicesForProvider(providerCustom);
+                    }
                 }
             }
         },
