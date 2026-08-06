@@ -23,6 +23,7 @@ let pdfOptions = {
     imgHeightPercentage: 0.8
 };
 let convertMode = null;
+let homeGridId = null;
 
 let patternFontMappings = [
     {
@@ -75,7 +76,7 @@ printService.gridsToPdf = async function (gridsData, options) {
         options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
         for (let element of grid.gridElements) {
             element = new GridElement(element);
-            let nav = element.getNavigateGridId();
+            let nav = gridUtil.getNavigateGridId(element, homeGridId);
             if (nav) {
                 options.idParentsMap[nav] = options.idParentsMap[nav] || [];
                 options.idParentsMap[nav].push(options.idPageMap[grid.id]);
@@ -241,8 +242,8 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         }
         await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
         element = new GridElement(element);
-        if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
-            let targetPage = options.idPageMap[element.getNavigateGridId()];
+        if (options.showLinks && options.idPageMap[gridUtil.getNavigateGridId(element, homeGridId)]) {
+            let targetPage = options.idPageMap[gridUtil.getNavigateGridId(element, homeGridId)];
             let iconWidth = Math.max(currentWidth / 10, 7);
             let offsetX = currentWidth - iconWidth - 1;
             let offsetY = 1;
@@ -407,6 +408,7 @@ async function loadFont(path, doc) {
 
 async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
+    homeGridId = metadata.homeGridId;
     if (metadata.textConfig) {
         convertMode = metadata.textConfig.convertMode;
     }
