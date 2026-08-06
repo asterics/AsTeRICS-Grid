@@ -111,21 +111,7 @@
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
                     let homeGridId = this.metadata.homeGridId;
                     let selectedId = this.selectedGrid ? this.selectedGrid.id : null;
-                    grids = grids.sort((a, b) => {
-                        if (a.id === homeGridId) {
-                            return -1;
-                        }
-                        if (b.id === homeGridId) {
-                            return 1;
-                        }
-                        if (a.id === selectedId) {
-                            return -1;
-                        }
-                        if (b.id === selectedId) {
-                            return 1;
-                        }
-                        return i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label));
-                    });
+                    grids = gridUtil.sortGrids(grids, homeGridId, selectedId);
                     printService.gridsToPdf(grids, {
                         printBackground: this.options.printBackground,
                         showLinks: this.options.showLinks,

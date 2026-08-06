@@ -534,13 +534,13 @@
                 }
                 switch (this.orderValue) {
                     case this.ORDER_VALUES.ALPHABET:
-                        elems = elems.sort((a, b) => i18nService.getTranslation(a.grid.label).localeCompare(i18nService.getTranslation(b.grid.label)));
+                        elems = gridUtil.sortGridsByLabel(elems);
                         break;
                     case this.ORDER_VALUES.CONNECTION_COUNT:
                         elems = elems = elems.sort((a, b) => b.allRelatives.length - a.allRelatives.length);
                         break;
                 }
-                return elems;
+                return gridUtil.sortGridsByHomeId(elems, this.metadata.homeGridId);
             }
         },
         created() {
