@@ -167,7 +167,7 @@
                 SELECT_VALUES: SELECT_VALUES,
                 ORDER_VALUES: ORDER_VALUES,
                 selectValue: null,
-                orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.CONNECTION_COUNT,
+                orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.ALPHABET,
                 linkModal: {
                     show: false,
                     gridFrom: null,
