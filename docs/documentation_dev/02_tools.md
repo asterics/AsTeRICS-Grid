@@ -14,7 +14,7 @@ The [node package manager (npm)](https://www.npmjs.com/) is used for managing Ja
 
 #### npm dependencies
 The configuration file [package.json](https://github.com/asterics/Asterics-AAC/blob/master/package.json) includes the key `dependencies` which include dependencies that are used in order to run Asterics AAC:
-* **[@klues/couch-auth](https://github.com/perfood/couch-auth)**: framework providing user management in connection to [CouchDB](http://couchdb.apache.org/), the database backend used by Asterics AAC. Using fork of original [couch-auth](https://github.com/perfood/couch-auth) in order to fix [session creation conflicts](https://github.com/perfood/couch-auth/issues/65) - already merged, so we could again use original `couch-auth`
+* **[@perfood/couch-auth](https://github.com/perfood/couch-auth)**: framework providing user management in connection to [CouchDB](http://couchdb.apache.org/), the database backend used by Asterics AAC. Using fork of original [couch-auth](https://github.com/perfood/couch-auth) in order to fix [session creation conflicts](https://github.com/perfood/couch-auth/issues/65) - already merged, so we could again use original `couch-auth`
 * **[cors](https://www.npmjs.com/package/cors)**: CORS handler for HTTP requests, used by couch-auth
 * `dotenv-flow`: used by `superlogin/start.js`
 * `express`: used by `superlogin/start.js`

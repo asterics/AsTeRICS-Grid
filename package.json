@@ -4,7 +4,7 @@
   "description": "Free, easy-to-use AAC app with offline support, flexible input options, media & smart home access",
   "main": "index.js",
   "dependencies": {
-    "@klues/couch-auth": "^0.20.1",
+    "@perfood/couch-auth": "^0.28.0",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dotenv-flow": "^3.2.0",
