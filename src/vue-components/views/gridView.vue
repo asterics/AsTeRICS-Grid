@@ -517,6 +517,7 @@
             }
             metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
             metadata.fullscreen = urlParamService.isFullscreen(true) ? true : metadata.fullscreen;
+            metadata.fullscreen = metadata.fullscreen && util.isFullscreen();
             metadata.locked = urlParamService.isLocked(true) ? true : metadata.locked;
             metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
             metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;

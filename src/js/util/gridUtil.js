@@ -63,6 +63,59 @@ gridUtil.sortGridElements = function (elements) {
 };
 
 /**
+ * sorts grids in order to put home grid first. can also be used with graph elements, see gridUtil.getGraphList()
+ * @param elems array of elements to sort (grids or graph elements)
+ * @param homeGridId the id of the home grid
+ * @param selectedId optional additional ID to sort after home grid
+ * @return {*} sorted array
+ */
+gridUtil.sortGridsByHomeId = function (elems, homeGridId, selectedId = null) {
+    if (!homeGridId) {
+        return elems;
+    }
+    return elems.sort((a, b) => {
+        a = a.grid ? a.grid : a; // make it work also with graph elements, see gridUtil.getGraphList()
+        b = b.grid ? b.grid : b;
+        if (a.id === homeGridId) {
+            return -1;
+        }
+        if (b.id === homeGridId) {
+            return 1;
+        }
+        if (a.id === selectedId) {
+            return -1;
+        }
+        if (b.id === selectedId) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+/**
+ * sorts grids alphabetically by label, can also be used with graph elements, see gridUtil.getGraphList()
+ * @param elems array of elements to sort (grids or graph elements)
+ * @return {*} sorted array
+ */
+gridUtil.sortGridsByLabel = function (elems) {
+    return elems.sort((a, b) => {
+        a = a.grid ? a.grid : a; // make it work also with graph elements, see gridUtil.getGraphList()
+        b = b.grid ? b.grid : b;
+        return i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label), undefined, {numeric: true});
+    });
+}
+
+/**
+ * sorts grids first by label and then by home grid ID.
+ * @see gridUtil.sortGridsByLabel()
+ * @see gridUtil.sortGridsByHomeId()
+ */
+gridUtil.sortGrids = function (elems, homeGridId, selectedId) {
+    elems = gridUtil.sortGridsByLabel(elems);
+    return gridUtil.sortGridsByHomeId(elems, homeGridId, selectedId);
+}
+
+/**
  * generates a global grid with elements "home", "back", input field, "backspace" and "clear"
  * @param locale the locale of the grid to generate, e.g. "de" or "en"
  * @param options.convertToLowercase if element labels collected in collect element should be converted to lowercase, default: true
@@ -855,6 +908,23 @@ gridUtil.hasDynamicGridPlaceholder = function(globalGrid) {
     }
     return !!globalGrid.gridElements.find(e => e.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER);
 };
+
+/**
+ * returns the ID of the grid the given elements navigates to
+ * @param element the element to check
+ * @param homeGridId the ID of the home grid in the current configuration
+ * @return {[String | StringConstructor]|*|null} the ID of the grid the element navigates to or null
+ */
+gridUtil.getNavigateGridId = function (element, homeGridId) {
+    let navAction = element.actions.find((action) => action.modelName === GridActionNavigate.getModelName());
+    if (!navAction) {
+        return null;
+    }
+    if (navAction.navType === GridActionNavigate.NAV_TYPES.TO_HOME) {
+        return homeGridId;
+    }
+    return navAction.toGridId;
+}
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
