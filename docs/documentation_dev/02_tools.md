@@ -31,7 +31,6 @@ The configuration file [package.json](https://github.com/asterics/Asterics-AAC/b
 * `navigo`: used for in-app routing, see `router.js`
 * `pouchdb`: library for connecting with external CouchDB - the npm dependency is used by `superlogin/start.js`, the app uses the direct import in `index.html`, see below.
 * `predictionary`: library for self-learning dictionary used for keyboard inputs, also see dictionaries at `app/dictionaries`
-* **[superlogin-client](https://www.npmjs.com/package/superlogin-client)**: Javascript client for a couch-auth instance running on a server
 * **[vue](https://vuejs.org/)**: framework for building the user interface
 * `vue-i18n`: internationalization library for Vue.js
 * `vue-multiselect`: multiselect component, used for selecting tags in word forms feature

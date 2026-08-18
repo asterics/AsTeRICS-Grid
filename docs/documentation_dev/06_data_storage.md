@@ -48,7 +48,7 @@ Asterics AAC implements the idea of [one database per user](https://www.joshmoro
 ## Authentication layer
 The one-database-per-user approach needs a layer for managing user accounts and the corresponding CouchDB user databases (only for online users). For Asterics AAC the framework [couch-auth](https://github.com/perfood/couch-auth) (former "superlogin") is used. It provides an API in order to register and login users and creates the corresponding CouchDB databases in the background.
 
-The file [superlogin/start.js](https://github.com/asterics/Asterics-AAC/blob/master/superlogin/start.js) starts superlogin and contains it's configuration (= server side). The file [loginService.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/service/loginService.js) is the client-side counterpart which uses the library [superlogin-client](https://www.npmjs.com/package/superlogin-client) in order to connect to and make use of the superlogin server.
+The file [superlogin/start.js](https://github.com/asterics/Asterics-AAC/blob/master/superlogin/start.js) starts couch-auth and contains it's configuration (= server side). The file [loginService.js](https://github.com/asterics/Asterics-AAC/blob/master/src/js/service/loginService.js) is the client-side counterpart which connects to a dbs-node (couch-auth).
 
 In order to start couch-auth the correct parameters of some CouchDB instance have to be inserted in [start.js:38](https://github.com/asterics/Asterics-AAC/blob/master/superlogin/start.js#L38). Then use `npm run start-auth` or `npm run start-auth-ssl` in order to start couch-auth in development or production mode using SSL.
 

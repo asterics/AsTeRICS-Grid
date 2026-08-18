@@ -121,7 +121,6 @@ Other people and organizations we want to thank:
     * [PouchDB](https://pouchdb.com/)
     * [predictionary](https://github.com/asterics/predictionary)
     * [Stanford Javascript Crypto Library (SJCL)](https://crypto.stanford.edu/sjcl/)
-    * [superlogin-client](https://www.npmjs.com/package/superlogin-client)
     * [Vue.js](https://vuejs.org/)
     * [vue-i18n](https://vue-i18n.intlify.dev/)
     * [vue-multiselect](https://vue-multiselect.js.org/)

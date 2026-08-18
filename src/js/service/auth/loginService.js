@@ -1,5 +1,5 @@
 import $ from '../../externals/jquery.js';
-import superlogin from 'superlogin-client';
+import { authClient } from './authClient.js';
 import { localStorageService } from '../data/localStorageService';
 import { encryptionService } from '../data/encryptionService';
 import { constants } from '../../util/constants';
@@ -26,12 +26,17 @@ let _loginInProgress = false;
 
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
-let _serverUrl = getServerUrl();
-loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
 
+// Configure multi-node URLs based on environment
+let _serverUrls = (constants.IS_ENVIRONMENT_PROD || constants.FORCE_CONNECT_DB)
+    ? constants.DBS_SERVERS_PROD
+    : constants.DBS_SERVERS_TEST;
+
+authClient.setServerUrls(_serverUrls);
+
+loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
 loginService.ERROR_CODE_LOCKED = 'ERROR_CODE_LOCKED';
 loginService.ERROR_CODE_NETWORK_ERROR = 'ERROR_CODE_NETWORK_ERROR';
-superlogin.configure(getConfig());
 
 /**
  * returns currently logged in user, null of not logged in
@@ -54,10 +59,10 @@ loginService.getLoggedInUserDatabase = function () {
 };
 
 /**
- * logs in into remote couchdb (superlogin) and initializes local user database
+ * logs in into remote couchdb and initializes local user database
+ * @param user
  * @param plainPassword plain user password as typed in in password field
- *
- * @see loginService.loginHashedPassword() for other details.
+ * @param saveUser
  */
 loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
     _tryUser = user;
@@ -66,14 +71,7 @@ loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
 };
 
 /**
- * logs in into remote couchdb (superlogin) and initializes local user database
- * @param user
- * @param hashedPassword
- * @param saveUser if true, the user and password is saved to local storage
- * @return {Promise} resolves with value
- *              true ... if user successfully logged in online and local database successfully initialized.
- *              false ... if online login failed, but database is locally synced and initialization of offline database was successful
- *         Promise rejects with loginService.ERROR_CODE_* if online login failed and database is not locally synced.
+ * logs in into remote couchdb and initializes local user database
  */
 loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
     _tryUser = user;
@@ -82,9 +80,6 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
 
 /**
  * logs in a user that is stored in HTML5 local storage
- * @param user the username to log in
- * @param dontRoute skip routing to main after successful login
- * @return {Promise<never>|Promise<unknown>|Promise<void>}
  */
 loginService.loginStoredUser = function (user, dontRoute) {
     if (!user) {
@@ -152,25 +147,17 @@ loginService.logout = function () {
     webradioService.stop();
     MainVue.clearTooltip();
     databaseService.closeCurrentDatabase();
+
     if (_loggedInUser) {
-        localStorage.removeItem('dbs-sticky-node:' + _loggedInUser);
-        superlogin.logout(_loggedInUser);
+        authClient.logout();
     }
+
     _loggedInUser = null;
     _loginInfo = null;
 };
 
 /**
- * registers with remote couchdb (superlogin), and logs in after successful registration.
- * Does not initialize local database, so use databaseService.initForUser() after successful registration.
- *
- * @param user username as chosen by user
- * @param plainPassword plain password as typed in by user
- * @param saveUser if true, the user and password is saved to local storage and database is synchronized locally,
- *        otherwise a registration with one-time login is performed, where only the online database is used
- * @return {Promise} resolves if online registration, login and (optional) initialization of local database successful.
- *          Promise rejects if registration, login or (optional) initialization of database failed.
- *
+ * registers with remote couchdb, and logs in after successful registration.
  */
 loginService.register = function (user, plainPassword, saveUser = true) {
     _tryUser = user;
@@ -178,9 +165,11 @@ loginService.register = function (user, plainPassword, saveUser = true) {
     user = user.trim();
     let password = encryptionService.getUserPasswordHash(plainPassword);
     log.debug('password hash: ' + password);
-    return superlogin
+
+    return authClient
         .register({
             username: user,
+            email: new Date().getTime() + '.' + Math.random() + '@norealmail.org',
             password: password,
             confirmPassword: password
         })
@@ -206,9 +195,6 @@ loginService.register = function (user, plainPassword, saveUser = true) {
 
 /**
  * locally registers/creates a new username by user/password
- * @param username
- * @param hashedUserPassword
- * @return {*}
  */
 loginService.registerOffline = function (username, hashedUserPassword) {
     loginService.logout();
@@ -219,11 +205,9 @@ loginService.registerOffline = function (username, hashedUserPassword) {
 
 /**
  * checks if a given username is valid, returns constants.VALIDATION_*
- * @param username
- * @return {Promise}
  */
 loginService.validateUsername = function (username) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if (!username || !constants.USERNAME_REGEX.test(username)) {
             resolve(constants.VALIDATION_ERROR_REGEX);
             return;
@@ -232,7 +216,9 @@ loginService.validateUsername = function (username) {
             resolve(constants.VALIDATION_ERROR_EXISTING);
             return;
         }
-        fetch(`${_serverUrl}/user/validate-username/${username}`)
+
+        // This request will naturally pick a random URL because there is no session yet
+        authClient.request(`/user/validate-username/${username}`)
             .then(async (response) => {
                 if (!response.ok) {
                     resolve(constants.VALIDATION_ERROR_EXISTING);
@@ -260,21 +246,25 @@ loginService.stopAutoRetryLogin = function () {
     }
 };
 
+/**
+ * Deletes user account. AuthClient handles targeting the correct node automatically.
+ */
 loginService.deleteOnlineUser = async function(user = '', password) {
-    let session = superlogin.getSession();
+    let session = authClient.getSession();
     if (!session || user.toLowerCase() !== session.user_id) {
-        log.warn("couldn't delete user - not logged in with the user to delete:", user)
+        log.warn("couldn't delete user - not logged in with the user to delete:", user);
         return loginService.DELETE_FAILED_GENERAL;
     }
+
     let hashedUserPassword = localStorageService.getUserSettings(user).password;
     if (password !== DELETE_USER_DEFAULT_PASSWORD && encryptionService.getUserPasswordHash(password) !== hashedUserPassword) {
         return loginService.DELETE_FAILED_WRONG_PASSWORD;
     }
+
     try {
-        const response = await fetch(_serverUrl + '/auth/request-deletion', {
+        const response = await authClient.request('/auth/request-deletion', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${session.token}:${session.password}`
             },
             body: JSON.stringify({
@@ -285,7 +275,7 @@ loginService.deleteOnlineUser = async function(user = '', password) {
 
         if (!response.ok) {
             log.warn(`HTTP error! Status: ${response.status}`);
-            return false;
+            return loginService.DELETE_FAILED_GENERAL;
         }
 
         const data = await response.json();
@@ -294,7 +284,7 @@ loginService.deleteOnlineUser = async function(user = '', password) {
         console.error('Error:', error);
     }
     return loginService.DELETE_FAILED_GENERAL;
-}
+};
 
 function loginInternal(user, hashedPassword, saveUser) {
     if (_tryUser !== user) {
@@ -304,7 +294,8 @@ function loginInternal(user, hashedPassword, saveUser) {
     _lastParamHashedPw = hashedPassword;
     _lastParamSaveUser = saveUser;
     user = user.trim();
-    return superlogin
+
+    return authClient
         .login({
             username: user,
             password: hashedPassword
@@ -314,7 +305,6 @@ function loginInternal(user, hashedPassword, saveUser) {
             loginService.stopAutoRetryLogin();
             _loginInfo = info;
             _loggedInUser = user;
-            localStorage.setItem('dbs-sticky-node:' + user, _serverUrl);
             localStorageService.setLastActiveUser(user);
             localStorageService.setAutologinUser(saveUser ? user : '');
             if (saveUser) {
@@ -370,7 +360,10 @@ function reasonToErrorCode(reason) {
     if (reason && reason.error && reason.error.toLowerCase() === 'unauthorized') {
         return loginService.ERROR_CODE_UNAUTHORIZED;
     }
-    if (reason && reason.message && reason.message.toLowerCase() === 'network error') {
+    if (
+        (reason && reason.message && reason.message.toLowerCase() === 'network error') ||
+        (reason && reason.name === 'TypeError')
+    ) {
         return loginService.ERROR_CODE_NETWORK_ERROR;
     }
 }
@@ -384,54 +377,6 @@ function autoRetryLogin(user, hashedPassword, saveUser) {
         log.info(`auto-retry for online login user ${user} (attempt ${_retryCount}, waited for ${waitTimeSeconds}s)`);
         loginHashedPasswordInternal(user, hashedPassword, saveUser);
     }, waitTimeSeconds * 1000);
-}
-
-function getConfig() {
-    //see https://github.com/micky2be/superlogin-client
-    return {
-        // An optional URL to API server, by default a current window location is used.
-        serverUrl: _serverUrl,
-        // The base URL for the SuperLogin routes with leading and trailing slashes (defaults to '/auth')
-        baseUrl: '/auth',
-        // Specific endpoint for social authentication and social link popups (defaults to `${location.origin}${baseUrl}`)
-        //socialUrl: 'http://' + location.hostname + ':3001/auth',
-        // A list of API endpoints to automatically add the Authorization header to
-        // By default the host the browser is pointed to will be added automatically
-        //endpoints: ['api.example.com'],
-        // Set this to true if you do not want the URL bar host automatically added to the list
-        noDefaultEndpoint: false,
-        // Where to save your session token: localStorage ('local') or sessionStorage ('session'), default: 'local'
-        storage: 'local',
-        // The authentication providers that are supported by your SuperLogin host
-        //providers: ['facebook', 'twitter'],
-        // Sets when to check if the session is expired during the setup.
-        // false by default.
-        checkExpired: false,
-        // A float that determines the percentage of a session duration, after which SuperLogin will automatically refresh the
-        // token. For example if a token was issued at 1pm and expires at 2pm, and the threshold is 0.5, the token will
-        // automatically refresh after 1:30pm. When authenticated, the token expiration is automatically checked on every
-        // request. You can do this manually by calling superlogin.checkRefresh(). Default: 0.5
-        refreshThreshold: 0.5,
-        // The number of milliseconds before a request times out
-        // If the request takes longer than `timeout`, the request will be aborted.
-        // Default is 0, meaning it won't timeout.
-        timeout: 0
-    };
-}
-
-function getServerUrl() {
-    const dbsNodes = typeof __DBS_NODES__ === 'undefined' ? null : __DBS_NODES__;
-    if (!Array.isArray(dbsNodes) || dbsNodes.length === 0) {
-        return typeof location === 'undefined' ? '' : location.origin;
-    }
-    const lastUser = localStorageService.getAutologinOrActiveUser();
-    if (lastUser) {
-        const sticky = localStorage.getItem('dbs-sticky-node:' + lastUser);
-        if (sticky && dbsNodes.includes(sticky)) {
-            return sticky;
-        }
-    }
-    return dbsNodes[Math.floor(Math.random() * dbsNodes.length)];
 }
 
 function init() {
