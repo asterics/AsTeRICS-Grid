@@ -62,7 +62,8 @@ loginService.getLoggedInUserDatabase = function () {
  * logs in into remote couchdb and initializes local user database
  * @param user
  * @param plainPassword plain user password as typed in in password field
- * @param saveUser
+ *
+ * @see loginService.loginHashedPassword() for other details.
  */
 loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
     _tryUser = user;
@@ -71,7 +72,14 @@ loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
 };
 
 /**
- * logs in into remote couchdb and initializes local user database
+ * logs in into remote couchdb (couch-auth) and initializes local user database
+ * @param user
+ * @param hashedPassword
+ * @param saveUser if true, the user and password is saved to local storage
+ * @return {Promise} resolves with value
+ *              true ... if user successfully logged in online and local database successfully initialized.
+ *              false ... if online login failed, but database is locally synced and initialization of offline database was successful
+ *         Promise rejects with loginService.ERROR_CODE_* if online login failed and database is not locally synced.
  */
 loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
     _tryUser = user;
@@ -80,6 +88,9 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
 
 /**
  * logs in a user that is stored in HTML5 local storage
+ * @param user the username to log in
+ * @param dontRoute skip routing to main after successful login
+ * @return {Promise<never>|Promise<unknown>|Promise<void>}
  */
 loginService.loginStoredUser = function (user, dontRoute) {
     if (!user) {
@@ -157,7 +168,16 @@ loginService.logout = function () {
 };
 
 /**
- * registers with remote couchdb, and logs in after successful registration.
+ * registers with remote couchdb (couch-auth), and logs in after successful registration.
+ * Does not initialize local database, so use databaseService.initForUser() after successful registration.
+ *
+ * @param user username as chosen by user
+ * @param plainPassword plain password as typed in by user
+ * @param saveUser if true, the user and password is saved to local storage and database is synchronized locally,
+ *        otherwise a registration with one-time login is performed, where only the online database is used
+ * @return {Promise} resolves if online registration, login and (optional) initialization of local database successful.
+ *          Promise rejects if registration, login or (optional) initialization of database failed.
+ *
  */
 loginService.register = function (user, plainPassword, saveUser = true) {
     _tryUser = user;
@@ -195,6 +215,9 @@ loginService.register = function (user, plainPassword, saveUser = true) {
 
 /**
  * locally registers/creates a new username by user/password
+ * @param username
+ * @param hashedUserPassword
+ * @return {*}
  */
 loginService.registerOffline = function (username, hashedUserPassword) {
     loginService.logout();
@@ -205,6 +228,8 @@ loginService.registerOffline = function (username, hashedUserPassword) {
 
 /**
  * checks if a given username is valid, returns constants.VALIDATION_*
+ * @param username
+ * @return {Promise}
  */
 loginService.validateUsername = function (username) {
     return new Promise((resolve) => {
