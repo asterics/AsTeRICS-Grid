@@ -106,7 +106,7 @@
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import {loginService} from './../../js/service/loginService.js';
+    import {loginService} from '../../js/service/auth/loginService.js';
     import {Router} from "../../js/router";
     import {constants} from "../../js/util/constants";
     import ComparisonComponent from "./../components/comparisonComponent.vue";

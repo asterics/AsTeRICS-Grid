@@ -49,7 +49,7 @@
 <script>
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {databaseService} from "../../js/service/data/databaseService";
-    import {loginService} from "../../js/service/loginService";
+    import {loginService} from "../../js/service/auth/loginService";
     import {i18nService} from "../../js/service/i18nService";
     import {constants} from "../../js/util/constants";
     import {Router} from "../../js/router";

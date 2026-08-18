@@ -1,7 +1,7 @@
 import { inputEventHandler } from '../input/inputEventHandler';
 import { localStorageService } from './data/localStorageService';
 import { dataService } from './data/dataService';
-import { loginService } from './loginService';
+import { loginService } from './auth/loginService';
 import { Router } from '../router.js';
 import {MainVue} from "../vue/mainVue.js";
 import { util } from '../util/util';

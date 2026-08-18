@@ -72,7 +72,7 @@
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {helpService} from "../../js/service/helpService";
-    import {loginService} from "../../js/service/loginService";
+    import {loginService} from "../../js/service/auth/loginService";
 
     export default {
         components: {HeaderIcon},

@@ -1,13 +1,13 @@
-import $ from '../externals/jquery.js';
+import $ from '../../externals/jquery.js';
 import superlogin from 'superlogin-client';
-import { localStorageService } from './data/localStorageService';
-import { encryptionService } from './data/encryptionService';
-import { constants } from '../util/constants';
-import { databaseService } from './data/databaseService';
-import { Router } from '../router';
-import { webradioService } from './webradioService.js';
-import { MainVue } from '../vue/mainVue.js';
-import {util} from "../util/util.js";
+import { localStorageService } from '../data/localStorageService';
+import { encryptionService } from '../data/encryptionService';
+import { constants } from '../../util/constants';
+import { databaseService } from '../data/databaseService';
+import { Router } from '../../router';
+import { webradioService } from '../webradioService.js';
+import { MainVue } from '../../vue/mainVue.js';
+import {util} from "../../util/util.js";
 
 let loginService = {};
 
