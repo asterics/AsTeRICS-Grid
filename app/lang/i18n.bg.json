@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Създаване на елементи",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Свързване на гласовия език с езика на прочетения текст",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Тестов глас",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Изтегли сега",
