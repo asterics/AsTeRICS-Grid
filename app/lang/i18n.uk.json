@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Створення елементів сітки",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Пов’яжіть мову голосу з мовою перекладу розмовного тексту",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Тест голосу",
   "pleaseConsiderToDownloadABackup": "Будь ласка, розгляньте можливість завантаження резервної копії вашої конфігурації, щоб уникнути втрати роботи.",
   "downloadNow": "Завантажити зараз",
