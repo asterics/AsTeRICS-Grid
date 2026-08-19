@@ -56,12 +56,15 @@ let _waitingSpeakOptions = {};
  * @param options.rate (optional) rate value to use
  * @param options.progressFn (optional) function where boundary events of the spoken phrase are sent to
  */
-speechService.speak = function (textOrOject, options = {}) {
+speechService.speak = async function (textOrOject, options = {}) {
     options = options || {};
     options.voiceLangIsTextLang = options.voiceLangIsTextLang || _voiceLangIsTextLang;
     let userSettings = localStorageService.getUserSettings();
     let text = null;
     let isString = typeof textOrOject === 'string';
+    if (userSettings.voiceConfig.waitForSpeechToFinish && (await speechService.isSpeaking())) {
+        return;
+    }
     if (!textOrOject || (!isString && Object.keys(textOrOject).length === 0)) {
         return;
     }

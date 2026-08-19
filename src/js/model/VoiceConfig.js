@@ -5,6 +5,7 @@ class VoiceConfig {
      * @param settings.voiceLangIsTextLang
      * @param settings.voicePitch
      * @param settings.voiceRate
+     * @param settings.waitForSpeechToFinish
      */
     constructor(settings) {
         settings = settings || {};
@@ -13,6 +14,7 @@ class VoiceConfig {
         this.voiceLangIsTextLang = settings.voiceLangIsTextLang;
         this.voicePitch = settings.voicePitch;
         this.voiceRate = settings.voiceRate;
+        this.waitForSpeechToFinish = settings.waitForSpeechToFinish;
     }
 }
 
