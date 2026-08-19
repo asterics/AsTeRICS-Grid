@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Créer des éléments de grille",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Lier la langue vocale à la langue de traduction du texte vocal",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Tester la voix",
   "pleaseConsiderToDownloadABackup": "Pensez à télécharger une sauvegarde de votre configuration afin de ne pas perdre votre travail.",
   "downloadNow": "Télécharger maintenant",
