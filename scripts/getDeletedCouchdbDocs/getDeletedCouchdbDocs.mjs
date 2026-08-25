@@ -8,7 +8,7 @@ const AUTH_DB = 'auth-users';
 const DESIGN_DOC = 'views';
 
 // --- COMMAND LINE ARGS ---
-const targetUsername = process.argv[2];
+const targetUsername = process.argv[2]?.toLowerCase();
 const password = process.argv[3]; // Admin password
 
 if (!targetUsername || !password) {
