@@ -65,6 +65,19 @@ async function exportAndUndelete() {
     await fs.mkdir(liveDir, { recursive: true });
     await fs.mkdir(undeletedDir, { recursive: true });
 
+    // Count only .json files in both output directories
+    const liveJsonFiles = (await fs.readdir(liveDir)).filter(f => f.endsWith('.json'));
+    const undeletedJsonFiles = (await fs.readdir(undeletedDir)).filter(f => f.endsWith('.json'));
+
+    if (liveJsonFiles.length > 0 || undeletedJsonFiles.length > 0) {
+      throw new Error(
+          `Output directories contain existing .json files!\n` +
+          `  - ./live: ${liveJsonFiles.length} .json file(s)\n` +
+          `  - ./undeleted: ${undeletedJsonFiles.length} .json file(s)\n` +
+          `Please clear these folders before running the script.`
+      );
+    }
+
     console.log(`🔍 Fetching document list from "${dbName}"...`);
 
     const changesUrl = `${COUCHDB_URL}/${encodeURIComponent(dbName)}/_changes?style=all_docs&include_docs=true`;
