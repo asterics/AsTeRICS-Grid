@@ -287,7 +287,7 @@ loginService.deleteOnlineUser = async function(user = '', password) {
     }
 
     try {
-        const response = await authClient.request('/auth/request-deletion', {
+        const response = await authClient.request('/proxy/request-deletion', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${session.token}:${session.password}`

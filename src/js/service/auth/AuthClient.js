@@ -2,9 +2,8 @@
  * Lightweight cluster-aware auth client for couch-auth endpoints.
  */
 class AuthClient {
-    constructor(serverUrls = [], authPath = '/auth') {
+    constructor(serverUrls = []) {
         this.serverUrls = serverUrls;
-        this.authPath = authPath.endsWith('/') ? authPath.slice(0, -1) : authPath;
         this.session = null;
     }
 
@@ -69,7 +68,7 @@ class AuthClient {
      * Authenticates user against /auth/login.
      */
     async login({ username, password }) {
-        const response = await this.request(`${this.authPath}/login`, {
+        const response = await this.request(`proxy/login`, {
             method: 'POST',
             body: JSON.stringify({ username, password })
         });
@@ -89,7 +88,7 @@ class AuthClient {
      * Registers a new user against /auth/register.
      */
     async register({ username, email, password, confirmPassword }) {
-        const response = await this.request(`${this.authPath}/register`, {
+        const response = await this.request(`proxy/register`, {
             method: 'POST',
             body: JSON.stringify({ username, email, password, confirmPassword })
         });
@@ -111,7 +110,7 @@ class AuthClient {
         if (!this.session) return Promise.resolve();
 
         try {
-            await this.request(`${this.authPath}/logout`, {
+            await this.request(`auth/logout`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.session.token}:${this.session.password}`
