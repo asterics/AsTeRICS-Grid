@@ -50,6 +50,11 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
     thiz.destroy = function () {
         _elements.removeClass(scanActiveClass);
         _inputEventHandler.destroy();
+
+        _elements = null;
+        _currentElement = null;
+        _elementPosInfo = {};
+        _selectionListener = null;
     };
 
     thiz.left = function () {
