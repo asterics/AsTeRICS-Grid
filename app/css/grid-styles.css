@@ -1,3 +1,30 @@
+/* invisible black overlay for all elements - for selection animation */
+.element-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: black;
+    opacity: 0;
+    pointer-events: none; /* Let clicks pass through to the real element */
+    z-index: 5;
+    flex: none; /* Prevent flexbox from shrinking it */
+}
+
+.selected.element-container::after {
+    -webkit-animation: background 0.5s cubic-bezier(1,0,0,1);
+    animation: background 0.5s cubic-bezier(1,0,0,1);
+}
+
+.highlight.element-container::after {
+    animation: background 1s steps(20, end) infinite;
+    -webkit-animation: background 1s steps(20, end) infinite;
+}
+
+.noanimation {
+    -webkit-animation: none !important;
+    animation: none !important;
+}
+
 .grid-item-content {
     overflow: hidden;
     display: flex;
@@ -33,27 +60,14 @@
     margin-bottom: 0;
 }
 
-.selected.element-container {
-    -webkit-animation: background 0.5s cubic-bezier(1,0,0,1);
-    animation: background 0.5s cubic-bezier(1,0,0,1);
-}
-
-.highlight.element-container {
-    animation: background 1s steps(20, end) infinite;
-    -webkit-animation: background 1s steps(20, end) infinite;
-}
-
-.noanimation {
-    -webkit-animation: none !important;
-    animation: none !important;
-}
-
 @-webkit-keyframes background {
-    0% { filter: brightness(50%); }
+    0% { opacity: 0.5; }
+    100% { opacity: 0; }
 }
 
 @keyframes background {
-    0% { filter: brightness(50%); }
+    0% { opacity: 0.5; }
+    100% { opacity: 0; }
 }
 
 .mouseentered.element-container {
@@ -65,13 +79,17 @@
 .marked.element-container {
     outline: 5px solid green !important;
     z-index: 11;
-    filter: brightness(80%);
+}
+.marked.element-container::after {
+    opacity: 0.2; /* Equals 80% brightness, used for performance reasons */
 }
 
 .transfer-prop-source.element-container {
     outline: 5px solid red !important;
     z-index: 11;
-    filter: brightness(80%);
+}
+.transfer-prop-source.element-container::after {
+    opacity: 0.2; /* Equals 80% brightness, used for performance reasons */
 }
 
 .scanInactive.element-container, .scanInactive.element-container span {
