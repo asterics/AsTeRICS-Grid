@@ -9,3 +9,6 @@ backup/
 .idea/
 
 .env
+
+scripts/getDeletedCouchdbDocs/live
+scripts/getDeletedCouchdbDocs/undeleted
