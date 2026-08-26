@@ -67,6 +67,7 @@
     import {gridUtil} from "../../js/util/gridUtil.js";
     import {collectElementService} from "../../js/service/collectElementService.js";
     import SearchBar from '../components/searchBar.vue';
+    import {dataUtil} from "../../js/util/dataUtil";
 
     export default {
         props: ['routeToEdit', 'options'],
@@ -137,7 +138,8 @@
                     thiz.idPathMap = gridUtil.getIdPathMap(homeGridGraphElem);
                 }
                 let count = 0;
-                for (let grid of thiz.grids) {
+                for (let i = 0; i < thiz.grids.length; i++) {
+                    let grid = thiz.grids[i];
                     for (let elem of grid.gridElements) {
                         count++;
                         let labels = Object.entries(elem.label).filter(([lang, label]) => !!label);
@@ -146,6 +148,11 @@
                             let priority = getMatchPriority(label);
                             if (!hadMatch && priority > 0) {
                                 hadMatch = true;
+                                if (elem.image && elem.image.data === dataUtil.getDefaultRemovedPlaceholder()) {
+                                    let realGrid = await dataService.getGrid(grid.id);
+                                    thiz.grids[i] = realGrid;
+                                    elem = realGrid.gridElements.find(e => e.id === elem.id);
+                                }
                                 addResult(grid, elem, label, lang, priority);
                             }
                         }
@@ -202,6 +209,7 @@
         async mounted() {
             this.initPromise = new Promise(async resolve => {
                 this.grids = await dataService.getGrids(true, true);
+                this.grids = await dataService.getGrids(false, true);
                 this.graphList = gridUtil.getGraphList(this.grids);
                 let metadata = await dataService.getMetadata();
                 this.homeGridId = metadata.homeGridId;
