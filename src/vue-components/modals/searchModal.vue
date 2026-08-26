@@ -133,7 +133,7 @@
                 }
                 let results = [];
                 let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
-                let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
+                let homeGridGraphElem = thiz.graphList.find(elem => elem.grid.id === homeGridId);
                 if (!thiz.idPathMap) {
                     thiz.idPathMap = gridUtil.getIdPathMap(homeGridGraphElem);
                 }
@@ -208,11 +208,15 @@
         },
         async mounted() {
             this.initPromise = new Promise(async resolve => {
-                this.grids = await dataService.getGrids(true, true);
                 this.grids = await dataService.getGrids(false, true);
-                this.graphList = gridUtil.getGraphList(this.grids);
                 let metadata = await dataService.getMetadata();
                 this.homeGridId = metadata.homeGridId;
+                let globalGrid = await dataService.getGlobalGrid();
+                let homeGrid = this.grids.find(g => g.id === this.homeGridId);
+                if (globalGrid && homeGrid) {
+                    homeGrid.gridElements = homeGrid.gridElements.concat(globalGrid.gridElements);
+                }
+                this.graphList = gridUtil.getGraphList(this.grids);
                 resolve();
             });
             if (this.options) {
