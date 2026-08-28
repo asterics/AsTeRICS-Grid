@@ -42,6 +42,62 @@ helpService.revertToLastLocation = function () {
 };
 
 /**
+ * sets help location to `04_navigation-overview`
+ * @param {("#navigation-overview" | "#add-offline-user" | "#add-online-user" | "#change-user")} hash
+ */
+helpService.setHelpLocationNavigation = function (hash) {
+    helpService.setHelpLocation('04_navigation-overview', hash);
+};
+
+/**
+ * sets help location to `06_editing-grid`
+ * @param {("#edit-view" | "#manage-grids-view")} hash 
+ */
+helpService.setHelpLocationEditGrid = function (hash) {
+    helpService.setHelpLocation('06_editing-grid', hash);
+}
+
+/**
+ * sets help location to `07_grid-elements`
+ * @param {("#tab-general" | "#tab-image" | "#tab-actions")} hash
+ */
+helpService.setHelpLocationGridElement = function (hash) {
+    helpService.setHelpLocation('07_grid-elements', hash);
+};
+
+/**
+ * sets help location to `07a_word-forms`
+ * @param {("#general")} hash
+ */
+helpService.setHelpLocationGridElementWordForm = function (hash) {
+    helpService.setHelpLocation('07a_word-forms', hash);
+};
+
+/**
+ * sets help location to `08_actions`
+ * @param {("#asterics-action")} hash
+ */
+helpService.setHelpLocationActions = function (hash) {
+    helpService.setHelpLocation('08_actions', hash);
+};
+
+/**
+ * sets help location to `09_input-options`
+ * @param {("#mouse-touch-input" | "#scanning" | "#direction-input" | "#huffman-input" | "#sequential-input")} hash
+ */
+helpService.setHelpLocationInputOptions = function (hash) {
+    helpService.setHelpLocation('09_input-options', hash);
+};
+
+/**
+ * sets help location to `10_dictionaries`
+ * @param {("#dictionaries" | "#add-words" | "#edit-dictionaries")} hash
+ */
+helpService.setHelpLocationDictonaries = function (hash) {
+    helpService.setHelpLocation('10_dictionaries', hash);
+};
+
+/**
  * opens help in a new tab
  */
 helpService.openHelp = function () {
