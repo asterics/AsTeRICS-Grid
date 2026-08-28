@@ -69,6 +69,28 @@ After `yarn install` the following commands are available:
 5. `npm run release-latest` -> same as `npm run release` but with destination https://grid.asterics.eu/latest/
 5. `npm run test` -> runs tests of the project using [Jest](https://jestjs.io/).
 
+## Run project locally with Docker for developers
+
+1. clone the project `git clone git@github.com:asterics/Asterics-AAC.git`
+2. go to the directory of the cloned project
+3. build the container image `docker compose -f ./compose.dev.yml build`
+4. start the application `docker compose -f ./compose.dev.yml up`
+5. stop the application `docker compose -f ./compose.dev.yml down`
+
+Asterics AAC will be accessible  at `http://localhost:9095` with CouchDB configured.
+
+You can access the container shell, for example to run Npm scripts, using the following commands :
+
+- `docker exec -it asterics-aac-development-application-1 /bin/sh` --> Asterics AAC container.
+- `docker exec -it asterics-aac-development-database-1 /bin/sh` --> CouchDB container.
+
+You can also run commands directly from the host machine :
+
+- `docker exec -it asterics-aac-development-application-1 npm run build`
+- `docker exec -it asterics-aac-development-application-1 npm run release`
+- `docker exec -it asterics-aac-development-application-1 npm run release-latest`
+- `docker exec -it asterics-aac-development-application-1 npm run test`
+
 ## Support us
 While development is currently funded within research projects (see below), the non-profit [AsTeRICS Foundation](https://www.asterics-foundation.org/) pays for the running server costs. If you want to contribute to these costs, you're very welcome to donate:
 
