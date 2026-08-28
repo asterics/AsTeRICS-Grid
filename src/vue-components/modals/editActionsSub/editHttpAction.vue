@@ -77,10 +77,6 @@ export default {
 </script>
 
 <style scoped>
-.normal-text {
-    font-weight: normal;
-}
-
 .row {
     margin-bottom: 1em;
 }
