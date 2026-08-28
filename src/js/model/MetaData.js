@@ -25,6 +25,11 @@ class MetaData extends Model({
     colorConfig: [ColorConfig],
     textConfig: [TextConfig],
     notificationConfig: [NotificationConfig],
+        showPictogramsInPredictions: [Boolean],
+        pictogramPredictionLang: [String],
+        pictogramPredictionProvider: [String],
+        refreshPredictionsWhileTyping: [Boolean],
+
     activateARASAACGrammarAPI: [Boolean],
     vocabularyLevel: [Number, null],
     integrations: [Object] // IntegrationConfigSync
@@ -99,6 +104,12 @@ MetaData.defaults({
     fullscreen: undefined,
     hashCodes: {},
     inputConfig: new InputConfig(),
+    showPictogramsInPredictions: false,
+    pictogramPredictionProvider: 'GLOBALSYMBOLS',
+    refreshPredictionsWhileTyping: false,
+
+    pictogramPredictionLang: null,
+
     globalGridActive: false,
     globalGridHeightPercentage: 17,
     firstRowHeightFactor: 1,

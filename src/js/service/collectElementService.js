@@ -657,12 +657,16 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         addTextElem(liveElementService.getLastValue(element.id) + ' ');
     }
     updateCollectElements();
+    // Ensure predictions refresh after any element interaction (works for whole-word pages too)
+    try { predictionService.predict(getPredictText(), dictionaryKey); } catch(e) {}
+
 });
 
 function triggerPredict() {
     registeredCollectElements.forEach((collectElement) => {
         let predictAction = getActionOfType(collectElement, 'GridActionPredict');
-        if (predictAction && predictAction.suggestOnChange) {
+        const globalRefresh = _localMetadata && _localMetadata.refreshPredictionsWhileTyping;
+        if ((predictAction && predictAction.suggestOnChange) || globalRefresh) {
             predictionService.predict(getPredictText(), dictionaryKey);
         }
     });
@@ -672,6 +676,10 @@ async function getMetadataConfig() {
     _localMetadata = await dataService.getMetadata();
     convertMode = _localMetadata.textConfig.convertMode;
     activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
+    // ensure default for new flag if missing
+    if (typeof _localMetadata.refreshPredictionsWhileTyping === 'undefined') {
+        _localMetadata.refreshPredictionsWhileTyping = false;
+    }
 }
 
 window.handleCollectElementImageError = function() {

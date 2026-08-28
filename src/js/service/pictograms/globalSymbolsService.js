@@ -1,4 +1,3 @@
-import $ from '../../externals/jquery.js';
 import { util } from '../../util/util';
 import { i18nService } from '../i18nService';
 
@@ -51,7 +50,8 @@ globalSymbolsService.getSearchProviderInfo = function () {
 globalSymbolsService.query = function (search, options, searchLang) {
     _lastChunkNr = 1;
     _hasNextChunk = false;
-    return queryInternal(search, searchLang);
+    _lastLang = searchLang || i18nService.getAppLang();
+    return queryInternal(search, _lastLang);
 };
 
 /**
