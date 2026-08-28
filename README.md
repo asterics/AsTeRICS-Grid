@@ -133,6 +133,7 @@ Other people and organizations we want to thank:
     * [jQuery context menu](https://swisnl.github.io/jQuery-contextMenu/)
     * [jQuery UI](https://jqueryui.com/)
     * [loglevel](https://github.com/pimterry/loglevel)
+    * [ZXing for JS (@zxing/browser)](https://github.com/zxing-js/browser)
 
 ## License
 

@@ -50,7 +50,11 @@ class InputConfig extends Model({
     huffShowNumbers: [Boolean],
     huffColorWholeElement: [Boolean],
     huffTimeout: [Number],
-    huffMarkInactive: [Boolean]
+    huffMarkInactive: [Boolean],
+    codeReaderEnabled: [Boolean], //handheld code reader (digital microscope) input - optional, off by default
+    codeReaderFormats: [Model.Array(String)], //ZXing BarcodeFormat names to decode, e.g. DATA_MATRIX, QR_CODE, AZTEC
+    codeReaderMatchMode: [String], //how a decoded code is matched to a grid element: 'id', 'label' or 'idAndLabel'
+    codeReaderCooldownMs: [Number] //debounce time in ms before the same code can trigger the action again
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -85,6 +89,18 @@ InputConfig.NEXT_ELEMENT = 'NEXT_ELEMENT';
 InputConfig.PREVIOUS_ELEMENT = 'PREVIOUS_ELEMENT';
 InputConfig.GENERAL_INPUT = 'GENERAL_INPUT';
 InputConfig.getNumConst = (num) => 'NUM' + num;
+
+InputConfig.CODE_READER_MATCH_ID = 'id';
+InputConfig.CODE_READER_MATCH_LABEL = 'label';
+InputConfig.CODE_READER_MATCH_ID_AND_LABEL = 'idAndLabel';
+InputConfig.CODE_READER_FORMAT_DATA_MATRIX = 'DATA_MATRIX';
+InputConfig.CODE_READER_FORMAT_QR_CODE = 'QR_CODE';
+InputConfig.CODE_READER_FORMAT_AZTEC = 'AZTEC';
+InputConfig.DEFAULT_CODE_READER_FORMATS = [
+    InputConfig.CODE_READER_FORMAT_DATA_MATRIX,
+    InputConfig.CODE_READER_FORMAT_QR_CODE,
+    InputConfig.CODE_READER_FORMAT_AZTEC
+];
 
 InputConfig.DEFAULT_SCAN_INPUTS = [
     new InputEventKey({ label: InputConfig.SELECT, keyCode: 32, keyName: 'Space', holdDuration: 400 }),
@@ -153,7 +169,11 @@ InputConfig.defaults({
     huffShowNumbers: true,
     huffElementCount: 0,
     huffTimeout: 4000,
-    huffMarkInactive: true
+    huffMarkInactive: true,
+    codeReaderEnabled: false,
+    codeReaderFormats: InputConfig.DEFAULT_CODE_READER_FORMATS,
+    codeReaderMatchMode: InputConfig.CODE_READER_MATCH_ID_AND_LABEL,
+    codeReaderCooldownMs: 1500
 });
 
 export { InputConfig };
