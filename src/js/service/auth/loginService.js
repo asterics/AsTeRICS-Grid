@@ -28,9 +28,13 @@ let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
 
 // Configure multi-node URLs based on environment
-let _serverUrls = (constants.IS_ENVIRONMENT_PROD || constants.FORCE_CONNECT_DB)
-    ? constants.DBS_SERVERS_PROD
-    : constants.DBS_SERVERS_TEST;
+let _serverUrls = constants.DBS_SERVERS_DEV;
+if (constants.IS_ENVIRONMENT_PROD || constants.FORCE_CONNECT_DB) {
+    _serverUrls = constants.DBS_SERVERS_PROD;
+}
+if (constants.IS_ENVIRONMENT_BETA) {
+    _serverUrls = constants.DBS_SERVERS_TEST;
+}
 
 authClient.setServerUrls(_serverUrls);
 

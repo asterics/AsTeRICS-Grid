@@ -94,6 +94,7 @@ constants.SUPPORTS_SERVICE_WORKER = ('serviceWorker' in navigator)
 
 constants.DBS_SERVERS_PROD = ['https://dbs1.asterics-foundation.org', 'https://dbs2.asterics-foundation.org', 'https://dbs3.asterics-foundation.org'];
 constants.DBS_SERVERS_TEST = ['https://dbs-test1.asterics-foundation.org', 'https://dbs-test2.asterics-foundation.org', 'https://dbs-test3.asterics-foundation.org'];
+constants.DBS_SERVERS_DEV = ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'];
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
