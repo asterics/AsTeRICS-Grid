@@ -93,6 +93,12 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
             _destroyCallback = null;
         }
         _inputEventHandler.destroy();
+
+        _elements = null;
+        _treeItems = null;
+        _currentElement = null;
+        _appendedElements = [];
+        _selectionListener = null;
     };
 
     thiz.reinit = function () {

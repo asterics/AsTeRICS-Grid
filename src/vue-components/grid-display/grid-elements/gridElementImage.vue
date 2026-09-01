@@ -1,6 +1,6 @@
 <template>
     <div class="img-container" v-if="imageData" :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 0 : 1}`">
-        <img :src="imageData" draggable="false" :crossorigin="corsActive ? 'anonymous' : null" @error="handleImageError" alt=""/>
+        <img ref="imgElement" :src="imageData" draggable="false" :crossorigin="corsActive ? 'anonymous' : null" @error="handleImageError" alt=""/>
     </div>
 </template>
 
@@ -32,6 +32,12 @@ export default {
         }
     },
     mounted() {
+    },
+    beforeDestroy() {
+        if (this.$refs.imgElement) {
+            // Flush the URL to release the network stream and VRAM texture
+            this.$refs.imgElement.src = '';
+        }
     }
 }
 </script>

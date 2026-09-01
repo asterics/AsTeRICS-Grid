@@ -367,6 +367,12 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         thiz.disableTouchScanning();
         _inputEventHandler.destroy();
         _startEventHandler.destroy();
+
+        _currentActiveScanElements = null;
+        _touchElement = null;
+        _selectionListener = null;
+        _activeListener = null;
+        _nextScanFn = null;
     };
 
     /**

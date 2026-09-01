@@ -221,6 +221,13 @@ function HoverConstructor(itemSelector, options) {
             clearTimeout(_hoverMap[key]);
         });
         stateService.clearListeners(constants.STATE_ACTIVATED_TTS);
+
+        _elements = [];
+        _lastElement = null;
+        _lastTouchEvent = null;
+        _hoverMap = {};
+        _selectionListener = null;
+        _activeListener = null;
     };
 
     thiz.setHoverTimeout = function (timeoutMs) {
