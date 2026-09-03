@@ -67,6 +67,7 @@
     import {gridUtil} from "../../js/util/gridUtil.js";
     import {collectElementService} from "../../js/service/collectElementService.js";
     import SearchBar from '../components/searchBar.vue';
+    import {dataUtil} from "../../js/util/dataUtil";
 
     export default {
         props: ['routeToEdit', 'options'],
@@ -132,12 +133,13 @@
                 }
                 let results = [];
                 let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
-                let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
+                let homeGridGraphElem = thiz.graphList.find(elem => elem.grid.id === homeGridId);
                 if (!thiz.idPathMap) {
                     thiz.idPathMap = gridUtil.getIdPathMap(homeGridGraphElem);
                 }
                 let count = 0;
-                for (let grid of thiz.grids) {
+                for (let i = 0; i < thiz.grids.length; i++) {
+                    let grid = thiz.grids[i];
                     for (let elem of grid.gridElements) {
                         count++;
                         let labels = Object.entries(elem.label).filter(([lang, label]) => !!label);
@@ -146,6 +148,11 @@
                             let priority = getMatchPriority(label);
                             if (!hadMatch && priority > 0) {
                                 hadMatch = true;
+                                if (elem.image && elem.image.data === dataUtil.getDefaultRemovedPlaceholder()) {
+                                    let realGrid = await dataService.getGrid(grid.id);
+                                    thiz.grids[i] = realGrid;
+                                    elem = realGrid.gridElements.find(e => e.id === elem.id);
+                                }
                                 addResult(grid, elem, label, lang, priority);
                             }
                         }
@@ -201,10 +208,15 @@
         },
         async mounted() {
             this.initPromise = new Promise(async resolve => {
-                this.grids = await dataService.getGrids(true, true);
-                this.graphList = gridUtil.getGraphList(this.grids);
+                this.grids = await dataService.getGrids(false, true);
                 let metadata = await dataService.getMetadata();
                 this.homeGridId = metadata.homeGridId;
+                let globalGrid = await dataService.getGlobalGrid();
+                let homeGrid = this.grids.find(g => g.id === this.homeGridId);
+                if (globalGrid && homeGrid) {
+                    homeGrid.gridElements = homeGrid.gridElements.concat(globalGrid.gridElements);
+                }
+                this.graphList = gridUtil.getGraphList(this.grids);
                 resolve();
             });
             if (this.options) {

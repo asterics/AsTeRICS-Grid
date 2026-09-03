@@ -148,45 +148,6 @@ test('gridUtil.getPath - Test 6 - no path', () => {
     expect(path.length).toEqual(0);
 });
 
-test('gridUtil.getAllPaths - Test 1 - normal tree', () => {
-    let grids = [getGrid(1, [2, 3]), getGrid(2, []), getGrid(3, [4, 5]), getGrid(4, []), getGrid(5, [])];
-    let graphList = gridUtil.getGraphList(grids);
-    let paths = gridUtil.getAllPaths(graphList.filter((elem) => elem.grid.id === 1)[0]);
-    let pathsWithIds = paths.map((path) => path.map((e) => e.grid.id));
-    let pathsWithIdsString = JSON.stringify(pathsWithIds);
-    expect(pathsWithIdsString).toContain("[1,2]");
-    expect(pathsWithIdsString).toContain("[1,3,4]");
-    expect(pathsWithIdsString).toContain("[1,3,5]");
-});
-
-test('gridUtil.getAllPaths - Test 2 - two paths to same element', () => {
-    let grids = [getGrid(1, [2, 3]), getGrid(2, [3]), getGrid(3, [])];
-    let graphList = gridUtil.getGraphList(grids);
-    let paths = gridUtil.getAllPaths(graphList.filter((elem) => elem.grid.id === 1)[0]);
-    let pathsWithIds = paths.map((path) => path.map((e) => e.grid.id));
-    let pathsWithIdsString = JSON.stringify(pathsWithIds);
-    expect(pathsWithIdsString).toContain("[1,2,3]");
-    expect(pathsWithIdsString).toContain("[1,3]");
-});
-
-test('gridUtil.getAllPaths - Test 3 - circular', () => {
-    let grids = [getGrid(1, [2]), getGrid(2, [3]), getGrid(3, [1])];
-    let graphList = gridUtil.getGraphList(grids);
-    let paths = gridUtil.getAllPaths(graphList.filter((elem) => elem.grid.id === 1)[0]);
-    let pathsWithIds = paths.map((path) => path.map((e) => e.grid.id));
-    let pathsWithIdsString = JSON.stringify(pathsWithIds);
-    expect(pathsWithIds.length).toEqual(1);
-    expect(pathsWithIdsString).toContain("[1,2,3]");
-});
-
-test('gridUtil.getAllPaths - Test 4 - single elem', () => {
-    let grids = [getGrid(1, [])];
-    let graphList = gridUtil.getGraphList(grids);
-    let paths = gridUtil.getAllPaths(graphList[0]);
-    let pathsWithIds = paths.map((path) => path.map((e) => e.grid.id));
-    expect(pathsWithIds.length).toEqual(1);
-});
-
 function getGrid(id, navigateToList) {
     let elements = [];
     for (let navId of navigateToList) {

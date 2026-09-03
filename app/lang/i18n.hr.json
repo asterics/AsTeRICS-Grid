@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Stvori elemente ploče",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Poveži jezik glasa sa jezikom prijevoda izgovorenog teksta",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Iprobaj glas",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Preuzeti sada",

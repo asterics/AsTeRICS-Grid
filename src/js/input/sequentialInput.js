@@ -78,6 +78,10 @@ function SequentialInputConstructor(options) {
         _inputEventHandler.destroy();
         _startEventHandler.destroy();
         _elements.removeClass(options.activeClass);
+
+        _elements = null;
+        options.selectionListener = null;
+        options.activeListener = null;
     };
 
     thiz.next = function () {

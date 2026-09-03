@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Creați elemente de grilă",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Corelarea limbii vocale cu limba de traducere a textului vorbit",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Vocea de test",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Descarcă acum",

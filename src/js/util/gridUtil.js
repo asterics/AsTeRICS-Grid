@@ -362,65 +362,31 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
 };
 
 /**
- * returns an array of all possible paths through the grid graph given a start element
- * @param startGraphElem the graph element to start
- * @param paths internal, used for recursion
- * @param currentPath internal, used for recursion
- * @param existingPathEndsMap internal, used for recursion, a map for counting how often a specific grid was the
- *                            last grid of an existing path. So map[gridId] === 3 means that in the current calculated
- *                            paths there are 3 paths that have grid with "gridId" as last element
- * @return {*[]|number} an array containing all possible paths through the graph with the given
- *                      start element.
- *                      e.g. [[startElem.grid, childGrid, childOfChild, ...],
- *                            [startElem.grid, otherChild, ...], ...]
- */
-gridUtil.getAllPaths = function (startGraphElem, paths, currentPath, existingPathEndsMap = {}) {
-    let MAX_PATHS_TO_SAME_GRID = 1;
-    if (!startGraphElem) {
-        return [];
-    }
-    paths = paths || [];
-    currentPath = currentPath || [];
-    if (currentPath.includes(startGraphElem)) {
-        addPath();
-        return paths;
-    }
-    currentPath.push(startGraphElem);
-    if (startGraphElem.children.length === 0) {
-        addPath();
-        return paths;
-    }
-    let lastId = currentPath[currentPath.length - 1].grid.id;
-    if (existingPathEndsMap[lastId] >= MAX_PATHS_TO_SAME_GRID) {
-        addPath();
-        return paths;
-    }
-    for (let child of startGraphElem.children) {
-        gridUtil.getAllPaths(child, paths, currentPath.concat([]), existingPathEndsMap);
-    }
-    return paths;
-
-    function addPath() {
-        paths.push(currentPath);
-        let lastId = currentPath[currentPath.length - 1].grid.id;
-        existingPathEndsMap[lastId] = existingPathEndsMap[lastId] ? existingPathEndsMap[lastId] + 1 : 1;
-    }
-}
-
-/**
  * returns a map [gridID] => [shortest path from start elem] for all existing grids that can be reached
- * from startElem
+ * from startElem using Breadth-First Search for high performance.
  * @param startGraphElem start element, one that was returned by gridUtil.getGraphList
  * @return {{}}
  */
 gridUtil.getIdPathMap = function (startGraphElem) {
-    let allPaths = gridUtil.getAllPaths(startGraphElem);
     let idPathMap = {};
-    for (let path of allPaths) {
-        for (let i = 0; i < path.length; i++) {
-            let elem = path[i];
-            if (!idPathMap[elem.grid.id] || idPathMap[elem.grid.id].length > i + 1) {
-                idPathMap[elem.grid.id] = path.slice(0, i + 1);
+    if (!startGraphElem) {
+        return idPathMap;
+    }
+
+    // Initialize queue with the starting element
+    let queue = [ [startGraphElem] ];
+    idPathMap[startGraphElem.grid.id] = [startGraphElem];
+
+    while (queue.length > 0) {
+        let currentPath = queue.shift();
+        let currentElem = currentPath[currentPath.length - 1];
+
+        for (let child of currentElem.children) {
+            // Only process if we haven't found a path to this grid yet
+            if (!idPathMap[child.grid.id]) {
+                let newPath = currentPath.concat([child]);
+                idPathMap[child.grid.id] = newPath;
+                queue.push(newPath);
             }
         }
     }

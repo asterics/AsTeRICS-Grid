@@ -83,6 +83,8 @@ function ClickerConstructor(itemSelector, options) {
             item.removeEventListener('dblclick', ondblclick);
             item.removeEventListener('keydown', onkeydown);
         });
+        _elements = [];
+        _selectionListener = null;
     };
 
     thiz.setSelectionListener = function (fn) {

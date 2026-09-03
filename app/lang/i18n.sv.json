@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Skapa rutnätselement",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Testa rösten",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Ladda ner nu",

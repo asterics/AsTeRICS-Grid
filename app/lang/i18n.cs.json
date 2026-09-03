@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Vytvořit nové prvky tabulky",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Propojení hlasového jazyka s jazykem překladu mluveného textu",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Test hlasu",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Stáhnout nyní",
