@@ -1050,7 +1050,7 @@
   },
   "createGridElements": "Grid-Elemente erstellen",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Verknüpfe Sprache der Stimme mit Übersetzungs-Sprache des gesprochenen Textes",
-  "waitForSpeechToFinish": "Always wait for current speech to finish",
+  "waitForSpeechToFinish": "Sprachausgabe immer ausreden lassen",
   "testVoice": "Stimme testen",
   "pleaseConsiderToDownloadABackup": "Bitte lade zur Sicherheit ein Backup der Konfiguration herunter um sie vor Verlust zu schützen.",
   "downloadNow": "Herunterladen",
