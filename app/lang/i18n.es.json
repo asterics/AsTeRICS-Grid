@@ -1050,7 +1050,7 @@
   },
   "createGridElements": "Crear celdas",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular idioma de la voz a la traducción del texto locutado",
-  "waitForSpeechToFinish": "Esperar siempre a que finalice la locución actual",
+  "waitForSpeechToFinish": "No reproducir una nueva locución hasta finalizar la locución actual",
   "testVoice": "Probar voz",
   "pleaseConsiderToDownloadABackup": "Por favor, considere la posibilidad de descargar una copia de seguridad de su comunicador para no perder su trabajo.",
   "downloadNow": "Descargar ahora",
