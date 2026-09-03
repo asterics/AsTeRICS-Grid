@@ -1,0 +1,21 @@
+LOGO
+
+Logo Font-family logo: Hack
+Logo font color: RGBA 3983c3ff, HEX #3983c3
+Logo blue stroke: RGBA 16bdeeff, HEX #16bdee
+logo black stroke: RGBA 0b0707ff, HEX #0b0707
+
+
+SOCIAL MEDIA
+
+Size Social Media Posts 1080x680
+background form color blue: RGBA f6fcfeff, HEX #f6fcfe
+background form color grey: RGBA f5f5f5ff, HEX #f5f5f5
+
+Title: Hack, Bold, 32, line space 85, RGBA 3983c3ff, HEX #3983c3 , uppercase
+Subtitle: Montserrat, Bold, 16-18, line space 1,6, RGBA 16bdeeff, HEX #16bdee
+Text: Montserrat, Semi-Bold/Normal, 14-16, line space 1.5-1.6, RGBA 333333ff ( = 80% grey, HEX #333333)
+Notes, dates: Montserrat, Light Italic, 12, RGBA 4d4d4dff ( = 70% grey, HEX #4d4d4d)
+Infobox font: Montserrat, Italic, 14, RGBA 1a1a1aff ( = 90% grey, HEX #1a1a1a)
+Infobox background color RGBA ffefdeff, HEX #ffefde
+Infobox border color RGBA ffe0bfff, HEX #ffe0bf

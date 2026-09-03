@@ -1,0 +1,624 @@
+{
+   "_cellBoards":{
+      "home.envControl":[
+         {
+            "title":"hifi artlab",
+            "translatedTitle":"hifi artlab",
+            "faIcon":"building-o",
+            "type":"CB_TYPE_SUBCB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "toState":"home.envControl.hifi artlab",
+            "tooltip":"i18n_ec_tooltip_click_subcb",
+            "tooltipParams":{
+               "device":"hifi artlab"
+            },
+            "class":"subfolder-button"
+         },
+         {
+            "title":"TV artlab Schlafzimm",
+            "translatedTitle":"TV artlab Schlafzimm",
+            "faIcon":"building-o",
+            "type":"CB_TYPE_SUBCB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "toState":"home.envControl.tv artlab schlafzimm",
+            "tooltip":"i18n_ec_tooltip_click_subcb",
+            "tooltipParams":{
+               "device":"TV artlab Schlafzimm"
+            },
+            "class":"subfolder-button"
+         },
+         {
+            "title":"DVD artlab",
+            "translatedTitle":"DVD artlab",
+            "faIcon":"building-o",
+            "type":"CB_TYPE_SUBCB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "toState":"home.envControl.dvd artlab",
+            "tooltip":"i18n_ec_tooltip_click_subcb",
+            "tooltipParams":{
+               "device":"DVD artlab"
+            },
+            "class":"subfolder-button"
+         },
+         {
+            "title":"TV-Artlab",
+            "translatedTitle":"TV-Artlab",
+            "faIcon":"building-o",
+            "type":"CB_TYPE_SUBCB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "toState":"home.envControl.tv-artlab",
+            "tooltip":"i18n_ec_tooltip_click_subcb",
+            "tooltipParams":{
+               "device":"TV-Artlab"
+            },
+            "class":"subfolder-button"
+         }
+      ],
+      "home.envControl.tv-artlab":[
+         {
+            "title":"onoff",
+            "translatedTitle":"onoff",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-USB@IRTRANS:sndhex H5E010000000032260300E5004200AD2504000000000000000001B0002F002B002F00000000000000000383885330313030303030303030303030313030303030303030303130303030303030303130313131313030313031313131303130",
+            "class":"action-button"
+         },
+         {
+            "title":"input",
+            "translatedTitle":"input",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-USB@IRTRANS:sndhex H5E010000000032260300E3004200AB2502000000000000000001B1002F002D003000000000000000000382835330313030303030303030303030313030303030303030303130303030303030303130313030303030313031303030303130",
+            "class":"action-button"
+         },
+         {
+            "title":"vol up",
+            "translatedTitle":"vol up",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-USB@IRTRANS:sndhex H5E010000000032260300E3004200AD2505000000000000000001B10030002D003000000000000000000382825330313030303030303030303030313030303030303030303130303030303030303030303030313030303030303031303130",
+            "class":"action-button"
+         },
+         {
+            "title":"vol down",
+            "translatedTitle":"vol down",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-USB@IRTRANS:sndhex H5E010000000032260300E4003E00AC2505000000000000000001B000300030003000000000000000000383825330313030303030303030303030313030303030303030303130303030303030303130303030313030313030303031303130",
+            "class":"action-button"
+         },
+         {
+            "title":"vol mute",
+            "translatedTitle":"vol mute",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-USB@IRTRANS:sndhex H5E010000000032260300E5003E00AD2504000000000000000001B00030002F003000000000000000000382845330313030303030303030303030313030303030303030303130303030303030303031303031313030303130303131303130",
+            "class":"action-button"
+         },
+         {
+            "title":"ch up",
+            "translatedTitle":"ch up",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-USB@IRTRANS:sndhex H5E010000000032260300E4003F00AD2504000000000000000001B0002F0030002F00000000000000000382845330313030303030303030303030313030303030303030303130303030303030303030313031313030303031303131303130",
+            "class":"action-button"
+         },
+         {
+            "title":"ch down",
+            "translatedTitle":"ch down",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-USB@IRTRANS:sndhex H5E010000000032260300E4003E00AB2504000000000000000001B0002F0031003000000000000000000382855330313030303030303030303030313030303030303030303130303030303030303130313031313030313031303131303130",
+            "class":"action-button"
+         }
+      ],
+      "home.envControl.dvd artlab":[
+         {
+            "title":"onoff",
+            "translatedTitle":"onoff",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004900C3023A1C24000000000000022F0038003400350039000000000000048278533030303030313030303030303030303032313131303030303030303030313131313131313130",
+            "class":"action-button"
+         },
+         {
+            "title":"prev",
+            "translatedTitle":"prev",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004500C202391C2500000000000002300038003900390038000000000000048278533030303030313030303030303030303032313131303130313130303030303130303131313130",
+            "class":"action-button"
+         },
+         {
+            "title":"next",
+            "translatedTitle":"next",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004600C3023A1C24000000000000022F0038003800390039000000000000048278533030303030313030303030303030303032313131303130303031303030303131313031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"stop",
+            "translatedTitle":"stop",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004800C4023A1C24000000000000022F0039003400350039000000000000048278533030303030313030303030303030303032313131303131303031303030303031313031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"play",
+            "translatedTitle":"play",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5301000000002726030239004600C2023B1C2400000000000002300038003900380038000000000000048278533030303030313030303030303030303032313131303030313031303030313130313031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"pause",
+            "translatedTitle":"pause",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272601023A004500C3023B000000000000000002300038003800380000000000000000040100533030303030313030303030303030303032313131303031303031313030313031313030313130",
+            "class":"action-button"
+         },
+         {
+            "title":"left",
+            "translatedTitle":"left",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5301000000002726030239004900C302391C2600000000000002300038003500350036000000000000048278533030303030313030303030303030303032313131303131303131303030303031303031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"up",
+            "translatedTitle":"up",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004500C2023A1C27000000000000022F0039003900380038000000000000048278533030303030313030303030303030303032313131303030303131303030313131303031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"right",
+            "translatedTitle":"right",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004800C6023A1C25000000000000022E0039003500350036000000000000048278533030303030313030303030303030303032313131303031303131303030313031303031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"down",
+            "translatedTitle":"down",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5301000000002726030239004500C302391C2500000000000002300038003800390039000000000000048278533030303030313030303030303030303032313131303130303131303030303131303031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"ok",
+            "translatedTitle":"ok",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272601023A004800C2023A0000000000000000022E0039003500350000000000000000040100533030303030313030303030303030303032313131303030313131303030313130303031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"forward",
+            "translatedTitle":"forward",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004800C5023A1C24000000000000022F0039003600340038000000000000048278533030303030313030303030303030303032313131303130313031303030303130313031313130",
+            "class":"action-button"
+         },
+         {
+            "title":"rewind",
+            "translatedTitle":"rewind",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H530100000000272603023A004900C302391C24000000000000022F0038003500350039000000000000048278533030303030313030303030303030303032313131303031303031303030313031313031313130",
+            "class":"action-button"
+         }
+      ],
+      "home.envControl.tv artlab schlafzimm":[
+         {
+            "title":"onoff",
+            "translatedTitle":"onoff",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010233004B00D4011D1367000000000000045A00420043045A0042000000000000050100533030303030303130313131313131303130313030313030303130313130313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"input",
+            "translatedTitle":"input",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010233004B00D5011C1367000000000000045B00420042045B0042000000000000050100533030303030303130313131313131303130303130313030303131303130313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"volup",
+            "translatedTitle":"volup",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010234004C00D5011D1367000000000000045A00410042045A0042000000000000050100533030303030303130313131313131303130313031313030303130313030313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"voldown",
+            "translatedTitle":"voldown",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010233004B00D5011D1368000000000000045B00420042045A0041000000000000050100533030303030303130313131313131303130313131313030303130303030313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"ch up",
+            "translatedTitle":"ch up",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010232004B00D4011E1367000000000000045B00420042045A0041000000000000050100533030303030303130313131313131303131313031313030303030313030313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"ch down",
+            "translatedTitle":"ch down",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010233004B00D4011C1367000000000000045B00420043045B0042000000000000050100533030303030303130313131313131303131313131313030303030303030313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"vol mute",
+            "translatedTitle":"vol mute",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010234004B00D5011D1367000000000000045A00420042045A0042000000000000050100533030303030303130313131313131303130303030313030303131313130313131333230",
+            "class":"action-button"
+         }
+      ],
+      "home.envControl.hifi artlab":[
+         {
+            "title":"onoff",
+            "translatedTitle":"onoff",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010237004A00D8011F137900000000000004600043004304600042000000000000050100533031313131313130313030303030303130313031303130303130313031303131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"input next",
+            "translatedTitle":"input next",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010237004C00D7011F140600000000000004610041004304600042000000000000050100533031303131313130313031303030303131313131313030303030303030313130333230",
+            "class":"action-button"
+         },
+         {
+            "title":"input prev",
+            "translatedTitle":"input prev",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004B00D8011F1406000000000000046000420042045F0043000000000000050100533031303131313130313031303030303131313030303130303030313131303130333230",
+            "class":"action-button"
+         },
+         {
+            "title":"tuner in",
+            "translatedTitle":"tuner in",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004B00D9011F1379000000000000045F0042004204600043000000000000050100533031303131313130313031303030303130313130313030303130303130313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"net in",
+            "translatedTitle":"net in",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004B00D7011F1379000000000000046000420043045F0042000000000000050100533131313131313130313030303030303031313131313130303030303030303131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"usb in",
+            "translatedTitle":"usb in",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010237004B00D8011F1406000000000000046000430042045F0043000000000000050100533131313131313130313030303030303030313030313131303130313130303030333230",
+            "class":"action-button"
+         },
+         {
+            "title":"bluetooth in",
+            "translatedTitle":"bluetooth in",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010239004E00D7011E12EB000000000000045E0042004004600042000000000000050100533031303131313130313031303030303130313131313130313130303030303131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"vol-up",
+            "translatedTitle":"vol-up",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010237004E00D7011F137800000000000004600042004004600042000000000000050100533031303131313130313031303030303130313031313030303130313030313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"vol-down",
+            "translatedTitle":"vol-down",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010239004F00D7011F1379000000000000045F00410040045F0042000000000000050100533031303131313130313031303030303131313031313030303030313030313131333230",
+            "class":"action-button"
+         },
+         {
+            "title":"ch up",
+            "translatedTitle":"ch up",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004F00D8011F12EC000000000000045F0042003F045F0042000000000000050100533031303131313130313031303030303130313031303031313130313031313031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"ch down",
+            "translatedTitle":"ch down",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004E00D8011E12EB000000000000045F0043003F04600043000000000000050100533031303131313130313031303030303131313031303031313030313031313031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"play",
+            "translatedTitle":"play",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004E00D8011F1379000000000000046000430042045F0043000000000000050100533131313131313130313030303030303030303031303131303131313031303031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"play next",
+            "translatedTitle":"play next",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010237004E00D9011F1377000000000000046000430042045F0043000000000000050100533131313131313130313030303030303031303131303131303031303031303031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"play prev",
+            "translatedTitle":"play prev",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004F00D8011E1378000000000000045F0042004204600043000000000000050100533131313131313130313030303030303030303131303131303131303031303031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"stop",
+            "translatedTitle":"stop",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010237004E00D7011F137700000000000004600042004304600042000000000000050100533131313131313130313030303030303031303031303131303031313031303031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"pause",
+            "translatedTitle":"pause",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004E00D9011F1377000000000000045F00420042045F0043000000000000050100533131313131313130313030303030303031313130303131303030303131303031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"forward",
+            "translatedTitle":"forward",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010237004F00D8011F1377000000000000045F00420043045F0043000000000000050100533131313131313130313030303030303031313031303131303030313031303031333230",
+            "class":"action-button"
+         },
+         {
+            "title":"rewind",
+            "translatedTitle":"rewind",
+            "faIcon":"wifi",
+            "type":"HW_IRTRANS_USB",
+            "disabled":false,
+            "active":false,
+            "visible":true,
+            "code":"IRTRANS-WEB@IRTRANS:sndhex H5001000000002426010238004E00D8011F1378000000000000045F0043004204600043000000000000050100533131313131313130313030303030303030313031303131303130313031303031333230",
+            "class":"action-button"
+         }
+      ]
+   },
+   "_cellBoardDeviceMapping":{
+      "home.envControl.licht vortragssaal":"amblight"
+   },
+   "_dynamicCellBoardIds":[
+      "home.envControl.tv-artlab",
+      "home.envControl.dvd artlab",
+      "home.envControl.tv artlab schlafzimm",
+      "home.envControl.hifi artlab"
+   ],
+   "_additionalDeviceData":{
+      "HW_IRTRANS_USB":{
+         "PROP_AUTOSTART_IRSERVER":true
+      }
+   }
+}
+//////////////////////////////
+//Little "August" IR Radio
+//////////////////////////////
+//"title":"PlayPause",
+//"code":"@IRTRANS:sndhex H5001000000002426010236004600D8011B136A000000000000047500480040046E0048000000000000050100533030303030303030313131313131313130303030303030303131313131313131333230"
+//----
+//"title":"SNZ",
+//"code":"@IRTRANS:sndhex H5001000000002426010235004D00D7011B1372000000000000047B0042004104790041000000000000050100533030303030303030313131313131313131303030303030303031313131313131333230"
+//----
+//----
+//"title":"ALM",
+//"code":"@IRTRANS:sndhex H5001000000002426010235004800D1011C136B00000000000004780047004604720047000000000000050100533030303030303030313131313131313130313030303030303130313131313131333230"
+//----
+//----
+//"title":"'SET",
+//"code":"@IRTRANS:sndhex H5001000000002426010235004700D6011B137100000000000004710047004104730041000000000000050100533030303030303030313131313131313130303130303030303131303131313131333230"
+//----
+//----
+//"title":"VOL-",
+//"code":"@IRTRANS:sndhex H5001000000002426010236004D00D6011C1350000000000000046E0041004104730041000000000000050100533030303030303030313131313131313131303130303030303031303131313131333230"
+//----
+//----
+//"title":"VOL+",
+//"code":"@IRTRANS:sndhex H5001000000002426010236004700D7011C132E000000000000046E0047004004720048000000000000050100533030303030303030313131313131313130313130303030303130303131313131333230"
+//----
+//----
+//"title":"MODE",
+//"code":"@IRTRANS:sndhex H5001000000002426010236004600D7011C136B000000000000047400480041046F0048000000000000050100533030303030303030313131313131313130303031303030303131313031313131333230"
+//----
+//----
+//"title":"PREV",
+//"code":"@IRTRANS:sndhex H5001000000002426010236004D00D7011C1373000000000000047000410040046D0041000000000000050100533030303030303030313131313131313131303031303030303031313031313131333230"
+//----
+//----
+//"title":"NEXT",
+//"code":"@IRTRANS:sndhex H5001000000002426010231004A00D40118136C000000000000047100440044046C0048000000000000050100533030303030303030313131313131313130313031303030303130313031313131333230"
+//----
+//----
+//"title":"RADIO",
+//"code":"@IRTRANS:sndhex H5001000000002426010235004700D8011C136A000000000000047300480042046F0048000000000000050100533030303030303030313131313131313130303131303030303131303031313131333230"
+//----

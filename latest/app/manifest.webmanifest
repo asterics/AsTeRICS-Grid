@@ -1,0 +1,39 @@
+{
+   "name":"Asterics AAC",
+   "short_name":"Asterics",
+   "start_url":"../",
+   "id":"/",
+   "display":"standalone",
+   "background_color":"#fff",
+   "description":"Free and simple to use app for augmentative and alternative communication (AAC) with offline support, flexible input methods and media access",
+   "icons":[
+      {
+         "purpose":"maskable",
+         "sizes":"512x512",
+         "src":"img/app-icons/icon512_maskable.png",
+         "type":"image/png"
+      },
+      {
+         "purpose":"any",
+         "sizes":"512x512",
+         "src":"img/app-icons/icon512_rounded.png",
+         "type":"image/png"
+      }
+   ],
+   "screenshots":[
+      {
+         "src":"img/screenshots/wide.jpg",
+         "sizes":"1920x1080",
+         "type":"image/jpeg",
+         "form_factor":"wide",
+         "label":"Asterics AAC on desktop"
+      },
+      {
+         "src":"img/screenshots/narrow.png",
+         "sizes":"776x1120",
+         "type":"image/png",
+         "form_factor":"narrow",
+         "label":"Asterics AAC on mobile"
+      }
+   ]
+}

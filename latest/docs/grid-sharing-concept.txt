@@ -1,0 +1,19 @@
+Grid Sharing, 3 Fälle:
+1) One-Time sharing (privat), danach keine Verbindung mehr
+--> exportieren der für das Grid benötigten Daten in eine Text-Datei
+--> nicht unbedingt ganze DB
+--> hosten der txt-Datei auf einem beliebigen Server (z.B. github.gist)
+--> versenden Link
+--> Grid geöffnet mit Link holt txt-Datei von Server -> impotiert Grid in aktuellem Grid
+
+2) One-Time sharing (public), danach lose Verbindung über ID
+--> Nutzer wählt eines seiner Grids aus, um es öffentlich zu teilen
+--> Grid + zugehörige txt-Datei wird in öffentliches Listing eingetragen
+--> User können Listing durchsuchen und Grids davon ausprobieren und importieren
+--> Danach ist importiertes Grid unabhängig von public Grid, aber originale ID wird gespeichert
+--> User kann später das Grid über ID aktualisieren
+--> Grid-Ersteller kann public Grid updaten
+
+3) Komplettes Sharing einer Datenbank (private)
+--> Alle Grids geteilt, komplettes 1:1 Abbild
+--> automatisches Sync zwischen Devices3

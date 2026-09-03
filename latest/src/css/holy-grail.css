@@ -1,0 +1,107 @@
+/* see https://flexbox.ninja/demos/holy-grail-layout/
+*/
+
+/**
+ * Make body at least 100% height
+ * You can also use a combination
+ * of height: 100% in <html> and
+ * min-height: 100% in <body>.
+ */
+.holy-grail {
+    /*min-height: 100vh;*/
+    height: 100%;
+    width: 100%;
+    position: fixed;
+}
+
+/**
+ * Let's do a column distribution
+ * (mobile first)
+ * flex value is 1 1 auto to make
+ * body skrinkable and extensible
+ */
+.holy-grail,
+.holy-grail-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+}
+
+/**
+ * Content body item is made
+ * extensible too.
+ */
+.holy-grail-content {
+    flex: 1 1 auto;
+}
+
+/**
+ * Put the first sidebar before content.
+ * If you need sidebar to be before content
+ * only in big screen put those 3 next lines
+ * in @media block.
+ */
+.holy-grail-sidebar-1 {
+    order: -1;
+    border-right: 2px solid lightgray;
+    max-height: 98vh;
+    overflow-x: hidden;
+    padding-top: 2vh;
+    display: flex;
+    flex-flow: column;
+}
+
+/**
+ * Sidebars have a basic 260 width
+ * and are not really flexible anymore
+ */
+.hg-sidebar {
+    flex: 0 0 250px;
+    z-index: 3;
+}
+
+nav li:focus {
+    outline: none;
+}
+
+@media (max-width: 850px) {
+    .hg-sidebar {
+        flex: 0 0 50px;
+    }
+
+    #astericsIcon {
+        margin-bottom: 1em;
+    }
+
+    nav li button {
+        padding-left: 0.5em;
+    }
+
+    .hg-sidebar button {
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+    }
+}
+
+@media (max-width: 850px) and (max-height: 500px) {
+    .hg-sidebar {
+        flex: 0 0 12vh;
+    }
+
+    .hg-sidebar button, #syncVisualization {
+        font-size: 3vh;
+        line-height: 0;
+    }
+
+    #astericsIcon {
+        height: 10vh;
+    }
+
+    header button, header a, header input {
+        height: 10vh !important;
+        max-height: 40px;
+        font-size: 4vh;
+        line-height: 0;
+    }
+}
