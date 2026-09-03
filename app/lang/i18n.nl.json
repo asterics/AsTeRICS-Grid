@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Nieuw element aanmaken",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Stem koppelen aan vertaling van de gesproken tekst",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Stem test",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Download nu",

@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "إنشاء عنصر الشبكة",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "ربط اللغة الصوتية بلغة الترجمة للنص المنطوق",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "اختبار الصوت",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "تحميل الآن",

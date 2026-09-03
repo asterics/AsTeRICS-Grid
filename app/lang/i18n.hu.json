@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Kártyák létrehozása",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "A felolvasás nyelve legyen a fordítás nyelvével azonos",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Hang tesztelése",
   "pleaseConsiderToDownloadABackup": "Kérjük, fontolja meg a konfigurációja biztonsági mentésének letöltését, hogy elkerülje a munka elvesztését.",
   "downloadNow": "Letöltés most",

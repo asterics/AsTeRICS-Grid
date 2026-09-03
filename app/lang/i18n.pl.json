@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Utwórz nowy element",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Połącz język głosowy z językiem tłumaczenia tekstu mówionego",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Test głosu",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Pobierz teraz",

@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Izgara elemanları oluştur",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Konuşulan metnin çeviri diline ses dilini bağla",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Sesi test et",
   "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not losing your work.",
   "downloadNow": "Şimdi indir",

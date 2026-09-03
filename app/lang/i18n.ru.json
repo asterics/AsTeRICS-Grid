@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Создать элементы сетки",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Связать голосовой язык с языком перевода разговорного текста",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Проверка голоса",
   "pleaseConsiderToDownloadABackup": "Пожалуйста, рассмотрите возможность загрузки резервной копии вашей конфигурации, чтобы обезопасить себя от потери вашей работы.",
   "downloadNow": "Скачать сейчас",

@@ -1050,6 +1050,7 @@
   },
   "createGridElements": "Crear cel·les",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular l'idioma de veu a la traducció del text parlat",
+  "waitForSpeechToFinish": "Always wait for current speech to finish",
   "testVoice": "Provar veu",
   "pleaseConsiderToDownloadABackup": "Si us plau, consideri la possibilitat de descarregar una còpia de seguretat del seu comunicador per no perdre la feina feta.",
   "downloadNow": "Descarregar ara",
