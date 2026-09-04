@@ -31,6 +31,7 @@ class SettingsUserLocal {
      * @param settings.systemVolume
      * @param settings.systemVolumeMuted
      * @param settings.integrations
+     * @param settings.lastCodeReaderCameraId deviceId of the last used handheld code reader camera (device-specific, stored locally)
      */
     constructor(settings) {
         settings = settings || {};
@@ -49,6 +50,7 @@ class SettingsUserLocal {
         this.systemVolume = settings.systemVolume !== undefined ? settings.systemVolume : 100;
         this.systemVolumeMuted = settings.systemVolumeMuted || false;
         this.integrations = settings.integrations || new IntegrationConfigLocal();
+        this.lastCodeReaderCameraId = settings.lastCodeReaderCameraId;
 
         convertServiceLocal.updateDataModel(this);
     }

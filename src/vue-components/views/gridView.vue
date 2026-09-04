@@ -20,6 +20,7 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
+        <handheld-code-reader-bar v-if="metadata && metadata.inputConfig && metadata.inputConfig.codeReaderEnabled" :grid-data="renderGridData" :input-config="metadata.inputConfig" @deactivate="deactivateCodeReader()"/>
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
@@ -31,6 +32,7 @@
         <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reloadInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reloadInputMethods();"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reloadInputMethods();"/>
+        <handheld-code-reader-modal v-if="showModal === modalTypes.MODAL_CODE_READER" @close="showModal = null; reloadInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
         <div class="srow content spaced" v-if="renderGridData && renderGridData.gridElements.length === 0">
@@ -74,6 +76,7 @@
     import DirectionInputModal from "../modals/input/directionInputModal.vue";
     import HuffmanInputModal from "../modals/input/huffmanInputModal.vue";
     import SequentialInputModal from "../modals/input/sequentialInputModal.vue";
+    import HandheldCodeReaderModal from "../modals/input/handheldCodeReaderModal.vue";
     import {speechService} from "../../js/service/speechService";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {imageUtil} from "../../js/util/imageUtil";
@@ -83,6 +86,7 @@
     import {stateService} from "../../js/service/stateService.js";
     import { systemActionService } from '../../js/service/systemActionService';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
+    import HandheldCodeReaderBar from '../grid-display/handheldCodeReaderBar.vue';
     import { gridUtil } from '../../js/util/gridUtil';
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
@@ -97,6 +101,7 @@
         MODAL_DIRECTION: 'MODAL_DIRECTION',
         MODAL_HUFFMAN: 'MODAL_HUFFMAN',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
+        MODAL_CODE_READER: 'MODAL_CODE_READER',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
 
@@ -132,6 +137,8 @@
         },
         components: {
             AppGridDisplay,
+            HandheldCodeReaderBar,
+            HandheldCodeReaderModal,
             UnlockModal,
             SequentialInputModal,
             HuffmanInputModal,
@@ -191,6 +198,12 @@
             },
             reloadInputMethods() {
                 this.initInputMethods({reload: true});
+            },
+            deactivateCodeReader() {
+                this.metadata.inputConfig.codeReaderEnabled = false;
+                dataService.saveMetadata(this.metadata).then(() => {
+                    this.reloadInputMethods();
+                });
             },
             async initInputMethods(options = {}) {
                 options.continueInputMethods = options.continueInputMethods || false;
@@ -563,6 +576,7 @@
         let CONTEXT_DIRECTION = "CONTEXT_DIRECTION";
         let CONTEXT_HUFFMAN = "CONTEXT_HUFFMAN";
         let CONTEXT_SEQUENTIAL = "CONTEXT_SEQUENTIAL";
+        let CONTEXT_CODE_READER = "CONTEXT_CODE_READER";
 
         function getName(i18nKey, isActive) {
             let translated = i18nService.t(i18nKey);
@@ -597,6 +611,11 @@
                 name: getName('sequentialInput', inputConfig.seqEnabled),
                 icon: "fas fa-arrow-right",
                 className: inputConfig.seqEnabled ? 'boldFont' : ''
+            },
+            CONTEXT_CODE_READER: {
+                name: getName('codeReaderInput', inputConfig.codeReaderEnabled),
+                icon: "fas fa-qrcode",
+                className: inputConfig.codeReaderEnabled ? 'boldFont' : ''
             }
         };
 
@@ -631,6 +650,10 @@
                 }
                 case CONTEXT_SEQUENTIAL: {
                     vueApp.openModal(modalTypes.MODAL_SEQUENTIAL);
+                    break;
+                }
+                case CONTEXT_CODE_READER: {
+                    vueApp.openModal(modalTypes.MODAL_CODE_READER);
                     break;
                 }
             }
