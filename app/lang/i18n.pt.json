@@ -1050,7 +1050,7 @@
   },
   "createGridElements": "Criar células da tabela",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular o idioma da voz ao idioma de tradução do texto falado",
-  "waitForSpeechToFinish": "Always wait for current speech to finish",
+  "waitForSpeechToFinish": "Aguardar sempre a conclusão da fala em curso",
   "testVoice": "Testar voz",
   "pleaseConsiderToDownloadABackup": "Por favor, considere transferir uma cópia de segurança da configuração para não perder o seu trabalho.",
   "downloadNow": "Transferir agora",
