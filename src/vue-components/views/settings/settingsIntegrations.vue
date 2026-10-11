@@ -46,6 +46,23 @@
             <button @click="currentModal = MODALS.MODAL_MATRIX"><i class="fas fa-cog"></i> {{ $t('configureMatrixMessenger') }}</button>
         </div>
         <configure-matrix v-if="currentModal === MODALS.MODAL_MATRIX" @close="currentModal = null"></configure-matrix>
+        <h3>DameVoz</h3>
+        <div class="srow">
+            <div class="eleven columns">
+                <div>
+                    <input id="damevozEnabled" type="checkbox" v-model="damevozEnabled" @change="saveDamevoz"/>
+                    <label for="damevozEnabled">Sincronizar tableros con DameVoz</label>
+                </div>
+                <div class="mt-3" v-if="damevozEnabled">
+                    <label class="three columns" for="damevozUser">Usuario de DameVoz</label>
+                    <input type="text" id="damevozUser" class="seven columns" v-model="damevozUser" @input="saveDamevoz" placeholder="tu-usuario"/>
+                </div>
+                <div class="mt-3">
+                    <span class="fa fa-info-circle"></span>
+                    <span>Los cambios en tus tableros se enviarán automáticamente a DameVoz</span>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -55,6 +72,7 @@
     import { arasaacService } from '../../../js/service/pictograms/arasaacService';
     import { speechServiceExternal } from '../../../js/service/speechServiceExternal';
     import { speechService } from '../../../js/service/speechService';
+    import { localStorageService } from '../../../js/service/data/localStorageService';
     import { settingsSaveMixin } from './settingsSaveMixin';
     import ConfigureMatrix from '../../modals/matrix-messenger/configure-matrix.vue';
 
@@ -72,7 +90,9 @@
                 arasaacService: arasaacService,
                 urlValid: null,
                 MODALS: MODALS,
-                currentModal: null
+                currentModal: null,
+                damevozEnabled: false,
+                damevozUser: ''
             }
         },
         methods: {
@@ -87,9 +107,18 @@
                         await speechService.reinit();
                     }, timeout, 'REINIT_SPEECH');
                 }
+            },
+            saveDamevoz() {
+                localStorageService.saveUserSettings({
+                    damevozEnabled: this.damevozEnabled,
+                    damevozUser: this.damevozUser
+                });
             }
         },
         async mounted() {
+            let userSettings = localStorageService.getUserSettings();
+            this.damevozEnabled = !!userSettings.damevozEnabled;
+            this.damevozUser = userSettings.damevozUser || '';
         }
     }
 </script>
