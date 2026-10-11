@@ -244,6 +244,10 @@
             </div>
         </div>
         <div class="srow">
+            <slider-input-bootstrap :label="$t('voicePitch')" id="voicePitch" min="0.1" max="2" step="0.1" decimals="1" v-model.number="action.voicePitch" :show-clear-button="true"/>
+            <slider-input-bootstrap :label="$t('voiceRate')" id="voiceRate" min="0.1" max="10" step="0.1" decimals="1" v-model.number="action.voiceRate" :show-clear-button="true"/>
+        </div>
+        <div class="srow">
             <button id="testVoice2" class="four columns offset-by-four" :disabled="!action.voice" @click="speechService.testSpeak(action.voice, null, action.language)">{{ $t('testVoice') }}</button>
         </div>
     </div>
@@ -349,6 +353,7 @@
     import EditPredefinedAction from './editActionsSub/editPredefinedAction.vue';
     import EditMatrixAction from './editActionsSub/editMatrixAction.vue';
     import EditPodcastAction from './editActionsSub/editPodcastAction.vue';
+    import SliderInputBootstrap from './input/sliderInputBootstrap.vue';
 
     export default {
         props: ['action', 'grids', 'gridData', 'gridElement'],
@@ -376,6 +381,7 @@
             }
         },
         components: {
+            SliderInputBootstrap,
             EditPodcastAction,
             EditMatrixAction,
             EditPredefinedAction,
