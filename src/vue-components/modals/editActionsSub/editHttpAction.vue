@@ -28,14 +28,14 @@
                 </select>
             </div>
         </div>
-        <div class="row">
+        <div class="row hide-row">
             <label class="col-12 col-md-4 normal-text" for="content-type">HTTP Content-Type</label>
             <div class="col-12 col-md-7">
                 <input id="content-type" v-model="action.contentType" class="col-12"
                        placeholder="text/plain | application/json | ..." spellcheck="false" autocomplete="true" type="text"/>
             </div>
         </div>
-        <div class="row" v-if="action.isLiveAction">
+        <div class="row hide-row" v-if="action.isLiveAction">
             <label class="col-12 col-md-4 normal-text" for="acceptHeader">HTTP Accept Header</label>
             <div class="col-12 col-md-7">
                 <input id="acceptHeader" v-model="action.acceptHeader" class="col-12"
@@ -52,6 +52,18 @@
             <label class="col-12 col-md-4 normal-text" for="auth-pw">{{ $t('httpAuthPw') }}</label>
             <div class="col-12 col-md-7">
                 <input id="auth-pw" v-model="action.authPw" class="col-12" type="password" :placeholder="$t('optionalBracket')"/>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-12 col-md-4 normal-text" for="httpAddHeader">{{ $t('httpAddHeader') }}</label>
+            <div class="col-12 col-md-7">
+                <textarea id="httpAddHeader" v-model="action.additionalHeaders" class="col-12" placeholder='e.g. {"Accept": "application/json", "Content-Type": "text/plain"}'></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <input id="noCorsMode" v-model="action.noCorsMode" type="checkbox"/>
+                <label class="normal-text" for="noCorsMode">{{ $t('noCorsMode') }}</label>
             </div>
         </div>
         <div class="row" v-if="action.isLiveAction">
@@ -83,5 +95,9 @@ export default {
 
 .row {
     margin-bottom: 1em;
+}
+
+.hide-row {
+    display: none;
 }
 </style>

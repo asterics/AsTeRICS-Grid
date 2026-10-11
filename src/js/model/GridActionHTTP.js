@@ -15,7 +15,8 @@ class GridActionHTTP extends Model({
     authPw: [String], //password for http authentication,
     noCorsMode: [Boolean], // if true "no-cors" mode is used for fetch, preventing errors if CORS headers not available, but endpoint functionality still works
     useCorsProxy: [Boolean], // if true, cors proxy "proxy.asterics-foundation.org" is used,
-    isLiveAction: [Boolean]
+    isLiveAction: [Boolean],
+    additionalHeaders: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionHTTP);
