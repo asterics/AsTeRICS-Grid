@@ -1,0 +1,20 @@
+FROM node:lts-alpine
+
+LABEL version="0.1"
+LABEL description="Developer environnement for Asterics-AAC"
+
+ENV HOST=0.0.0.0
+ENV NODE_ENV=development
+
+WORKDIR /app
+
+COPY ./container/dev/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:9095 || exit 1
+
+EXPOSE 3000
+EXPOSE 9095
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
