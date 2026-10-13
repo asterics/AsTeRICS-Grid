@@ -2,17 +2,17 @@
 /*!
  * jQuery contextMenu - Plugin for simple contextMenu handling
  *
- * Version: v2.7.0
+ * Version: v2.10.2
  *
  * Authors: Björn Brala (SWIS.nl), Rodney Rehm, Addy Osmani (patches for FF)
  * Web: http://swisnl.github.io/jQuery-contextMenu/
  *
- * Copyright (c) 2011-2018 SWIS BV and contributors
+ * Copyright (c) 2011-2026 SWIS BV and contributors
  *
  * Licensed under
  *   MIT License http://www.opensource.org/licenses/mit-license
  *
- * Date: 2018-07-12T09:06:55.859Z
+ * Date: 2026-07-28T12:08:07.808Z
  */
 @-webkit-keyframes cm-spin {
   0% {
@@ -127,7 +127,7 @@
   left: .5em;
   color: #2980b9;
 }
-.context-menu-icon.context-menu-icon--fa5.context-menu-hover > i, .context-menu-icon.context-menu-icon--fa5.context-menu-hover svg {
+.context-menu-icon.context-menu-icon--fa5.context-menu-hover > i, .context-menu-icon.context-menu-icon--fa5.context-menu-hover > svg {
   color: #fff;
 }
 .context-menu-icon.context-menu-icon--fa5.context-menu-disabled i, .context-menu-icon.context-menu-icon--fa5.context-menu-disabled svg {
@@ -260,6 +260,14 @@
 }
 
 .context-menu-item.context-menu-visible > .context-menu-list {
+  display: block;
+}
+
+.context-menu-list.context-menu-detached {
+  display: none;
+}
+
+.context-menu-list.context-menu-detached.context-menu-visible {
   display: block;
 }
 

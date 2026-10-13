@@ -7,7 +7,6 @@
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
             <button tabindex="33" id="moreButton" :aria-label="$t('more')" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
-            <div id="moreButtonMenu"></div>
             <div class="spaced btn-group">
                 <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="doingUndoRedo|| !undoService.canUndo()" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
@@ -959,7 +958,6 @@
 
         $.contextMenu({
             selector: '#moreButton',
-            appendTo: '#moreButtonMenu',
             callback: function (key, options) {
                 handleContextMenu(key, null, ORIGIN_MORE_BTN);
             },
