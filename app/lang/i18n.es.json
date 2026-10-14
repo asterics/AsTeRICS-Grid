@@ -1337,5 +1337,9 @@
   "showAllElements": "mostrar todas las celdas",
   "firstRowHeightFactor": "Ajuste de altura de la primera fila",
   "downloadingImagesWithPercent": "Descargando imágenes ... {0}%",
-  "browserNotSupportingOfflineMode": "Su navegador no soporta el modo offline. Si lo necesita, actualice o utilice un navegador diferente."
+  "browserNotSupportingOfflineMode": "Su navegador no soporta el modo offline. Si lo necesita, actualice o utilice un navegador diferente.",
+  "exportMode": "Export mode",
+  "PDF_EXPORTMODE_NORMAL": "Normal",
+  "PDF_EXPORTMODE_RESIZE": "Resize elements",
+  "elementSize": "Element size"
 }
