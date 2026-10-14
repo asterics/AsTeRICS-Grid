@@ -770,6 +770,13 @@
         border-color: transparent;
         background-color: #f8f8f8;
     }
+
+    @media (hover: none) {
+        .floating-control-button:focus:not(:active) {
+            border-color: transparent;
+            background-color: #f8f8f8;
+        }
+    }
     
     .floating-control-button i {
         font-size: 1.1em;
