@@ -745,7 +745,7 @@
             background-color: rgb(130, 130, 130);
         }
     }
-*/
+
 
     .floating-controls-indicator {
     display: block;
@@ -765,6 +765,26 @@
             border-color: rgba(120, 120, 120, 0.95);
         }
     }
+    */
+
+    .floating-controls-indicator {
+    display: block;
+    width: 4em;
+    height: 0.5em;
+    border-radius: 0.3em;
+    background-color: rgb(110, 110, 110);
+    box-shadow:
+        inset 0 0.05em 0.08em rgba(255, 255, 255, 0.35),
+        inset 0 -0.05em 0.08em rgba(0, 0, 0, 0.28),
+        0 0 0.08em rgba(255, 255, 255, 0.75),
+        0 0 0.18em rgba(255, 255, 255, 0.35);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .floating-controls-trigger:hover:not(:active) .floating-controls-indicator {
+        background-color: rgb(125, 125, 125);
+    }
+}
     
     .floating-control-button {
         height: 1.6em;
