@@ -728,7 +728,7 @@
     .floating-controls-trigger:active {
         background: transparent;
     }
-    
+    /*
     .floating-controls-indicator {
         display: block;
         width: 4em;
@@ -745,7 +745,27 @@
             background-color: rgb(130, 130, 130);
         }
     }
+*/
 
+    .floating-controls-indicator {
+    display: block;
+    width: 5em;
+    height: 0.8em;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: transparent;
+    border: 2px solid rgba(95, 95, 95, 0.85);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.85),
+        0 0 0.24em rgba(255, 255, 255, 0.6);
+    }
+    
+    @media (hover: hover) and (pointer: fine) {
+        .floating-controls-trigger:hover:not(:active) .floating-controls-indicator {
+            border-color: rgba(120, 120, 120, 0.95);
+        }
+    }
+    
     .floating-control-button {
         height: 1.6em;
         min-width: 2.7em;
