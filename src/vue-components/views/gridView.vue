@@ -728,26 +728,21 @@
     .floating-controls-trigger:active {
         background: transparent;
     }
-
+    
     .floating-controls-indicator {
         display: block;
         width: 4em;
-        height: 0.4em;
-        border-radius: 0.2em;
-        background: linear-gradient(
-            to bottom,
-            rgba(80, 80, 80, 1) 50%,
-            rgba(240, 240, 240, 1) 50%
-        );
+        height: 0.55em;
+        border-radius: 0.3em;
+        background-color: rgb(110, 110, 110);
+        box-shadow:
+            0 0 0.08em rgba(255, 255, 255, 0.85),
+            0 0 0.22em rgba(255, 255, 255, 0.45);
     }
-
+    
     @media (hover: hover) and (pointer: fine) {
         .floating-controls-trigger:hover:not(:active) .floating-controls-indicator {
-            background: linear-gradient(
-                to bottom,
-                rgba(115, 115, 115, 1) 50%,
-                rgba(200, 200, 200, 1) 50%
-            );
+            background-color: rgb(130, 130, 130);
         }
     }
 
