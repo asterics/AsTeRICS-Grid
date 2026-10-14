@@ -1337,5 +1337,9 @@
   "showAllElements": "mostra tutti gli elementi",
   "firstRowHeightFactor": "Fattore di altezza per la prima riga",
   "downloadingImagesWithPercent": "Downloading images ... {0}%",
-  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
+  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser.",
+  "exportMode": "Export mode",
+  "PDF_EXPORTMODE_NORMAL": "Normal",
+  "PDF_EXPORTMODE_RESIZE": "Resize elements",
+  "elementSize": "Element size"
 }
