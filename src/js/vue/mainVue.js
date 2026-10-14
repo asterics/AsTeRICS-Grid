@@ -18,6 +18,12 @@ import { systemActionService } from '../service/systemActionService';
 
 let MainVue = {};
 let app = null;
+
+const FULLSCREEN_EXIT_START_RATIO = 0.10;
+const FULLSCREEN_EXIT_DISTANCE_RATIO = 0.20;
+const FULLSCREEN_EXIT_MIN_DISTANCE = 100;
+let fullscreenExitStartY = null;
+
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
     MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR',
@@ -260,7 +266,10 @@ MainVue.init = function () {
                     );
                 });
                 inputEventHandler.global
-                    .onSwipedDown(openSidebarIfFullscreen)
+                    //.onSwipedDown(openSidebarIfFullscreen)
+                    .onTouchStart(onFullscreenTouchStart)
+                    .onTouchMove(onFullscreenTouchMove)
+                    .onTouchEnd(resetFullscreenTouch)
                     .onEscape(openSidebarIfFullscreen)
                     .onExitFullscreen(openSidebarIfFullscreen);
                 inputEventHandler.global.startListening();
@@ -275,6 +284,51 @@ MainVue.init = function () {
         return Promise.resolve();
     });
 };
+
+function onFullscreenTouchStart(event) {
+    resetFullscreenTouch();
+
+    if (!util.isFullscreen() || event.touches.length !== 1) {
+        return;
+    }
+
+    let startY = event.touches[0].clientY;
+
+    if (startY <= window.innerHeight * FULLSCREEN_EXIT_START_RATIO) {
+        fullscreenExitStartY = startY;
+    }
+}
+
+function onFullscreenTouchMove(event) {
+    if (fullscreenExitStartY === null) {
+        return;
+    }
+
+    if (event.touches.length !== 1) {
+        resetFullscreenTouch();
+        return;
+    }
+
+    if (isFullscreenExitSwipe(event.touches[0].clientY)) {
+        resetFullscreenTouch();
+        util.closeFullscreen();
+    }
+}
+
+function isFullscreenExitSwipe(currentY) {
+    let minDistance = Math.max(
+        FULLSCREEN_EXIT_MIN_DISTANCE,
+        window.innerHeight * FULLSCREEN_EXIT_DISTANCE_RATIO
+    );
+
+    return util.isFullscreen() &&
+        fullscreenExitStartY !== null &&
+        currentY - fullscreenExitStartY > minDistance;
+}
+
+function resetFullscreenTouch() {
+    fullscreenExitStartY = null;
+}
 
 function setupContextMenu() {
     let CONTEXT_ADD_ONLINE = 'CONTEXT_ADD_ONLINE';
