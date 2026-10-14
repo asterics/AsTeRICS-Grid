@@ -19,6 +19,38 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
+        <div v-if="metadata && (metadata.locked || metadata.fullscreen)"
+            class="floating-controls">
+            <button v-if="!floatingControlsVisible"
+                    type="button"
+                    tabindex="30"
+                    @click="showFloatingControls()"
+                    class="floating-controls-trigger"
+                    :aria-label="$t('show')"
+                    :title="$t('show')">
+                <span class="floating-controls-indicator"></span>
+            </button>
+
+            <template v-else>
+                <button tabindex="30"
+                        @click="showFloatingControls(); metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
+                        class="floating-control-button"
+                        :aria-label="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')"
+                        :title="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')">
+                    <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
+                </button>
+
+                <button v-if="metadata.locked && !metadata.fullscreen"
+                        tabindex="31"
+                        @click="showFloatingControls(); unlock()"
+                        class="floating-control-button"
+                        :aria-label="$t('unlock')"
+                        :title="$t('unlock')">
+                    <i class="fas fa-unlock"></i>
+                    <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
+                </button>
+            </template>
+        </div>
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
@@ -90,6 +122,8 @@
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
+    let FLOATING_CONTROLS_TIMEOUT = 3000;
+    let FLOATING_CONTROLS_DEBOUNCE_KEY = 'FLOATING_CONTROLS_DEBOUNCE_KEY';
     let modalTypes = {
         MODAL_SCANNING: 'MODAL_SCANNING',
         MODAL_MOUSE: 'MODAL_MOUSE',
@@ -122,6 +156,7 @@
                 modalTypes: modalTypes,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
+                floatingControlsVisible: false,
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
@@ -139,17 +174,21 @@
             ScanningModal, HeaderIcon
         },
         methods: {
+            showFloatingControls() {
+                this.floatingControlsVisible = true;
+                util.debounce(() => {
+                    this.floatingControlsVisible = false;
+                }, FLOATING_CONTROLS_TIMEOUT, FLOATING_CONTROLS_DEBOUNCE_KEY);
+            },            
             openModal(modalType) {
                 this.showModal = modalType;
                 stopInputMethods();
             },
             lock() {
+                this.floatingControlsVisible = false;
+                util.clearDebounce(FLOATING_CONTROLS_DEBOUNCE_KEY);
                 let thiz = this;
                 thiz.metadata.locked = true;
-                thiz.unlockCounter = UNLOCK_COUNT;
-                dataService.saveMetadata(thiz.metadata).then(() => {
-                    this.setViewPropsLocked();
-                });
             },
             unlock(force) {
                 let thiz = this;
@@ -490,6 +529,7 @@
             $(document).on(constants.EVENT_GRID_RERENDER, this.rerenderGrid);
         },
         beforeDestroy() {
+            util.clearDebounce(FLOATING_CONTROLS_DEBOUNCE_KEY);
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
@@ -639,4 +679,86 @@
 </script>
 
 <style scoped>
+    .floating-controls {
+        position: fixed;
+        top: 0.2em;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: inline-flex;
+        gap: 0.15em;
+    }
+
+    .floating-controls-trigger {
+        width: 8em;
+        min-height: 1.5em;
+        padding: 0.45em 0.35em;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        transition: none;
+        border-radius: 2px;
+        -webkit-tap-highlight-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .floating-controls-trigger:hover,
+    .floating-controls-trigger:focus {
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .floating-controls-trigger:focus {
+        outline: none;
+    }
+
+    .floating-controls-trigger:focus-visible {
+        outline: 2px solid lightblue;
+        outline-offset: 2px;
+    }
+
+    .floating-controls-trigger:active {
+        background: transparent;
+    }
+
+    .floating-controls-indicator {
+        display: block;
+        width: 4em;
+        height: 0.4em;
+        border-radius: 0.2em;
+        background: linear-gradient(
+            to bottom,
+            rgba(80, 80, 80, 1) 50%,
+            rgba(240, 240, 240, 1) 50%
+        );
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .floating-controls-trigger:hover:not(:active) .floating-controls-indicator {
+            background: linear-gradient(
+                to bottom,
+                rgba(115, 115, 115, 1) 50%,
+                rgba(200, 200, 200, 1) 50%
+            );
+        }
+    }
+
+    .floating-control-button {
+        height: 1.6em;
+        min-width: 2.7em;
+        padding: 0 0.65em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25em;
+        line-height: 1;
+    }
+
+    .floating-control-button i {
+        font-size: 1.1em;
+    }
 </style>
