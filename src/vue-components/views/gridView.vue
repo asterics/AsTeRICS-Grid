@@ -207,6 +207,7 @@
                 if (thiz.unlockCounter === 0 || force) {
                     thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
+                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                         this.setViewPropsUnlocked();
                     });
                 }
@@ -220,7 +221,6 @@
                 $('#gridView').on('touchmove', this.preventZoomHandler);
             },
             setViewPropsUnlocked() {
-                $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                 $(document).trigger(constants.EVENT_UI_UNLOCKED);
 
                 //enable zoom
