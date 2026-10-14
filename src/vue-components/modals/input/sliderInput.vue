@@ -6,7 +6,8 @@
         <input :id="id" :class="showClearButton ? 'four columns' : 'five columns'" type="range" :min="min" :max="max" :step="step" :value="value" @input="changed">
         <div class="three columns">
             <span>{{ $t('currentValue') }}</span>:
-            <span>{{ showValue }}<span v-if="value || value === 0">{{unit ? (' ' + i18nService.t(unit)) : ''}}</span></span>
+            <span v-if="!valueFormatFn">{{ showValue }}<span v-if="value || value === 0">{{unit ? (' ' + i18nService.t(unit)) : ''}}</span></span>
+            <span v-if="valueFormatFn">{{ valueFormatFn(value) }}</span>
         </div>
         <button v-if="showClearButton" class="two columns" :disabled="!value" @click="emitChange(null)">{{ $t('clear') }}</button>
     </div>
@@ -16,7 +17,7 @@
     import {i18nService} from "../../../js/service/i18nService.js";
 
     export default {
-        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor', 'default', 'showClearButton'],
+        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor', 'default', 'showClearButton', 'valueFormatFn'],
         data() {
             return {
                 i18nService: i18nService

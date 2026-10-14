@@ -1,4 +1,3 @@
-import {GridData} from '../../model/GridData';
 import {GridImage} from '../../model/GridImage';
 import {i18nService} from '../i18nService';
 import {imageUtil} from '../../util/imageUtil';
@@ -12,6 +11,7 @@ import {TextConfig} from "../../model/TextConfig.js";
 import {gridUtil} from '../../util/gridUtil';
 import {PdfArea} from "./PdfArea";
 import {colorUtil} from "../../util/colorUtil";
+import {GridData} from "../../model/GridData";
 
 let pdfService = {};
 
@@ -19,6 +19,10 @@ const DEBUG_MARK_AREAS = false;
 const DOC_WIDTH = 297;
 const DOC_HEIGHT = 210;
 const DEFAULT_FONT_PATH = "./app/fonts/ttf/Arimo-Regular.ttf"
+
+pdfService.MODE_NORMAL = "PDF_EXPORTMODE_NORMAL";
+pdfService.MODE_RESIZE = "PDF_EXPORTMODE_RESIZE";
+pdfService.MODES = [pdfService.MODE_NORMAL, pdfService.MODE_RESIZE];
 
 let pdfOptions = {
     docPadding: 5,
@@ -32,13 +36,105 @@ let homeGridId = null;
 let metadata = null;
 
 /**
+ * resizes all elements to the given size and prints them to PDF for printing and creating separate cards from them.
+ * @param grids
+ * @param elementSizeMM
+ * @param options
+ * @return {Promise<void>}
+ */
+pdfService.gridsResizedToPdf = function (grids, elementSizeMM, options = {}) {
+    let sizeOption = pdfService.getSizeOption(elementSizeMM);
+    let elemsPerPage = sizeOption.itemsX * sizeOption.itemsY;
+    let allElems = [];
+    for (let grid of grids) {
+        allElems = allElems.concat(gridUtil.sortGridElements(grid.gridElements));
+    }
+    allElems = allElems.filter(e => e.type === GridElement.ELEMENT_TYPE_NORMAL);
+    allElems = JSON.parse(JSON.stringify(allElems));
+    let elemChunks = util.chunkArray(allElems, elemsPerPage);
+    let newGrids = elemChunks.map(chunk => {
+        let i = 0;
+        for (let y = 0; y < sizeOption.itemsY; y++) {
+            for (let x = 0; x < sizeOption.itemsX; x++) {
+                if (chunk[i]) {
+                    chunk[i].x = x;
+                    chunk[i].y = y;
+                    chunk[i].width = 1;
+                    chunk[i].height = 1;
+                }
+                i++;
+            }
+        }
+        return new GridData({
+            gridElements: chunk
+        });
+    });
+    ;
+    options.singleLineFooter = true;
+    options.oneElementSizeMM = elementSizeMM;
+    return pdfService.gridsToPdf(newGrids, options);
+}
+
+/**
+ * gets a list of all size options that make sense for pdfService.gridsResizedToPdf()
+ * @return {*[{elemSize: *, itemsX: number, itemsY: number}]} array of objects, each object containing
+ */
+pdfService.getSizeOptions = function () {
+    let gridArea = getGridArea();
+    let options = [];
+    for (let i = 1; i < 10; i++) {
+        let elemSize = gridArea.height / i;
+        options.push(pdfService.getSizeOption(elemSize));
+        elemSize = gridArea.width / i;
+        options.push(pdfService.getSizeOption(elemSize));
+    }
+    options.sort((a, b) => b.elemSize - a.elemSize);
+    for (let i = 1; i < options.length; i++) {
+        let first = options[i - 1];
+        let next = options[i];
+        if (first && next) {
+            if (Math.abs(first.elemSize - next.elemSize) < 5) {
+                if (first.itemsX * first.itemsY < next.itemsX * next.itemsY) {
+                    first.delete = true;
+                } else {
+                    next.delete = true;
+                }
+            }
+        }
+    }
+    options = options.filter(o => o.itemsX > 0 && o.itemsY > 0 && o.elemSize > 40 && !o.delete);
+    return options;
+}
+
+/**
+ * returns size option object from given element size in mm
+ * @param elemSizeMM
+ * @return {{elemSize: *, itemsX: number, itemsY: number}|null} object where props itemsX and itemsY are the number of
+ *      items that fit on one page with the given element size
+ */
+pdfService.getSizeOption = function (elemSizeMM) {
+    let gridArea = getGridArea();
+    if (!elemSizeMM) {
+        return null;
+    }
+    return {
+        elemSize: elemSizeMM,
+        itemsX: Math.floor(gridArea.width / elemSizeMM),
+        itemsY: Math.floor(gridArea.height / elemSizeMM)
+    }
+}
+
+/**
  * Converts given grids to pdf and downloads the pdf file
  *
  * @param gridsData array of GridData to convert to pdf
  * @param options (optional) object containing options
+ * @param options.printBackground if true, background colors are printed
  * @param options.showLinks if true, links on elements are created which are referring to another grid/page
- * @param options.backgroundColor object with r/g/b properties defining a background color for grid elements. Default: white.
+ * @param options.showRegister if true, a register of pages is printed at the bottom of the page
  * @param options.includeGlobalGrid if true, the global grid is included to each grid
+ * @param options.singleLineFooter if true, only a single line footer with credits to the app and ARASAAC is printed
+ * @param options.oneElementSizeMM if true, all elements are sized to the given size in millimeters instead of relying on the width/height properties
  * @param options.progressFn a function that is called in order to report progress of the task.
  *                           Parameters passed: <percentage:Number, text:String, abortFn:Function>.
  *                           "abortFn" can be called in order to abort the task.
@@ -125,6 +221,11 @@ function addFooter({doc, area, gridData, options}) {
     let yBaseFooter = area.y + area.height;
     let hasARASAAC = hasARASAACImages(gridData);
     let yLine1 = hasARASAAC ? yBaseFooter - pdfOptions.footerHeight : yBaseFooter;
+    if (options.singleLineFooter) {
+        yLine1 = yBaseFooter;
+        textC = hasARASAAC ? textL2 : '';
+        textL2 = '';
+    }
     if (options.showLinks && firstParentPage) {
         let prefix = JSON.stringify(options.idParentsMap[gridData.id].slice(0, 5));
         textC = prefix + ' => ' + textC;
@@ -144,7 +245,7 @@ function addFooter({doc, area, gridData, options}) {
         baseline: 'bottom',
         align: 'left'
     });
-    if (hasARASAAC) {
+    if (hasARASAAC && !options.singleLineFooter) {
         doc.text(textL2, pdfOptions.docPadding + pdfOptions.elementPadding, yBaseFooter, {
             baseline: 'bottom',
             align: 'left'
@@ -229,17 +330,22 @@ function addLink({element, idPageMap, elemArea}) {
     }
 }
 
+/**
+ *
+ * @param doc
+ * @param gridData
+ * @param options
+ * @param options.singleLineFooter if true, only a single line footer with credits to the app and ARASAAC is printed
+ * @param options.oneElementSizeMM if set, all elements are sized to the given size in millimeters instead of relying on the width/height properties
+ * @param metadata
+ * @param globalGrid
+ * @return {Promise<void>}
+ */
 async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
-    gridData = new GridData(gridData);
     gridData = gridUtil.mergeGrids(gridData, globalGrid, metadata);
     let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
-    let footerHeight = hasARASAACImages(gridData) ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
-    let gridArea = getArea({
-        x: pdfOptions.docPadding,
-        y: pdfOptions.docPadding,
-        width: DOC_WIDTH - 2 * pdfOptions.docPadding,
-        height: (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight)
-    });
+    let footerHeight = hasARASAACImages(gridData) && !options.singleLineFooter ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
+    let gridArea = getGridArea({footerHeight, registerHeight});
     let footerArea = getArea({
         x: gridArea.x,
         y: gridArea.y + gridArea.height,
@@ -263,6 +369,11 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     let elementTotalWidth = gridArea.width / gridUtil.getWidthWithBounds(gridData);
     let elementTotalHeight =
         gridArea.height / gridUtil.getHeightWithBounds(gridData);
+    if (options.oneElementSizeMM) {
+        elementTotalWidth = elementTotalHeight = options.oneElementSizeMM;
+        gridArea.width = elementTotalWidth * gridUtil.getWidth(gridData);
+        gridArea.height = elementTotalWidth * gridUtil.getHeight(gridData);
+    }
     markArea(gridArea, "lightgreen");
     if (options.printBackground) {
         gridArea.fill(metadata.colorConfig.gridBackgroundColor);
@@ -524,6 +635,16 @@ async function loadGridFont() {
 
 function getArea({ x = 0, y = 0, width = 0, height = 0 } = {}) {
     return new PdfArea({x, y, width, height, doc, jsPdfModule});
+}
+
+function getGridArea({footerHeight, registerHeight = 0} = {}) {
+    footerHeight = footerHeight || pdfOptions.footerHeight;
+    return getArea({
+        x: pdfOptions.docPadding,
+        y: pdfOptions.docPadding,
+        width: DOC_WIDTH - 2 * pdfOptions.docPadding,
+        height: (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight)
+    });
 }
 
 function markArea(area, color, text, force) {

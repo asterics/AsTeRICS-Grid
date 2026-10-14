@@ -659,4 +659,33 @@ util.limitValue = function(value, min, max, defaultValue) {
     return Math.min(Math.max(value, min), max);
 }
 
+/**
+ * Rounds a number to a specified number of decimal places.
+ * @param {number} value - The number to round.
+ * @param {number} decimals - Number of decimal places (default 0).
+ * @returns {number}
+ */
+util.roundTo = function (value, decimals = 0) {
+    if (!Number.isFinite(value)) return value;
+    return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
+}
+
+/**
+ * splits an array into chunks
+ * @param array
+ * @param chunkSize
+ * @return {*[]}
+ */
+util.chunkArray = function (array, chunkSize = 1) {
+    if (chunkSize <= 0) {
+        return array;
+    }
+
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+        chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+}
+
 export { util };
