@@ -1337,5 +1337,9 @@
   "showAllElements": "minden kártya mutatása",
   "firstRowHeightFactor": "Első sor magasság-hányadosa",
   "downloadingImagesWithPercent": "Képek letöltése folyamatban... {0}%",
-  "browserNotSupportingOfflineMode": "Ez a böngésző nem támogatja az offline üzemmódot. Ha szüksége van rá, frissítsen, vagy használjon másik böngészőt."
+  "browserNotSupportingOfflineMode": "Ez a böngésző nem támogatja az offline üzemmódot. Ha szüksége van rá, frissítsen, vagy használjon másik böngészőt.",
+  "exportMode": "Export mode",
+  "PDF_EXPORTMODE_NORMAL": "Normal",
+  "PDF_EXPORTMODE_RESIZE": "Resize elements",
+  "elementSize": "Element size"
 }

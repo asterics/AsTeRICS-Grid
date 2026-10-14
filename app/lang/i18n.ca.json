@@ -1337,5 +1337,9 @@
   "showAllElements": "Mostrar totes les cel·les",
   "firstRowHeightFactor": "Factor d'alçada per a la primera fila",
   "downloadingImagesWithPercent": "Descarregant imatges... {0}%",
-  "browserNotSupportingOfflineMode": "El vostre navegador no admet el mode fora de línia. Si el necessiteu, actualitzeu-lo o utilitzeu un navegador diferent."
+  "browserNotSupportingOfflineMode": "El vostre navegador no admet el mode fora de línia. Si el necessiteu, actualitzeu-lo o utilitzeu un navegador diferent.",
+  "exportMode": "Export mode",
+  "PDF_EXPORTMODE_NORMAL": "Normal",
+  "PDF_EXPORTMODE_RESIZE": "Resize elements",
+  "elementSize": "Element size"
 }
