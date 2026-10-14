@@ -189,6 +189,10 @@
                 util.clearDebounce(FLOATING_CONTROLS_DEBOUNCE_KEY);
                 let thiz = this;
                 thiz.metadata.locked = true;
+                thiz.unlockCounter = UNLOCK_COUNT;
+                dataService.saveMetadata(thiz.metadata).then(() => {
+                    this.setViewPropsLocked();
+                });
             },
             unlock(force) {
                 let thiz = this;
