@@ -1337,5 +1337,9 @@
   "showAllElements": "Alle Elemente anzeigen",
   "firstRowHeightFactor": "Faktor für Höhe der ersten Zeile",
   "downloadingImagesWithPercent": "Bilder werden heruntergeladen ... {0}%",
-  "browserNotSupportingOfflineMode": "Der Browser unterstützt keinen Offline-Modus. Wenn Sie ihn benötigen, verwenden Sie einen anderen oder aktuelleren Browser."
+  "browserNotSupportingOfflineMode": "Der Browser unterstützt keinen Offline-Modus. Wenn Sie ihn benötigen, verwenden Sie einen anderen oder aktuelleren Browser.",
+  "exportMode": "Export mode",
+  "PDF_EXPORTMODE_NORMAL": "Normal",
+  "PDF_EXPORTMODE_RESIZE": "Resize elements",
+  "elementSize": "Element size"
 }
