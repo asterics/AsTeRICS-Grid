@@ -22,7 +22,7 @@ openHABService.sendAction = async function (action) {
     } else {
         data = action.actionType;
     }
-    await fetch(action.openHABUrl + action.itemName, {
+    await fetch(openHABService.getRestURL(action.openHABUrl) + action.itemName, {
         method: 'POST',
         headers: {
             'Content-Type': 'text/plain'
@@ -46,6 +46,8 @@ openHABService.getRestURL = function (userUri) {
     let parser = document.createElement('a');
     parser.href = userUri;
     parser.pathname = '/rest/items/';
+    parser.search = '';
+    parser.hash = '';
     if (!parser.port) {
         parser.port = 8080;
     }
