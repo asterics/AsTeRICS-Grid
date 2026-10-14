@@ -762,6 +762,10 @@
         line-height: 1;
     }
 
+    .floating-control-button:focus {
+        outline: none;
+    }
+
     .floating-control-button i {
         font-size: 1.1em;
     }
