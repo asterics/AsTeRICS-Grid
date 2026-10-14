@@ -1338,8 +1338,8 @@
   "firstRowHeightFactor": "Faktor für Höhe der ersten Zeile",
   "downloadingImagesWithPercent": "Bilder werden heruntergeladen ... {0}%",
   "browserNotSupportingOfflineMode": "Der Browser unterstützt keinen Offline-Modus. Wenn Sie ihn benötigen, verwenden Sie einen anderen oder aktuelleren Browser.",
-  "exportMode": "Export mode",
+  "exportMode": "Export-Modus",
   "PDF_EXPORTMODE_NORMAL": "Normal",
-  "PDF_EXPORTMODE_RESIZE": "Resize elements",
-  "elementSize": "Element size"
+  "PDF_EXPORTMODE_RESIZE": "Elemente skalieren",
+  "elementSize": "Elementgröße"
 }
