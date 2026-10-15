@@ -39,6 +39,13 @@ systemActionService.doAction = async function(action) {
         case GridActionSystem.actions.SYS_LEAVE_FULLSCREEN:
             await systemActionService.exitFullscreen();
             break;
+        case GridActionSystem.actions.SYS_TOGGLE_FULLSCREEN:
+            if (util.isFullscreen()) {
+                await systemActionService.exitFullscreen();
+            } else {
+                await systemActionService.enterFullscreen();
+            }
+            break;        
         case GridActionSystem.actions.SYS_UPDATE_LIVE_ELEMENTS:
             let delay = action.actionValue || 0;
             setTimeout(() => {
