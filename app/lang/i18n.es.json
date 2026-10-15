@@ -1338,8 +1338,8 @@
   "firstRowHeightFactor": "Ajuste de altura de la primera fila",
   "downloadingImagesWithPercent": "Descargando imágenes ... {0}%",
   "browserNotSupportingOfflineMode": "Su navegador no soporta el modo offline. Si lo necesita, actualice o utilice un navegador diferente.",
-  "exportMode": "Export mode",
+  "exportMode": "Modo de exportación",
   "PDF_EXPORTMODE_NORMAL": "Normal",
-  "PDF_EXPORTMODE_RESIZE": "Resize elements",
-  "elementSize": "Element size"
+  "PDF_EXPORTMODE_RESIZE": "Redimensionar elementos",
+  "elementSize": "Tamaño de los elementos"
 }
