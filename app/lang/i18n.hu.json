@@ -1050,7 +1050,7 @@
   },
   "createGridElements": "Kártyák létrehozása",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "A felolvasás nyelve legyen a fordítás nyelvével azonos",
-  "waitForSpeechToFinish": "Always wait for current speech to finish",
+  "waitForSpeechToFinish": "Várja meg az aktuális beszéd végét",
   "testVoice": "Hang tesztelése",
   "pleaseConsiderToDownloadABackup": "Kérjük, fontolja meg a konfigurációja biztonsági mentésének letöltését, hogy elkerülje a munka elvesztését.",
   "downloadNow": "Letöltés most",
@@ -1210,7 +1210,7 @@
   "copy": "Másolás",
   "cut": "Kivágás",
   "paste": "Beillesztés",
-  "pasteFromClipboard": "Paste from clipboard",
+  "pasteFromClipboard": "Beillesztés vágólapról",
   "mutedBracket": "(némítva)",
   "displayMode": "Megjelenítési mód",
   "dateTimeFormat": "Dátum / idő formátum",
@@ -1338,8 +1338,8 @@
   "firstRowHeightFactor": "Első sor magasság-hányadosa",
   "downloadingImagesWithPercent": "Képek letöltése folyamatban... {0}%",
   "browserNotSupportingOfflineMode": "Ez a böngésző nem támogatja az offline üzemmódot. Ha szüksége van rá, frissítsen, vagy használjon másik böngészőt.",
-  "exportMode": "Export mode",
-  "PDF_EXPORTMODE_NORMAL": "Normal",
-  "PDF_EXPORTMODE_RESIZE": "Resize elements",
-  "elementSize": "Element size"
+  "exportMode": "Export üzemmód",
+  "PDF_EXPORTMODE_NORMAL": "Normál",
+  "PDF_EXPORTMODE_RESIZE": "Kártya átméretezés",
+  "elementSize": "Kártya méret"
 }
