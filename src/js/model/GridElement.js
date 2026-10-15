@@ -41,7 +41,7 @@ class GridElement extends Model({
     colorCategory: [String],
     hidden: [Boolean],
     dontCollect: [Boolean],
-    forceCollect: [Boolean],
+    collectMode: [String],
     toggleInBar: [Boolean],
     image: [GridImage],
     actions: [Object],
@@ -127,6 +127,9 @@ GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER = 'ELEMENT_TYPE_DYNAMIC_GRID_P
 GridElement.ELEMENT_TYPE_UI_FILLER = 'ELEMENT_TYPE_UI_FILLER'; // only for rendering, not a real element type
 
 GridElement.PROP_YT_PREVENT_CLICK = 'PROP_YT_PREVENT_CLICK';
+
+GridElement.COLLECT_MODE_ALWAYS = 'COLLECT_MODE_ALWAYS';
+GridElement.COLLECT_MODE_NEVER = 'COLLECT_MODE_NEVER';
 
 GridElement.ID_PREFIX = "grid-element";
 
