@@ -278,15 +278,10 @@ MainVue.init = function () {
                     .onTouchStart(onTouchStart)
                     .onTouchMove(checkFullscreenExit)
                     .onTouchEnd(resetTouchStart)
-                    .onEscape(handleFullscreenExit)
-                    .onExitFullscreen(handleFullscreenExit);
+                    .onEscape(systemActionService.exitFullscreen)
+                    .onExitFullscreen(systemActionService.exitFullscreen);
                 inputEventHandler.global.startListening();
                 thiz.openSidebar();
-                
-                async function handleFullscreenExit() {
-                    await systemActionService.exitFullscreen();
-                    MainVue.restoreSidebar();
-                }
             }
         });
         return Promise.resolve();
