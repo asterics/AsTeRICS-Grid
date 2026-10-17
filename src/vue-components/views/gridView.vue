@@ -32,12 +32,22 @@
             </button>
 
             <template v-else>
-                <button tabindex="30"
-                        @click="showFloatingControls(); metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
+                <button v-if="!metadata.fullscreen"
+                        tabindex="30"
+                        @click="showFloatingControls(); systemActionService.enterFullscreen()"
                         class="floating-control-button"
-                        :aria-label="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')"
-                        :title="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')">
-                    <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
+                        :aria-label="$t('SYS_ENTER_FULLSCREEN')"
+                        :title="$t('SYS_ENTER_FULLSCREEN')">
+                    <i class="fas fa-expand"></i>
+                </button>
+                
+                <button v-if="metadata.fullscreen"
+                        tabindex="30"
+                        @click="showFloatingControls(); systemActionService.exitFullscreen()"
+                        class="floating-control-button"
+                        :aria-label="$t('SYS_LEAVE_FULLSCREEN')"
+                        :title="$t('SYS_LEAVE_FULLSCREEN')">
+                    <i class="fas fa-compress"></i>
                 </button>
 
                 <button v-if="metadata.locked && !metadata.fullscreen"
