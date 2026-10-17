@@ -8,7 +8,6 @@ import { MainVue } from '../vue/mainVue';
 import { i18nService } from './i18nService';
 import { speechService } from './speechService';
 import { liveElementService } from './liveElementService';
-import { stateService } from './stateService';
 
 let systemActionService = {};
 
@@ -56,9 +55,6 @@ systemActionService.doAction = async function(action) {
 };
 
 systemActionService.enterFullscreen = async function(dontSave) {
-    if (!util.isFullscreen()) {
-        stateService.setState('sidebarBeforeFullscreen', MainVue.isSidebarOpen());
-    }
     util.openFullscreen();
     
     let metadata = await dataService.getMetadata();
