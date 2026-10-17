@@ -207,7 +207,7 @@
                 if (thiz.unlockCounter === 0 || force) {
                     thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
-                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                        MainVue.restoreSidebar();
                         this.setViewPropsUnlocked();
                     });
                 }
@@ -430,7 +430,7 @@
                         if (this.updatedMetadataDoc.fullscreen) {
                             systemActionService.enterFullscreen(true);
                         } else {
-                            $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                            MainVue.restoreSidebar();
                         }
                     }
                     if (this.updatedMetadataDoc && this.updatedMetadataDoc.locked !== vueApp.metadata.locked) {
