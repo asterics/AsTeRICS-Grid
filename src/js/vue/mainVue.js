@@ -39,6 +39,12 @@ MainVue.isSidebarOpen = function () {
     return app.showSidebar;
 };
 
+MainVue.restoreSidebar = function () {
+    if (stateService.getState(constants.STATE_SIDEBAR_DESIRED_OPEN)) {
+        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+    }
+};
+
 MainVue.setTooltip = function (html, options) {
     if (!app) {
         return;
@@ -148,6 +154,7 @@ MainVue.searchModalOpened = function() {
 };
 
 MainVue.init = function () {
+    stateService.setState(constants.STATE_SIDEBAR_DESIRED_OPEN, true);
     Vue.use(VueI18n);
     return i18nService.getVueI18n().then((i18n) => {
         app = new Vue({
@@ -181,6 +188,7 @@ MainVue.init = function () {
                     this.componentKey++; //forces to update the view, even with same component (e.g. grid view, other page)
                 },
                 closeSidebar() {
+                    stateService.setState(constants.STATE_SIDEBAR_DESIRED_OPEN, false);
                     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
                 },
                 openSidebar() {
@@ -276,14 +284,8 @@ MainVue.init = function () {
                 thiz.openSidebar();
                 
                 async function handleFullscreenExit() {
-                    let wasSidebarOpen = stateService.getState('sidebarBeforeFullscreen');
-                    stateService.setState('sidebarBeforeFullscreen', false);
-                
                     await systemActionService.exitFullscreen();
-                
-                    if (wasSidebarOpen) {
-                        thiz.openSidebar();
-                    }
+                    MainVue.restoreSidebar();
                 }
             }
         });
