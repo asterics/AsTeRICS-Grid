@@ -39,7 +39,7 @@ systemActionService.doAction = async function(action) {
             await systemActionService.exitFullscreen();
             break;
         case GridActionSystem.actions.SYS_TOGGLE_FULLSCREEN:
-            if (util.isFullscreen() || (await dataService.getMetadata()).fullscreen) {
+            if (util.isFullscreen()) {
                 await systemActionService.exitFullscreen();
             } else {
                 await systemActionService.enterFullscreen();
