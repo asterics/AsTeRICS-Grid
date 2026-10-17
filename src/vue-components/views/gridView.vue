@@ -177,7 +177,7 @@
             MouseModal,
             ScanningModal, HeaderIcon
         },
-        methods: {    
+        methods: {
             openModal(modalType) {
                 this.showModal = modalType;
                 stopInputMethods();
