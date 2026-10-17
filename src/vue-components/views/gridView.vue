@@ -12,8 +12,7 @@
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
-            <button tabindex="33" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('fullscreen')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
-            <button tabindex="34" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
+            <button tabindex="33" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('search')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>            <button tabindex="34" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
             </button>
@@ -39,7 +38,7 @@
                 <i class="fas fa-compress"></i>
             </button>
             <button v-if="metadata.locked && !metadata.fullscreen"
-                tabindex="32"
+                tabindex="31"
                 @click="MainVue.showSearchModal()"
                 class="floating-control-button"
                 :aria-label="$t('search')"
@@ -47,7 +46,7 @@
                 <i class="fas fa-search"></i>
             </button>
             <button v-if="metadata.locked && !metadata.fullscreen"
-                    tabindex="31"
+                    tabindex="32"
                     @click="unlock()"
                     class="floating-control-button"
                     :aria-label="$t('unlock')"
