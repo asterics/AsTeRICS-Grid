@@ -31,7 +31,7 @@
                 <i class="fas fa-expand"></i>
             </button>
         
-            <button v-if="metadata.fullscreen"
+            <button v-if="metadata.fullscreen && false"
                     tabindex="30"
                     @click="systemActionService.exitFullscreen()"
                     class="floating-control-button"
