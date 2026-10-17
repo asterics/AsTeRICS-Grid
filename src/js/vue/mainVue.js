@@ -278,7 +278,7 @@ MainVue.init = function () {
                     .onTouchStart(onFullscreenTouchStart)
                     .onTouchMove(onFullscreenTouchMove)
                     .onTouchEnd(resetFullscreenTouch)
-                    // .onEscape(handleFullscreenExit)
+                    .onEscape(handleFullscreenExit)
                     .onExitFullscreen(handleFullscreenExit);
                 inputEventHandler.global.startListening();
                 thiz.openSidebar();
