@@ -683,9 +683,9 @@
     }
    
     .floating-control-button {
-        height: 1.2em;
-        min-width: 2.7em;
-        padding: 0 0.65em;
+        height: 1.4em;
+        min-width: 2.5em;
+        padding: 0 0.55em;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -710,6 +710,6 @@
     }
     
     .floating-control-button i {
-        font-size: 1.1em;
+        font-size: 1em;
     }
 </style>
