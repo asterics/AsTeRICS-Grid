@@ -328,6 +328,7 @@ async function checkFullscreenExit(event) {
 function resetTouchStart() {
     touchStartY = null;
 }
+
 function setupContextMenu() {
     let CONTEXT_ADD_ONLINE = 'CONTEXT_ADD_ONLINE';
     let CONTEXT_ADD_OFFLINE = 'CONTEXT_ADD_OFFLINE';
