@@ -13,7 +13,8 @@
             </button>
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
             <button tabindex="33" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('search')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
-            <button tabindex="34" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">                <i class="fas fa-lock"></i>
+            <button tabindex="34" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
+                <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
             </button>
         </header>
