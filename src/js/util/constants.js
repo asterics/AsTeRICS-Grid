@@ -93,6 +93,7 @@ constants.IS_MAC = (navigator.platform || ((navigator.userAgentData || {}).platf
 constants.SUPPORTS_SERVICE_WORKER = ('serviceWorker' in navigator);
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
+constants.STATE_SIDEBAR_DESIRED_OPEN = 'STATE_SIDEBAR_DESIRED_OPEN';
 
 constants.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
 constants.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
