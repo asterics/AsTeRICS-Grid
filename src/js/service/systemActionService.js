@@ -64,7 +64,6 @@ systemActionService.enterFullscreen = async function(dontSave) {
     }
     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
 }
-
 systemActionService.exitFullscreen = async function() {
     if (!dataService.getCurrentUser()) {
         return;
@@ -75,6 +74,7 @@ systemActionService.exitFullscreen = async function() {
         metadata.fullscreen = false;
         await dataService.saveMetadata(metadata);
     }
+    MainVue.restoreSidebar();
     setTimeout(() => {
         $(document).trigger(constants.EVENT_GRID_RESIZE);
     }, 200);
