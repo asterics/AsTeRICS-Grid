@@ -44,7 +44,7 @@ systemActionService.doAction = async function(action) {
             } else {
                 await systemActionService.enterFullscreen();
             }
-            break;        
+            break;
         case GridActionSystem.actions.SYS_UPDATE_LIVE_ELEMENTS:
             let delay = action.actionValue || 0;
             setTimeout(() => {
@@ -56,7 +56,7 @@ systemActionService.doAction = async function(action) {
 
 systemActionService.enterFullscreen = async function(dontSave) {
     util.openFullscreen();
-    
+
     let metadata = await dataService.getMetadata();
     metadata.fullscreen = true;
     if (!dontSave) {
@@ -64,6 +64,7 @@ systemActionService.enterFullscreen = async function(dontSave) {
     }
     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
 }
+
 systemActionService.exitFullscreen = async function() {
     if (!dataService.getCurrentUser()) {
         return;
