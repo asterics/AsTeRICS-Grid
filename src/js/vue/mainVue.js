@@ -276,7 +276,7 @@ MainVue.init = function () {
                 });
                 inputEventHandler.global
                     .onTouchStart(onTouchStart)
-                    //.onTouchMove(checkFullscreenExit)
+                    .onTouchMove(checkFullscreenExit)
                     .onTouchEnd(resetTouchStart)
                     .onEscape(systemActionService.exitFullscreen)
                     .onExitFullscreen(systemActionService.exitFullscreen);
