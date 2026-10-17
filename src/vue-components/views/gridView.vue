@@ -39,7 +39,14 @@
                     :title="$t('SYS_LEAVE_FULLSCREEN')">
                 <i class="fas fa-compress"></i>
             </button>
-        
+            <button v-if="metadata.locked && !metadata.fullscreen"
+                tabindex="32"
+                @click="MainVue.showSearchModal()"
+                class="floating-control-button"
+                :aria-label="$t('search')"
+                :title="$t('searchBtnTitle')">
+                <i class="fas fa-search"></i>
+            </button>
             <button v-if="metadata.locked && !metadata.fullscreen"
                     tabindex="31"
                     @click="unlock()"
