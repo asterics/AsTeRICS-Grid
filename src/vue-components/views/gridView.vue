@@ -715,6 +715,11 @@
         }
     }
     
+    .floating-control-button:focus-visible {
+        outline: 2px solid #266697;
+        outline-offset: 2px;
+    }
+    
     .floating-control-button i {
         font-size: 1em;
     }
