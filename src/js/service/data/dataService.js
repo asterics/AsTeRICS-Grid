@@ -708,6 +708,15 @@ dataService.importData = async function (data, options) {
     options.progressFn(70);
     if (importData.metadata) {
         importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
+        let existingMetadata = await dataService.getMetadata();
+        let existingGridIds = existingGrids.map((grid) => grid.id);
+        if (existingGridIds.includes(existingMetadata.homeGridId)) {
+            importData.metadata.homeGridId = existingMetadata.homeGridId;
+        }
+        if (existingGridIds.includes(existingMetadata.globalGridId) && !options.generateGlobalGrid) {
+            importData.metadata.globalGridId = existingMetadata.globalGridId;
+            importData.metadata.globalGridActive = existingMetadata.globalGridActive;
+        }
         await dataService.saveMetadata(importData.metadata);
     }
     options.progressFn(80);
