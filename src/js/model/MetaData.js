@@ -27,6 +27,7 @@ class MetaData extends Model({
     notificationConfig: [NotificationConfig],
     activateARASAACGrammarAPI: [Boolean],
     vocabularyLevel: [Number, null],
+    dontResetWordFormsAutomatically: [Boolean],
     integrations: [Object] // IntegrationConfigSync
 }) {
     constructor(properties, elementToCopy) {

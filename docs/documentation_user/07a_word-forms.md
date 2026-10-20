@@ -52,7 +52,7 @@ These are the action types for `change word forms` (Figure 2 number 1):
 * **Change word form in collection element**: changes the last element in the collection element to the word form that best matches the current internal list of tags.
 * **Change word form everywhere**: changes word forms both within grid elements and within the last word of the collect element.
 * **Change this element to next word form**: doesn't use tags for selecting word forms, but simply iterates through the list of word forms defined within this element. *Example usage:* word forms contain a list of names, clicking on the element several times allows to select one of the names.
-* **Reset currently displayed word forms**: resets the word forms, clears the tags currently stored within the internal list. This is done automatically each time an element is selected which doesn't include any `change word form` action.
+* **Reset currently displayed word forms**: resets the word forms, clears the tags currently stored within the internal list. This is done automatically each time an element is selected which doesn't include any `change word form` or `navigate to other grid` action. To keep the tags until this action is used, activate `Don't reset word forms automatically` in *Settings -> Language*.
 
 Figure 2 number 3 shows an additional option `Toggle tags on selecting it multiple times`. If this option is activated, selecting this element several times in a row, toggles the tags of this action in the internal list. So in example 1 (see above) selecting the element "Past" multiple times would add and remove the tag `PAST` from the internal list, causing to toggle between the words `are` and `were`.
 

@@ -95,6 +95,15 @@
                 </div>
             </div>
         </div>
+        <div class="srow">
+            <div class="eleven columns">
+                <h3 class="mt-2">{{ $t('TAB_WORDFORMS') }}</h3>
+                <div class="srow">
+                    <input id="dontResetWordFormsAutomatically" type="checkbox" v-model="metadata.dontResetWordFormsAutomatically" @change="saveMetadata(metadata)"/>
+                    <label for="dontResetWordFormsAutomatically">{{ $t('dontResetWordFormsAutomatically') }}</label>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

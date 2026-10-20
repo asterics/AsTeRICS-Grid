@@ -124,7 +124,11 @@ async function doActions(gridElement, gridId) {
     ) {
         Router.toMain();
     }
-    if (!actionTypes.includes(GridActionWordForm.getModelName())) {
+    if (
+        !metadata.dontResetWordFormsAutomatically &&
+        !actionTypes.includes(GridActionWordForm.getModelName()) &&
+        !actionTypes.includes(GridActionNavigate.getModelName())
+    ) {
         stateService.resetWordForms();
     }
     let displayUpdateActions = [GridActionYoutube.getModelName(), GridActionWebradio.getModelName(), GridActionSystem.getModelName()];
