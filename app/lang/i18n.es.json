@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Realizar la flexión gramatical de la palabra en ambos (celda y frase acumulada)",
   "WORDFORM_MODE_NEXT_FORM": "Cambiar este elemento a la siguiente forma gramatical",
   "WORDFORM_MODE_RESET_FORMS": "Restablecer las flexiones gramaticales mostradas actualmente",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Alternar etiquetas al pulsar",
   "importedWordForms": "Importadas {count} flexiones gramaticales.",
   "importedWordFormsGrids": "Importadas {count} flexiones gramaticales a {gridCount} tableros.",
