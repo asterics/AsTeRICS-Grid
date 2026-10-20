@@ -40,7 +40,7 @@ class GridElement extends Model({
     borderColor: [String], // only used for color mode: "both"!
     colorCategory: [String],
     hidden: [Boolean],
-    dontCollect: [Boolean],
+    dontCollect: [Boolean], // deprecated, replaced by collectMode
     collectMode: [String],
     toggleInBar: [Boolean],
     image: [GridImage],
