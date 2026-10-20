@@ -682,7 +682,7 @@
         transform: translateX(-50%);
         z-index: 1000;
         display: inline-flex;
-        gap: 0.5em;
+        gap: 0.3em;
     }
    
     .floating-control-button {
