@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Zmień formę wyrazu wszędzie",
   "WORDFORM_MODE_NEXT_FORM": "Zmień ten element na kolejną formę wyrazu",
   "WORDFORM_MODE_RESET_FORMS": "Resetuj aktualnie wyświetlane formy słowne",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Przełącz etykiety przy wielokrotnym wyborze",
   "importedWordForms": "Zaimportowano {count} form wyrazów.",
   "importedWordFormsGrids": "Zaimportowano {count} form wyrazów do {gridCount} siatek.",
