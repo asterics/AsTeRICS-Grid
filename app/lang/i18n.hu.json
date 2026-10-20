@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Szóalak megváltoztatása mindenütt",
   "WORDFORM_MODE_NEXT_FORM": "Ezen a kártyán a követkető szóalakra váltás",
   "WORDFORM_MODE_RESET_FORMS": "Szóalak választás törlése",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Léptetés többszörös megnyomás esetén",
   "importedWordForms": "{count} szóalak került importálásra.",
   "importedWordFormsGrids": "{count} szóalak került importálásra {gridCount} táblára.",
