@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Cambia la forma delle parole ovunque",
   "WORDFORM_MODE_NEXT_FORM": "Cambia questo elemento alla forma successiva",
   "WORDFORM_MODE_RESET_FORMS": "Ripristina le forme delle parole visualizzate",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Attiva/disattiva i tag selezionandoli più volte",
   "importedWordForms": "Importate {count} forme delle parole.",
   "importedWordFormsGrids": "Importate {count} forme delle parole in {gridCount} griglie.",

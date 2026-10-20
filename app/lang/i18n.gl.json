@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Cambia a declinación en todas partes",
   "WORDFORM_MODE_NEXT_FORM": "Cambia este elemento á seguinte declinación",
   "WORDFORM_MODE_RESET_FORMS": "Restablecer a declinación mostrada agora",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Alterna as etiquetas ó seleccionalo varias veces",
   "importedWordForms": "Importadas {count} declinacións.",
   "importedWordFormsGrids": "Importadas {count} declinacións a {gridCount} reixas.",

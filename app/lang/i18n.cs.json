@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Změnit slovní tvar všude",
   "WORDFORM_MODE_NEXT_FORM": "Změnit tento prvek na další slovní tvar",
   "WORDFORM_MODE_RESET_FORMS": "Obnovit aktuálně zobrazené slovní tvary",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Toggle tags on selecting it multiple times",
   "importedWordForms": "Importováno {count} slovních tvarů.",
   "importedWordFormsGrids": "Importováno {count} slovních tvarů do {gridCount} tabulek.",

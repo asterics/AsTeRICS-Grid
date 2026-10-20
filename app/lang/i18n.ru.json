@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Изменить форму слова везде",
   "WORDFORM_MODE_NEXT_FORM": "Изменить этот элемент на следующую словоформу",
   "WORDFORM_MODE_RESET_FORMS": "Сбросить отображаемые в данный момент словоформы",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Переключение тегов при многократном выборе",
   "importedWordForms": "Импортировано {count} словоформ.",
   "importedWordFormsGrids": "Импортировано {count} словоформ в {gridCount} сеток.",

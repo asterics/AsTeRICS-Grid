@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Her yerdeki kelime formunu değiştir",
   "WORDFORM_MODE_NEXT_FORM": "Bu öğeyi bir sonraki kelime formuna değiştir",
   "WORDFORM_MODE_RESET_FORMS": "Şu anda gösterilen kelime formlarını sıfırla",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Etiketi birden fazla kez seçerek aç/kapat",
   "importedWordForms": "{count} kelime formu içe aktarıldı.",
   "importedWordFormsGrids": "{gridCount} ızgaraya {count} kelime formu içe aktarıldı.",

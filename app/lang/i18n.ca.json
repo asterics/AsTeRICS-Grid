@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "\nCanvia la forma de la paraula a tot arreu",
   "WORDFORM_MODE_NEXT_FORM": "Canvia aquest element a la següent paraula",
   "WORDFORM_MODE_RESET_FORMS": "Restableix els formularis de paraules que es mostren actualment",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Commuta les etiquetes en seleccionar-lo diverses vegades",
   "importedWordForms": "Formes de paraules {count} importades.",
   "importedWordFormsGrids": "S'han importat formularis de paraules {count} a quadrícules {gridCount}.",

@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "تغيير شكل الكلمة في كل مكان",
   "WORDFORM_MODE_NEXT_FORM": "تغيير هذا العنصر إلى شكل الكلمة التالية",
   "WORDFORM_MODE_RESET_FORMS": "إعادة تعيين نماذج الكلمات المعروضة حاليا",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "تبديل العلامات عند اختيارها عدة مرات",
   "importedWordForms": "استورد استمارات الكلمات {count}.",
   "importedWordFormsGrids": "تم استيراد نماذج الكلمات {count} لشبكات {gridCount}.",

@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Wortform überall anpassen",
   "WORDFORM_MODE_NEXT_FORM": "Ändere dieses Element zu nächster Wortform",
   "WORDFORM_MODE_RESET_FORMS": "Angezeigte Wortformen zurücksetzen",
+  "dontResetWordFormsAutomatically": "Wortformen nicht automatisch, sondern nur manuell per Aktion zurücksetzen",
   "toggleTagOnSelectingItMultipleTimes": "Tags bei Mehrfachauswahl aus- und wieder abwählen",
   "importedWordForms": "Es wurden {count} Wortformen importiert.",
   "importedWordFormsGrids": "Es wurden {count} Wortformen in {gridCount} Grids importiert.",

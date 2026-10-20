@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Скрізь змінити форму слова",
   "WORDFORM_MODE_NEXT_FORM": "Змінити цей елемент на наступну форму слова",
   "WORDFORM_MODE_RESET_FORMS": "Скинути поточні відображені форми слова",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Перемикайте теги, вибравши їх кілька разів",
   "importedWordForms": "Імпортовано {count} форм слова.",
   "importedWordFormsGrids": "Імпортовано {count} форм слова до {gridCount} сіток.",
