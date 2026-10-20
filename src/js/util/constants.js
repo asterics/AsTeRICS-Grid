@@ -183,10 +183,10 @@ constants.TRANSFER_PROPS = {
         type: constants.PROP_TRANSFER_TYPES.NUMBER,
         category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     },
-    DONT_COLLECT: {
-        path: 'dontCollect',
-        label: 'dontAddElementToCollectElement',
-        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+    COLLECT_MODE: {
+        path: 'collectMode',
+        label: 'addElementToCollectElement',
+        type: constants.PROP_TRANSFER_TYPES.TEXT,
         category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     },
     TOGGLE_IN_BAR: {

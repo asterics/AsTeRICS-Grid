@@ -63,7 +63,7 @@ These are the elements in the modal of Figure 2 (Tab *General*):
 9. **OK, edit next**: save all changes, edit the next grid element in the "Edit grid element" dialog - Tab "General"
 
 Under advanced options, these additional options can be set:
-* **Don't add element to collect element**: if selected, this element isn't added to the collect element after selection
+* **Add element to collect element**: `automatic` adds the element to the collect element after selection, except if it has actions like navigating to another grid, HTTP or opening a webpage. `Always` always adds it, `Never` never adds it.
 * **Toggle in collection element if added multiple times**: Show/delete element in collect element each time the button is clicked.
 * **Font size**: font size for this element, overrides font size set in [text appearance](05_editing-grid-set.md#text-appearance))
 * **Background / border color**: choose a custom background color (or border color, for color mode `Color border`, see [grid element appearance](05_editing-grid-set.md#grid-element-appearance))

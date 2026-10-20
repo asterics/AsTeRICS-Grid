@@ -594,18 +594,19 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         GridActionWordForm.getModelName()
     ];
     let ignoreActions = GridElement.getActionTypeModelNames().filter((e) => !notIgonoreActions.includes(e));
-    if (getActionTypes(element).some((type) => ignoreActions.includes(type))) {
+    let alwaysCollect = element.collectMode === GridElement.COLLECT_MODE_ALWAYS;
+    if (!alwaysCollect && getActionTypes(element).some((type) => ignoreActions.includes(type))) {
         return; // dont collect elements containing "ignoreActions"
     }
     let navigateAction = getActionOfType(element, GridActionNavigate.getModelName());
-    if (navigateAction && getLabel(element).length !== 1 && !navigateAction.addToCollectElem) {
+    if (!alwaysCollect && navigateAction && getLabel(element).length !== 1 && !navigateAction.addToCollectElem) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
     }
     let wordFormActions = getActionsOfType(element, GridActionWordForm.getModelName());
     if (wordFormActions.length > 0 && wordFormActions.some(a => a.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM)) {
         return; // no adding, since the action itself adds the element
     }
-    if (element.dontCollect) {
+    if (element.collectMode === GridElement.COLLECT_MODE_NEVER || (!element.collectMode && element.dontCollect)) {
         return;
     }
     if (element.toggleInBar) {
