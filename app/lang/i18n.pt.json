@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Alterar formas da palavra globalmente",
   "WORDFORM_MODE_NEXT_FORM": "Alterar esta célula para a próxima forma de palavra",
   "WORDFORM_MODE_RESET_FORMS": "Repor formas de palavras mostradas atualmente",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Alternar etiquetas ao selecionar várias vezes",
   "importedWordForms": "Importadas {count} formas de palavras.",
   "importedWordFormsGrids": "Importadas {count} formas de palavras para {gridCount} tabelas.",
