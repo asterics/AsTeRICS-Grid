@@ -284,9 +284,8 @@ Router.addToGridHistory = function (gridId) {
     if (_gridHistory.length > 0 && _gridHistory[_gridHistory.length - 1] === gridId) {
         return;
     }
-    if (_gridHistory.indexOf(gridId) !== -1) {
-        _gridHistory = [gridId];
-        return;
+    if (_gridHistory.length > 1000) {
+        _gridHistory = _gridHistory.slice(-1000);
     }
     _gridHistory.push(gridId);
 };
