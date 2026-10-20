@@ -1110,6 +1110,7 @@
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Promjena oblika riječi posvuda",
   "WORDFORM_MODE_NEXT_FORM": "Promijeniti ovaj element u sljedeći oblik riječi",
   "WORDFORM_MODE_RESET_FORMS": "Reset currently displayed word forms",
+  "dontResetWordFormsAutomatically": "Don't reset word forms automatically, only by the action \"Reset currently displayed word forms\"",
   "toggleTagOnSelectingItMultipleTimes": "Toggle tags on selecting it multiple times",
   "importedWordForms": "Imported {count} word forms.",
   "importedWordFormsGrids": "Uvezeni {count} oblici riječi u {gridCount} ploče.",
