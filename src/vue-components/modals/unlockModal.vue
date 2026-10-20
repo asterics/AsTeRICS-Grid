@@ -11,10 +11,10 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="number-row" style="text-align: center; margin-bottom: 1em;">
-                            <span>{{ $t('inputPasscode') }}</span>
-                            <span class="hide-mobile">{{ $t('useButtonsOrKeyboard') }}</span><br/>
-                            <span aria-hidden="true" style="font-size: 3em">
+                        <div class="number-row input-indicator">
+                            <span class="hide-small-height">{{ $t('inputPasscode') }}</span>
+                            <span class="hide-small-height">{{ $t('useButtonsOrKeyboard') }}</span><br/>
+                            <span aria-hidden="true" class="hint">
                                 <span v-for="n in inputPasscode.length">&#9679;</span>
                                 <span v-for="n in (Math.max(0, passcode.length - inputPasscode.length))">_</span>
                             </span>
@@ -111,5 +111,40 @@
         padding: 3% 0;
         margin-right: 3%;
         font-size: 2.5em;
+        max-height: 10vh;
+    }
+
+    .input-indicator {
+        text-align: center;
+        margin-bottom: 1.5em;
+    }
+
+    .input-indicator .hint {
+        font-size: 3em;
+    }
+
+    @media screen and (max-height: 500px) {
+        .number-row {
+            width: 40%;
+        }
+
+        .modal-body button {
+            font-size: 2em;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .hide-small-height {
+            display: none;
+        }
+
+        .input-indicator .hint {
+            font-size: 2em;
+            line-height: 0.5;
+        }
+
+        .modal-body {
+            margin-top: 0;
+        }
     }
 </style>
