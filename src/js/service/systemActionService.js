@@ -56,7 +56,6 @@ systemActionService.doAction = async function(action) {
 
 systemActionService.enterFullscreen = async function(dontSave) {
     util.openFullscreen();
-
     let metadata = await dataService.getMetadata();
     metadata.fullscreen = true;
     if (!dontSave) {
