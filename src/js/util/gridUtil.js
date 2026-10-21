@@ -892,6 +892,18 @@ gridUtil.getNavigateGridId = function (element, homeGridId) {
     return navAction.toGridId;
 }
 
+gridUtil.getCurrentVocabularyLevel = function (metadata) {
+    let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
+    return isToggled ? localStorageService.getJSON(localStorageService.KEY_CURRENT_TOGGLE_LEVEL) : metadata.vocabularyLevel;
+};
+
+gridUtil.getElementsOfVocabularyLevel = function (gridElements, vocabularyLevel) {
+    if (!vocabularyLevel || gridElements.every(element => !element.vocabularyLevel)) {
+        return gridElements;
+    }
+    return gridElements.filter(element => (element.vocabularyLevel && element.vocabularyLevel <= vocabularyLevel) || element.type !== GridElement.ELEMENT_TYPE_NORMAL);
+};
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);

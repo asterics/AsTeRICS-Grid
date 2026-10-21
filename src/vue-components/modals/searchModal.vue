@@ -85,6 +85,7 @@
                 i18nService: i18nService,
                 idPathMap: null,
                 overflow: false,
+                vocabularyLevel: null,
                 MAX_RESULTS: 10
             }
         },
@@ -150,6 +151,7 @@
                                 hadMatch = true;
                                 if (elem.image && elem.image.data === dataUtil.getDefaultRemovedPlaceholder()) {
                                     let realGrid = await dataService.getGrid(grid.id);
+                                    realGrid.gridElements = gridUtil.getElementsOfVocabularyLevel(realGrid.gridElements, thiz.vocabularyLevel);
                                     thiz.grids[i] = realGrid;
                                     elem = realGrid.gridElements.find(e => e.id === elem.id);
                                 }
@@ -211,10 +213,16 @@
                 this.grids = await dataService.getGrids(false, true);
                 let metadata = await dataService.getMetadata();
                 this.homeGridId = metadata.homeGridId;
+                if (Router.getCurrentView() === Router.VIEWS.GridView) {
+                    this.vocabularyLevel = gridUtil.getCurrentVocabularyLevel(metadata);
+                }
+                for (let grid of this.grids) {
+                    grid.gridElements = gridUtil.getElementsOfVocabularyLevel(grid.gridElements, this.vocabularyLevel);
+                }
                 let globalGrid = await dataService.getGlobalGrid();
                 let homeGrid = this.grids.find(g => g.id === this.homeGridId);
                 if (globalGrid && homeGrid) {
-                    homeGrid.gridElements = homeGrid.gridElements.concat(globalGrid.gridElements);
+                    homeGrid.gridElements = homeGrid.gridElements.concat(gridUtil.getElementsOfVocabularyLevel(globalGrid.gridElements, this.vocabularyLevel));
                 }
                 this.graphList = gridUtil.getGraphList(this.grids);
                 resolve();

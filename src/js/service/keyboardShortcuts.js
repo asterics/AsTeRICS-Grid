@@ -38,7 +38,7 @@ keyboardShortcuts.init = function () {
         if (ctrlOrMeta && keycode === 70) {
             // Ctrl + F
             event.preventDefault();
-            let validViews = [Router.VIEWS.AllGridsView, Router.VIEWS.GridView, Router.VIEWS.GridEditView];
+            let validViews = [Router.VIEWS.ManageGridsView, Router.VIEWS.GridView, Router.VIEWS.GridEditView];
             if (validViews.includes(Router.getCurrentView())) {
                 MainVue.showSearchModal();
             }

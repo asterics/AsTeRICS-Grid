@@ -1,11 +1,14 @@
 import { gridUtil } from './gridUtil.js';
 import {GridActionNavigate} from "../model/GridActionNavigate.js";
+import {GridElement} from "../model/GridElement.js";
 
 jest.mock('../service/i18nService', () => jest.fn());
 jest.mock('../service/data/localStorageService');
 jest.mock('../externals/objectmodel');
 jest.mock('../model/GridActionNavigate');
 jest.mock('../model/GridElement');
+
+GridElement.ELEMENT_TYPE_NORMAL = 'ELEMENT_TYPE_NORMAL';
 
 let NAV_CONSTANTS = {
     TO_LAST: "TO_LAST",
@@ -146,6 +149,27 @@ test('gridUtil.getPath - Test 6 - no path', () => {
     let graphList = gridUtil.getGraphList(grids);
     let path = gridUtil.getGridPath(graphList, 1, 3);
     expect(path.length).toEqual(0);
+});
+
+test('gridUtil.getElementsOfVocabularyLevel - Test 1 - no level selected', () => {
+    let elements = [{ id: 1, type: 'ELEMENT_TYPE_NORMAL', vocabularyLevel: 3 }];
+    expect(gridUtil.getElementsOfVocabularyLevel(elements, null)).toEqual(elements);
+});
+
+test('gridUtil.getElementsOfVocabularyLevel - Test 2 - no element with level', () => {
+    let elements = [{ id: 1, type: 'ELEMENT_TYPE_NORMAL' }, { id: 2, type: 'ELEMENT_TYPE_NORMAL' }];
+    expect(gridUtil.getElementsOfVocabularyLevel(elements, 2)).toEqual(elements);
+});
+
+test('gridUtil.getElementsOfVocabularyLevel - Test 3 - mixed levels', () => {
+    let elements = [
+        { id: 1, type: 'ELEMENT_TYPE_NORMAL', vocabularyLevel: 1 },
+        { id: 2, type: 'ELEMENT_TYPE_NORMAL', vocabularyLevel: 2 },
+        { id: 3, type: 'ELEMENT_TYPE_NORMAL', vocabularyLevel: 3 },
+        { id: 4, type: 'ELEMENT_TYPE_NORMAL' },
+        { id: 5, type: 'ELEMENT_TYPE_COLLECT' }
+    ];
+    expect(gridUtil.getElementsOfVocabularyLevel(elements, 2).map(element => element.id)).toEqual([1, 2, 5]);
 });
 
 function getGrid(id, navigateToList) {

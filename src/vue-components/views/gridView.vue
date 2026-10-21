@@ -426,26 +426,14 @@
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
 
-                // Check for local toggle level first, otherwise use synchronized metadata level
-                let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
-                let effectiveLevel = isToggled ? localStorageService.getJSON(localStorageService.KEY_CURRENT_TOGGLE_LEVEL) : this.metadata.vocabularyLevel;
+                let effectiveLevel = gridUtil.getCurrentVocabularyLevel(this.metadata);
 
                 if (effectiveLevel) {
                     let globalGridElements = globalGrid ? globalGrid.gridElements : [];
                     let globalGridElemIds = globalGridElements.map(e => e.id);
                     let normalGridElements = this.renderGridData.gridElements.filter(e => !globalGridElemIds.includes(e.id));
-                    let noneHasVocabLevelGlobal = globalGridElements.every(e => !e.vocabularyLevel);
-                    let noneHasVocabLevelNormal = normalGridElements.every(e => !e.vocabularyLevel);
-                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => {
-                        let elemFitsVocabLevel = e.vocabularyLevel && e.vocabularyLevel <= effectiveLevel;
-                        if (globalGridElemIds.includes(e.id)) {
-                            // is elem in global grid
-                            return noneHasVocabLevelGlobal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
-                        } else {
-                            // is elem in normal grid
-                            return noneHasVocabLevelNormal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
-                        }
-                    });
+                    let shownElementIds = gridUtil.getElementsOfVocabularyLevel(normalGridElements, effectiveLevel).concat(gridUtil.getElementsOfVocabularyLevel(globalGridElements, effectiveLevel)).map(e => e.id);
+                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => shownElementIds.includes(e.id));
                 }
                 this.showGrid = true;
                 stateService.setCurrentGrid(this.renderGridData);
