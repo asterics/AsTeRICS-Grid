@@ -6,45 +6,26 @@
                 <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
                 <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small" :aria-label="$t('inputOptions')"><i class="fas fa-cog"></i> <span class="hide-mobile">{{ $t('inputOptions') }}</span></button>
             </div>
-            <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small" :aria-label="$t('unlock')">
-                <i class="fas fa-unlock"></i>
-                <span class="hide-mobile">{{ $t('unlock') }}</span>
-                <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
-            </button>
-            <button tabindex="34" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')"><i class="fas fa-lock"></i><span class="hide-mobile">{{ $t('lock') }}</span></button>
+            <button tabindex="32" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')"><i class="fas fa-lock"></i><span class="hide-mobile">{{ $t('lock') }}</span></button>
             <button tabindex="33" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('search')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
-            <button tabindex="32" @click="systemActionService.enterFullscreen()" class="small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
+            <button tabindex="34" @click="systemActionService.enterFullscreen()" class="small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
         </header>
-        <div v-if="metadata && (metadata.locked || metadata.fullscreen)"
-             class="floating-controls">
-        
-            <button v-if="!metadata.fullscreen"
-                    tabindex="30"
+        <div v-if="metadata && metadata.locked && !metadata.fullscreen" class="floating-controls">
+            <button tabindex="30"
                     @click="systemActionService.enterFullscreen()"
                     class="floating-control-button"
                     :aria-label="$t('SYS_ENTER_FULLSCREEN')"
                     :title="$t('SYS_ENTER_FULLSCREEN')">
                 <i class="fas fa-expand"></i>
             </button>
-        
-            <button v-if="metadata.fullscreen && false"
-                    tabindex="30"
-                    @click="systemActionService.exitFullscreen()"
+            <button tabindex="31"
+                    @click="MainVue.showSearchModal()"
                     class="floating-control-button"
-                    :aria-label="$t('SYS_LEAVE_FULLSCREEN')"
-                    :title="$t('SYS_LEAVE_FULLSCREEN')">
-                <i class="fas fa-compress"></i>
-            </button>
-            <button v-if="metadata.locked && !metadata.fullscreen"
-                tabindex="31"
-                @click="MainVue.showSearchModal()"
-                class="floating-control-button"
-                :aria-label="$t('search')"
-                :title="$t('searchBtnTitle')">
+                    :aria-label="$t('search')"
+                    :title="$t('searchBtnTitle')">
                 <i class="fas fa-search"></i>
             </button>
-            <button v-if="metadata.locked && !metadata.fullscreen"
-                    tabindex="32"
+            <button tabindex="32"
                     @click="unlock()"
                     class="floating-control-button"
                     :aria-label="$t('unlock')"
@@ -52,8 +33,8 @@
                 <i class="fas fa-unlock"></i>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
-        
-        </div>                                                            
+        </div>
+                                                       
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
@@ -125,7 +106,6 @@
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
-
     let modalTypes = {
         MODAL_SCANNING: 'MODAL_SCANNING',
         MODAL_MOUSE: 'MODAL_MOUSE',
@@ -684,7 +664,7 @@
         display: inline-flex;
         gap: 0.3em;
     }
-   
+
     .floating-control-button {
         height: 1.4em;
         min-width: 2.5em;
@@ -699,7 +679,7 @@
     .floating-control-button:focus {
         outline: none;
     }
-    
+
     .floating-control-button:focus:not(:hover):not(:active) {
         border-color: transparent;
         background-color: #f8f8f8;
@@ -711,7 +691,7 @@
             background-color: #f8f8f8;
         }
     }
-    
+
     .floating-control-button:focus-visible {
         outline: 2px solid #266697;
         outline-offset: 2px;
