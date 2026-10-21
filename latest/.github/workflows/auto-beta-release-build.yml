@@ -1,0 +1,114 @@
+name: Beta release - Build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed, labeled, unlabeled]
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref_name || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.actor != 'dependabot[bot]' &&
+      ((github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+      contains(fromJSON('["serviceworker", "onlineusers", "remote-debug"]'), github.event.label.name))
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        if: github.event.action != 'closed'
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js environment
+        if: github.event.action != 'closed'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        if: github.event.action != 'closed'
+        run: npm install
+
+      - name: Replace constants in source files
+        if: github.event.action != 'closed'
+        run: |
+          TAG_NAME="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
+          TAG_NAME_SED="${TAG_NAME//\//\\/}"
+          
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" src/js/util/constants.js
+          sed -i -e "s/#ASTERICS_GRID_ENV#/BETA/g" src/js/util/constants.js
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" src/vue-components/views/aboutView.vue
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" serviceWorker.js
+          
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'serviceworker') }}" == "true" ]]; then
+             echo "Label 'serviceworker' found in PR! Updating constants.js..."
+             sed -i -E "s/(FORCE_USE_SW\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
+          fi
+          
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'onlineusers') }}" == "true" ]]; then
+             echo "Label 'onlineusers' found in PR! Updating constants.js..."
+             sed -i -E "s/(FORCE_CONNECT_DB\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
+          fi
+          
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'remote-debug') }}" == "true" ]]; then
+             echo "Label 'remote-debug' found in PR! Updating constants.js and serviceWorker.js..."
+             sed -i -E "s/(ENABLE_REMOTE_DEBUGGING\s*[:=]\s*)false/\1true/g" src/js/util/constants.js
+             sed -i -E "s/(ENABLE_REMOTE_DEBUGGING\s*[:=]\s*)false/\1true/g" serviceWorker.js
+          fi
+
+      - name: Build web application
+        if: github.event.action != 'closed'
+        run: npm run build
+
+      - name: Prepare deployment metadata and clean workspace
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
+          PR_HEAD_REF: ${{ github.head_ref }}
+          PR_USER: ${{ github.event.pull_request.user.login }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REF_NAME: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            SANITIZED_BRANCH=$(echo "$PR_HEAD_REF" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]' | sed 's/^-//;s/-$//')
+            SANITIZED_USER=$(echo "$PR_USER" | tr -cd '[:alnum:]-_')
+            POSTFIX="/pr"
+          else
+            SANITIZED_BRANCH=$(echo "$REF_NAME" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]' | sed 's/^-//;s/-$//')
+            SANITIZED_USER=$(echo "$ACTOR" | tr -cd '[:alnum:]-_')
+            POSTFIX=""
+            PR_NUMBER=""
+          fi
+
+          if [[ "$EVENT_ACTION" == "closed" ]]; then
+            ACTION="cleanup"
+          else
+            ACTION="deploy"
+          fi
+
+          FULL_REMOTE_PATH="${SANITIZED_USER}/${SANITIZED_BRANCH}${POSTFIX}"
+          PREVIEW_URL="https://gridbeta-github.asterics-foundation.org/${FULL_REMOTE_PATH}"
+
+          {
+            echo "ACTION=${ACTION}"
+            echo "REMOTE_PATH=${FULL_REMOTE_PATH}"
+            echo "PREVIEW_URL=${PREVIEW_URL}"
+            echo "PR_NUMBER=${PR_NUMBER}"
+          } > .deploy-metadata.env
+
+          # Remove folders excluded from deployment so the artifact upload is fast and clean
+          rm -rf .git .github docs node_modules scripts src superlogin
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta-deployment-bundle
+          path: .
+          include-hidden-files: true
+          retention-days: 1

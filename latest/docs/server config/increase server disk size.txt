@@ -1,0 +1,2 @@
+1) create snapshot in Ionos console
+2) do this: https://www.ionos.de/hilfe/server-cloud-infrastructure/serveradministration/logical-volume-nach-vergroesserung-der-ssd-anpassen/logical-volume-nach-vergroesserung-der-ssd-in-ubuntu-anpassen-cloud-server/
