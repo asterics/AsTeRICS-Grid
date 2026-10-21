@@ -34,7 +34,7 @@
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
         </div>
-                                                       
+
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
@@ -696,7 +696,7 @@
         outline: 2px solid #266697;
         outline-offset: 2px;
     }
-    
+
     .floating-control-button i {
         font-size: 1em;
     }
