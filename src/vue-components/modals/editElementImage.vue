@@ -3,8 +3,12 @@
         <div class="srow">
             <label for="inputImg" class="two columns">{{ $t('image') }}</label>
             <button onclick="document.getElementById('inputImg').click();" class="three columns file-input">
-                <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/png, image/jpeg, image/webp, image/svg+xml, image/gif"/>
+                <input type="file" class="five columns" id="inputImg" @change="changedImg($event.target)" accept="image/png, image/jpeg, image/webp, image/svg+xml, image/gif"/>
                 <span><i class="fas fa-file-upload"/> <span>{{ $t('chooseFile') }}</span></span>
+            </button>
+            <button onclick="document.getElementById('inputImgCamera').click();" class="three columns file-input take-photo">
+                <input type="file" id="inputImgCamera" @change="changedImg($event.target)" accept="image/png, image/jpeg, image/webp, image/svg+xml, image/gif" capture="environment"/>
+                <span><i class="fas fa-camera"/> <span>{{ $t('takePhoto') }}</span></span>
             </button>
             <button class="three columns" @click="searchText = gridElement.label[i18nService.getContentLang()]; searchInput(0);">
                 <i class="fas fa-search"></i>
@@ -169,10 +173,10 @@
             }
         },
         methods: {
-            changedImg() {
+            changedImg(input) {
                 let thiz = this;
                 thiz.clearImage();
-                imageUtil.getBase64FromInput($('#inputImg')[0]).then(base64 => {
+                imageUtil.getBase64FromInput(input).then(base64 => {
                     thiz.setBase64(base64);
                 });
             },
@@ -188,7 +192,7 @@
                     let file = event.dataTransfer.files[0];
                     if (constants.ALLOWED_IMG_MIME_TYPES.includes(file.type)) {
                       $('#inputImg')[0].files = event.dataTransfer.files;
-                      this.changedImg();
+                      this.changedImg($('#inputImg')[0]);
                     } else {
                       console.warn("Unsupported file type dropped:", file.type);
                     }
@@ -358,6 +362,12 @@
     @media (max-width: 850px) {
         #inputSearch {
             width: 80%;
+        }
+    }
+
+    @media (pointer: fine) {
+        .take-photo {
+            display: none;
         }
     }
 </style>

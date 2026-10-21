@@ -76,7 +76,7 @@ This tab is available for element types `normal` and `live elements` and allows 
 ![edit grid element image](./img/edit_grid_element_image_en.jpg)
 *Figure 3: "Edit grid element" dialog - Tab "Image"*
 
-1. **Choose file**: opens a file dialog to choose a different image
+1. **Choose file**: opens a file dialog to choose a different image. On touch devices there's also **Take photo**, which directly opens the camera
 2. **Search by label**: image search is done by label
 3. **Clear image**: deletes the currently chosen image
 4. **Drop area**: drag and drop image files in this area to select them. It's possible to drag and drop files from a file explorer or also other programs
