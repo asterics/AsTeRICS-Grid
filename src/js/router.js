@@ -296,7 +296,11 @@ Router.toLastGrid = function () {
     }
     _gridHistory.pop(); // remove current grid
     let toId = _gridHistory.pop();
-    Router.toGrid(toId);
+    if (Router.isOnEditPage()) {
+        Router.toEditGrid(toId);
+    } else {
+        Router.toGrid(toId);
+    }
 };
 
 function getValidHash() {
