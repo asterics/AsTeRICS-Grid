@@ -214,7 +214,7 @@
         mounted() {
             this.editElementId = this.editElementIdParam;
             this.initInternal();
-            helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
+            helpService.setHelpLocationGridElementWordForm('#general');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

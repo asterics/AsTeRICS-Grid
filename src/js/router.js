@@ -50,22 +50,22 @@ Router.init = function (injectIdParam, initialHash) {
     navigoInstance = new Navigo(null, true);
     navigoInstance.on({
         main: function () {
-            helpService.setHelpLocation('02_navigation', '#main-view');
+            helpService.setHelpLocationNavigation('#navigation-overview');
             toMainInternal();
         },
         'grids/': function () {
-            helpService.setHelpLocation('02_navigation', '#manage-grids-view');
+            helpService.setHelpLocationEditGrid('#manage-grids-view');
             loadVueView(ManageGridsView);
         },
         'grid/:gridId': function (params, query) {
             log.debug('route grid with ID: ' + params.gridId);
             let passParams = urlParamService.getSearchQueryParams(params);
-            helpService.setHelpLocation('02_navigation', '#main-view');
+            helpService.setHelpLocationNavigation('#navigation-overview');
             loadVueView(GridView, passParams, '#main');
         },
         'grid/name/:gridName': function (params) {
             log.debug('route grid with Name: ' + params.gridName);
-            helpService.setHelpLocation('02_navigation', '#main-view');
+            helpService.setHelpLocationNavigation('#navigation-overview');
             dataService.getGrids().then((result) => {
                 let gridsWithName = result.filter((grid) => i18nService.getTranslation(grid.label) === params.gridName);
                 let id = gridsWithName[0] ? gridsWithName[0].id : null;
@@ -84,23 +84,23 @@ Router.init = function (injectIdParam, initialHash) {
             });
         },
         'grid/edit/:gridId': function (params) {
-            helpService.setHelpLocation('02_navigation', '#edit-view');
+            helpService.setHelpLocationEditGrid('#edit-view');
             loadVueView(GridEditView, params);
         },
         'grid/edit/:gridId/:highlightId': function (params) {
-            helpService.setHelpLocation('02_navigation', '#edit-view');
+            helpService.setHelpLocationEditGrid('#edit-view');
             loadVueView(GridEditView, params);
         },
         login: function () {
-            helpService.setHelpLocation('02_navigation', '#change-user-view');
+            helpService.setHelpLocationNavigation('#change-user');
             loadVueView(LoginView);
         },
         register: function () {
-            helpService.setHelpLocation('06_users', '#online-users');
+            helpService.setHelpLocationNavigation('#add-online-user');
             loadVueView(RegisterView);
         },
         add: function () {
-            helpService.setHelpLocation('06_users', '#offline-users');
+            helpService.setHelpLocationNavigation('#add-offline-user');
             loadVueView(AddOfflineView);
         },
         welcome: function () {
@@ -112,7 +112,7 @@ Router.init = function (injectIdParam, initialHash) {
             loadVueView(AboutView);
         },
         dictionaries: function () {
-            helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
+            helpService.setHelpLocationDictonaries('#dictionaries');
             loadVueView(DictionariesView);
         },
         settings: function () {
@@ -123,7 +123,7 @@ Router.init = function (injectIdParam, initialHash) {
             loadVueView(HelpView);
         },
         '*': function () {
-            helpService.setHelpLocation('02_navigation', '#main-view');
+            helpService.setHelpLocationNavigation('#navigation-overview');
             Router.toMain();
         }
     });

@@ -223,7 +223,7 @@
         mounted() {
             this.resetTestGrid();
             this.findUsedLocales();
-            helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
+            helpService.setHelpLocationGridElement('#tab-general');
             dataService.getMetadata().then(metadata => {
                 this.metadata = metadata;
                 this.colorCategories = colorUtil.getActiveColorScheme(metadata).categories;

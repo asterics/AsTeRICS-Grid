@@ -166,7 +166,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
-            helpService.setHelpLocation('04_input_options', '#mousetouch-input');
+            helpService.setHelpLocationInputOptions("#mouse-touch-input");
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
