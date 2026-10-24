@@ -14,6 +14,7 @@
     import $ from '../../js/externals/jquery.js';
     import {constants} from "../../js/util/constants";
     import {MainVue} from "../../js/vue/mainVue";
+    import {stateService} from "../../js/service/stateService";
 
     export default {
         props: ['fullHeader'], //if true this component is rendered as full header, otherwise as part of an already existing header
@@ -25,6 +26,7 @@
         },
         methods: {
             openSidebar() {
+                stateService.setState(constants.STATE_SIDEBAR_DESIRED_OPEN, true);
                 $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                 this.show = false;
             },

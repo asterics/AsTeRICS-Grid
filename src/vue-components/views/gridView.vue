@@ -1,24 +1,40 @@
 <template>
     <div class="box" id="gridView" v-cloak>
-        <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen">
+        <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen && !metadata.locked">
             <header-icon class="left" v-show="!metadata.locked"></header-icon>
             <div class="btn-group left">
                 <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
                 <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small" :aria-label="$t('inputOptions')"><i class="fas fa-cog"></i> <span class="hide-mobile">{{ $t('inputOptions') }}</span></button>
             </div>
-            <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small" :aria-label="$t('unlock')">
+            <button tabindex="32" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')"><i class="fas fa-lock"></i><span class="hide-mobile">{{ $t('lock') }}</span></button>
+            <button tabindex="33" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('search')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
+            <button tabindex="34" @click="systemActionService.enterFullscreen()" class="small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
+        </header>
+        <div v-if="metadata && metadata.locked && !metadata.fullscreen" class="floating-controls">
+            <button tabindex="30"
+                    @click="systemActionService.enterFullscreen()"
+                    class="floating-control-button"
+                    :aria-label="$t('SYS_ENTER_FULLSCREEN')"
+                    :title="$t('SYS_ENTER_FULLSCREEN')">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button tabindex="31"
+                    @click="MainVue.showSearchModal()"
+                    class="floating-control-button"
+                    :aria-label="$t('search')"
+                    :title="$t('searchBtnTitle')">
+                <i class="fas fa-search"></i>
+            </button>
+            <button tabindex="32"
+                    @click="unlock()"
+                    class="floating-control-button"
+                    :aria-label="$t('unlock')"
+                    :title="$t('unlock')">
                 <i class="fas fa-unlock"></i>
-                <span class="hide-mobile">{{ $t('unlock') }}</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
-            <button tabindex="34" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('fullscreen')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
-            <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
-                <i class="fas fa-lock"></i>
-                <span class="hide-mobile">{{ $t('lock') }}</span>
-            </button>
-            <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
+        </div>
 
-        </header>
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
@@ -164,6 +180,7 @@
                 if (thiz.unlockCounter === 0 || force) {
                     thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
+                        MainVue.restoreSidebar();
                         this.setViewPropsUnlocked();
                     });
                 }
@@ -177,7 +194,6 @@
                 $('#gridView').on('touchmove', this.preventZoomHandler);
             },
             setViewPropsUnlocked() {
-                $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                 $(document).trigger(constants.EVENT_UI_UNLOCKED);
 
                 //enable zoom
@@ -387,7 +403,7 @@
                         if (this.updatedMetadataDoc.fullscreen) {
                             systemActionService.enterFullscreen(true);
                         } else {
-                            $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                            MainVue.restoreSidebar();
                         }
                     }
                     if (this.updatedMetadataDoc && this.updatedMetadataDoc.locked !== vueApp.metadata.locked) {
@@ -639,4 +655,49 @@
 </script>
 
 <style scoped>
+    .floating-controls {
+        position: fixed;
+        top: 0.2em;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: inline-flex;
+        gap: 0.3em;
+    }
+
+    .floating-control-button {
+        height: 1.4em;
+        min-width: 2.5em;
+        padding: 0 0.55em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25em;
+        line-height: 1;
+    }
+
+    .floating-control-button:focus {
+        outline: none;
+    }
+
+    .floating-control-button:focus:not(:hover):not(:active) {
+        border-color: transparent;
+        background-color: #f8f8f8;
+    }
+
+    @media (hover: none) {
+        .floating-control-button:focus:not(:active) {
+            border-color: transparent;
+            background-color: #f8f8f8;
+        }
+    }
+
+    .floating-control-button:focus-visible {
+        outline: 2px solid #266697;
+        outline-offset: 2px;
+    }
+
+    .floating-control-button i {
+        font-size: 1em;
+    }
 </style>
