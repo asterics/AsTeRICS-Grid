@@ -20,11 +20,6 @@ import { stateService } from '../service/stateService';
 let MainVue = {};
 let app = null;
 
-const FULLSCREEN_EXIT_START_RATIO = 0.10;
-const FULLSCREEN_EXIT_DISTANCE_RATIO = 0.20;
-const FULLSCREEN_EXIT_MIN_DISTANCE = 100;
-let touchStartY = null;
-
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
     MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR',
@@ -275,9 +270,7 @@ MainVue.init = function () {
                     );
                 });
                 inputEventHandler.global
-                    .onTouchStart(onTouchStart)
-                    .onTouchMove(checkFullscreenExit)
-                    .onTouchEnd(resetTouchStart)
+                    .onSwipedDownFromTop(systemActionService.exitFullscreen)
                     .onEscape(systemActionService.exitFullscreen)
                     .onExitFullscreen(systemActionService.exitFullscreen);
                 inputEventHandler.global.startListening();
@@ -287,47 +280,6 @@ MainVue.init = function () {
         return Promise.resolve();
     });
 };
-
-function onTouchStart(event) {
-    touchStartY = event.touches.length === 1
-        ? event.touches[0].clientY
-        : null;
-}
-
-async function checkFullscreenExit(event) {
-    if (touchStartY === null) {
-        return;
-    }
-
-    if (event.touches.length !== 1) {
-        resetTouchStart();
-        return;
-    }
-
-    const minDistance = Math.max(
-        FULLSCREEN_EXIT_MIN_DISTANCE,
-        window.innerHeight * FULLSCREEN_EXIT_DISTANCE_RATIO
-    );
-
-    if (touchStartY > window.innerHeight * FULLSCREEN_EXIT_START_RATIO ||
-        event.touches[0].clientY - touchStartY <= minDistance) {
-        return;
-    }
-
-    resetTouchStart();
-
-    if (util.isFullscreen() || (await dataService.getMetadata()).fullscreen) {
-        if (util.isFullscreen()) {
-            util.closeFullscreen();
-        } else {
-            await systemActionService.exitFullscreen();
-        }
-    }
-}
-
-function resetTouchStart() {
-    touchStartY = null;
-}
 
 function setupContextMenu() {
     let CONTEXT_ADD_ONLINE = 'CONTEXT_ADD_ONLINE';
